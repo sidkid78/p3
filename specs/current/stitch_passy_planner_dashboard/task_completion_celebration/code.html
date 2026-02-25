@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Task Completion Celebration</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Sans:wght@300..700&amp;family=PT+Sans:wght@400;700&amp;family=Playfair+Display:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a53df5",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#1a1022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif-heading": ["Playfair Display", "serif"],
+                        "sans-body": ["PT Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pop-in': 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                        'confetti-1': 'confettiDrop 4s ease-in-out infinite',
+                        'confetti-2': 'confettiDrop 3.5s ease-in-out 1s infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        confettiDrop: {
+                            '0%': { transform: 'translateY(-20px) rotate(0deg)', opacity: '0' },
+                            '20%': { opacity: '1' },
+                            '100%': { transform: 'translateY(100px) rotate(360deg)', opacity: '0' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px 0px rgba(165, 61, 245, 0.4)' },
+                            '50%': { boxShadow: '0 0 30px 5px rgba(165, 61, 245, 0.7)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(42, 27, 53, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-button {
+            background: rgba(165, 61, 245, 0.25);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(165, 61, 245, 0.4);
+            box-shadow: 0 0 15px rgba(165, 61, 245, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-button:hover {
+            background: rgba(165, 61, 245, 0.4);
+            box-shadow: 0 0 25px rgba(165, 61, 245, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(165, 61, 245, 0.5);
+        }
+
+        .icon-glow {
+            filter: drop-shadow(0 0 10px rgba(165, 61, 245, 0.8));
+        }
+
+        /* Custom Scrollbar for the background content */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1b1023; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #382249; 
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-white font-display overflow-hidden h-screen w-full relative">
+<!-- DASHBOARD BACKGROUND (Dimmed) -->
+<div class="absolute inset-0 z-0 flex h-full w-full overflow-hidden opacity-30 pointer-events-none filter blur-[2px]">
+<!-- Sidebar -->
+<div class="w-72 bg-[#1b1023] border-r border-[#382249] flex-shrink-0 flex flex-col justify-between p-4 hidden md:flex">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 shadow-[0_0_15px_rgba(165,61,245,0.3)]" data-alt="Passy app logo featuring a stylized P" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpJvan8vaeKVViD56Efl3EI68dGFQRIUOV-42ldWIeAu1nB4HOIufRIa11t0MSQqA7FBhAvXfX0mt9jUuqnxwmF-cXe9eG-IEih0alFI8enYsrnRRIewbHud5G7xD_QBXBqZ1BgrUx21JdQIxEJjwq_-35HeY8O8bsaxHdlIjuiw5t5_oE1SOr5fd4XYmC1FkYYW_4HvnqTxRANZz-RurhX3aZhNjTdOWz3q-JCninXJXR7Do6RvkHdcdOE6PUUNbPPJPv1gXT7Og");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-lg font-bold">Passy</h1>
+<p class="text-[#b190cb] text-xs">Plan Perfect</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#382249]/50 transition-colors">
+<span class="material-symbols-outlined text-[#b190cb]">dashboard</span>
+<span class="text-[#b190cb] font-medium">Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 rounded-xl bg-[#382249] border border-[#a53df5]/20">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="text-white font-medium">Checklist</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#382249]/50 transition-colors">
+<span class="material-symbols-outlined text-[#b190cb]">payments</span>
+<span class="text-[#b190cb] font-medium">Budget</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#382249]/50 transition-colors">
+<span class="material-symbols-outlined text-[#b190cb]">group</span>
+<span class="text-[#b190cb] font-medium">Guest List</span>
+</div>
+</nav>
+</div>
+<div class="p-4 rounded-xl bg-gradient-to-br from-[#382249] to-[#1b1023] border border-[#a53df5]/20">
+<p class="text-xs text-[#b190cb] mb-2">Pro Plan</p>
+<div class="w-full bg-[#1b1023] rounded-full h-1.5 mb-2">
+<div class="bg-primary h-1.5 rounded-full" style="width: 80%"></div>
+</div>
+<p class="text-xs text-white">4 days left</p>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col h-full overflow-hidden bg-[#1b1023]">
+<!-- Top Nav -->
+<header class="h-20 border-b border-[#382249] flex items-center justify-between px-8 bg-[#1b1023]/50">
+<div class="flex-1 max-w-md">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#b190cb]">search</span>
+<input class="w-full bg-[#382249] border-none rounded-xl pl-10 pr-4 py-2.5 text-white placeholder-[#b190cb] focus:ring-1 focus:ring-primary" placeholder="Search tasks..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-xl bg-[#382249] text-white hover:bg-[#4a2d61]">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-10 rounded-full bg-cover bg-center border-2 border-[#382249]" data-alt="User profile picture placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCyTQOtxpPGEJIAiuqPiuN84nKMG1KVFFW1xxT58FcFp9UkoaXHEGIwFVomt8ZWFZObVbZjxUuxEgDMHBmul5tPTThYCuSVOKDxYlGVtWTf1d9awqArShLE8TcMdJIpbKTVGWW3oiKtdwTMJU-WFSUvYd2_oAv2Y3g8hKAxdqr34RqSq9GGqe3YC8WPsTF7q89EM-n1u5P1ho8jcDBCG2Doh1Dj7-9e8eNf94v01oMjWpeWoQOVrqV2p1xjJH4XW8NldR9zZhgSahQ");'></div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 overflow-y-auto p-8">
+<div class="max-w-4xl mx-auto flex flex-col gap-8">
+<!-- Heading -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-bold text-white mb-2 tracking-tight">Baby Shower Checklist</h2>
+<p class="text-[#b190cb]">Manage your tasks and planning progress</p>
+</div>
+<button class="px-4 py-2 bg-primary rounded-lg text-white font-medium shadow-lg shadow-primary/20">+ Add Task</button>
+</div>
+<!-- Progress -->
+<div class="bg-[#2a1b35] p-6 rounded-2xl border border-[#382249]">
+<div class="flex justify-between mb-2">
+<span class="text-white font-semibold">Overall Completion</span>
+<span class="text-primary font-bold">75%</span>
+</div>
+<div class="w-full bg-[#1b1023] rounded-full h-3">
+<div class="bg-primary h-3 rounded-full shadow-[0_0_10px_rgba(165,61,245,0.5)]" style="width: 75%"></div>
+</div>
+<p class="text-[#b190cb] text-sm mt-2">32/45 tasks done</p>
+</div>
+<!-- Task List (Dummy) -->
+<div class="space-y-3">
+<div class="flex items-center gap-4 p-4 bg-[#2a1b35] rounded-xl border border-[#382249]">
+<div class="size-6 rounded-full border-2 border-primary bg-primary flex items-center justify-center text-black">
+<span class="material-symbols-outlined text-sm font-bold">check</span>
+</div>
+<span class="text-[#b190cb] line-through">Send Invitations</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-[#2a1b35] rounded-xl border border-[#382249]">
+<div class="size-6 rounded-full border-2 border-primary bg-primary flex items-center justify-center text-black">
+<span class="material-symbols-outlined text-sm font-bold">check</span>
+</div>
+<span class="text-[#b190cb] line-through">Book Venue</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-[#2a1b35] rounded-xl border border-[#382249] opacity-50">
+<div class="size-6 rounded-full border-2 border-[#503168]"></div>
+<span class="text-white">Finalize Menu</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- CELEBRATION OVERLAY -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+<!-- Ambient Glow Orbs behind Modal -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] animate-pulse-glow pointer-events-none"></div>
+<div class="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-[80px] animate-float pointer-events-none"></div>
+<!-- Confetti Elements (Pure CSS) -->
+<!-- Lavender -->
+<div class="absolute top-[20%] left-[30%] w-3 h-3 bg-[#E6E6FA] rounded-sm animate-confetti-1 rotate-45 opacity-0"></div>
+<div class="absolute top-[30%] right-[30%] w-2 h-4 bg-[#E6E6FA] rounded-full animate-confetti-2 -rotate-12 opacity-0"></div>
+<div class="absolute bottom-[40%] left-[25%] w-2 h-2 bg-[#E6E6FA] rounded-sm animate-confetti-2 rotate-90 opacity-0"></div>
+<!-- Muted Rose -->
+<div class="absolute top-[25%] right-[25%] w-3 h-3 bg-[#D8A6B9] rounded-sm animate-confetti-1 rotate-12 opacity-0"></div>
+<div class="absolute bottom-[35%] right-[35%] w-4 h-2 bg-[#D8A6B9] rounded-full animate-confetti-2 rotate-45 opacity-0"></div>
+<!-- Primary -->
+<div class="absolute top-[15%] left-[45%] w-2 h-2 bg-primary/60 rounded-full animate-confetti-1 -rotate-45 opacity-0"></div>
+<!-- The Modal -->
+<div class="relative glass-panel rounded-3xl p-10 max-w-[480px] w-full flex flex-col items-center text-center shadow-2xl animate-pop-in overflow-hidden group">
+<!-- Close Button (Optional UX) -->
+<button class="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+<!-- Success Icon -->
+<div class="mb-8 relative">
+<div class="absolute inset-0 bg-primary/30 rounded-full blur-xl animate-pulse"></div>
+<div class="relative bg-gradient-to-br from-primary to-purple-800 rounded-full p-4 shadow-[0_0_30px_rgba(165,61,245,0.4)] border border-white/20">
+<span class="material-symbols-outlined text-5xl text-white icon-glow">check_circle</span>
+</div>
+<!-- Little sparkling stars around icon -->
+<span class="material-symbols-outlined absolute -top-2 -right-4 text-yellow-200 text-xl animate-float">star</span>
+<span class="material-symbols-outlined absolute -bottom-2 -left-4 text-pink-200 text-lg animate-float-delayed">star</span>
+</div>
+<!-- Typography Content -->
+<div class="space-y-4 mb-10 z-10">
+<h2 class="font-serif-heading text-4xl font-bold text-white tracking-tight drop-shadow-md">
+                    One Step Closer!
+                </h2>
+<p class="font-sans-body text-xl text-gray-200 leading-relaxed font-light">
+                    You've completed <span class="text-primary font-bold text-glow">75%</span> of your checklist. <br/>You're doing great!
+                </p>
+</div>
+<!-- Action Button -->
+<button class="glass-button w-full max-w-[280px] h-14 rounded-xl flex items-center justify-center gap-2 group/btn z-10">
+<span class="text-white font-bold text-lg tracking-wide">Keep Going</span>
+<span class="material-symbols-outlined text-white group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<!-- Decorative background blur inside modal for depth -->
+<div class="absolute -bottom-20 -right-20 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -top-20 -left-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+</div>
+</div>
+</body></html>

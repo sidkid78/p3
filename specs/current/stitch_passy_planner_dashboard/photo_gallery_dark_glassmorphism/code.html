@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy - Photo Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&amp;family=PT+Sans:wght@400;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a53df5",
+                        "accent-rose": "#fb7185",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#0f0c13","glass-border": "rgba(255, 255, 255, 0.08)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "playfair": ["Playfair Display", "serif"],
+                        "ptsans": ["PT Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "glow-lavender": "0 0 20px rgba(165, 61, 245, 0.5), 0 0 40px rgba(165, 61, 245, 0.2)",
+                        "glow-subtle": "0 0 15px rgba(165, 61, 245, 0.15)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0f0c13;
+        }
+        .glass-nav {
+            background: rgba(15, 12, 19, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }.glass-frame {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(165, 61, 245, 0.2);box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5), 
+                        inset 0 0 0 1px rgba(165, 61, 245, 0.1);padding: 1rem;transition: all 0.3s ease;
+        }
+        .glass-frame:hover {
+            border-color: rgba(165, 61, 245, 0.4);
+            box-shadow: 0 15px 50px -10px rgba(0, 0, 0, 0.6), 
+                        0 0 20px rgba(165, 61, 245, 0.2);
+            transform: translateY(-4px);
+        }
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .orb-lavender {
+            background: radial-gradient(circle, rgba(165, 61, 245, 0.4) 0%, rgba(165, 61, 245, 0) 70%);
+        }
+        .orb-rose {
+            background: radial-gradient(circle, rgba(251, 113, 133, 0.3) 0%, rgba(251, 113, 133, 0) 70%);
+        }
+        .masonry-grid {
+            columns: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 640px) { .masonry-grid { columns: 2; } }
+        @media (min-width: 1024px) { .masonry-grid { columns: 3; } }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+        .glow-border-dashed {
+            border: 2px dashed rgba(165, 61, 245, 0.5);
+            background: rgba(165, 61, 245, 0.05);
+            box-shadow: inset 0 0 20px rgba(165, 61, 245, 0.1);
+        }.input-glow:focus-within {
+            box-shadow: 0 0 25px rgba(165, 61, 245, 0.4);
+            border-color: rgba(165, 61, 245, 0.5);
+        }
+        .btn-glow {
+            box-shadow: 0 0 20px rgba(165, 61, 245, 0.4);
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 30px rgba(165, 61, 245, 0.6);
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0c13; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-white min-h-screen relative overflow-x-hidden selection:bg-primary selection:text-white">
+<div class="bg-orb orb-lavender w-[800px] h-[800px] top-[-20%] left-[-10%] animate-pulse" style="animation-duration: 10s;"></div>
+<div class="bg-orb orb-rose w-[900px] h-[900px] bottom-[-20%] right-[-10%]" style="background: radial-gradient(circle, rgba(160, 60, 100, 0.25) 0%, rgba(0, 0, 0, 0) 70%);"></div>
+<div class="bg-orb orb-lavender w-[600px] h-[600px] top-[30%] left-[30%] opacity-20 blur-[120px]"></div>
+<div class="layout-container flex h-full grow flex-col">
+<header class="sticky top-0 z-50 glass-nav px-6 py-4 flex items-center justify-between transition-all duration-300">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-white group cursor-pointer">
+<div class="size-9 bg-gradient-to-br from-primary to-purple-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-all">
+<span class="material-symbols-outlined text-white text-xl">auto_awesome</span>
+</div>
+<h2 class="text-white text-2xl font-playfair font-bold leading-tight tracking-wide">Passy</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-white/60 hover:text-white text-sm font-medium transition-colors font-ptsans tracking-wide" href="#">Dashboard</a>
+<a class="text-white/60 hover:text-white text-sm font-medium transition-colors font-ptsans tracking-wide" href="#">Guest List</a>
+<a class="text-white/60 hover:text-white text-sm font-medium transition-colors font-ptsans tracking-wide" href="#">Registry</a>
+<a class="text-white text-sm font-bold border-b-2 border-primary pb-1 font-ptsans tracking-wide shadow-[0_4px_10px_-4px_rgba(165,61,245,0.8)]" href="#">Gallery</a>
+</nav>
+</div>
+<div class="flex items-center gap-5">
+<div class="hidden sm:flex items-center bg-white/5 rounded-full px-4 py-2 border border-white/10 input-glow transition-all duration-300 w-64 shadow-[0_0_15px_rgba(165,61,245,0.1)]">
+<span class="material-symbols-outlined text-primary/80 text-lg mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-white placeholder-white/30 w-full font-ptsans" placeholder="Search memories..." type="text"/>
+</div>
+<button class="relative flex items-center justify-center size-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all hover:text-primary hover:border-primary/50">
+<span class="absolute top-2 right-2.5 size-2 bg-accent-rose rounded-full shadow-[0_0_8px_#fb7185]"></span>
+<span class="material-symbols-outlined text-white/80 text-xl">notifications</span>
+</button>
+<div class="size-10 rounded-full ring-2 ring-primary/40 ring-offset-2 ring-offset-[#0f0c13] overflow-hidden cursor-pointer hover:ring-primary transition-all shadow-lg shadow-primary/20">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="User profile avatar portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoWjSnDini7AX02z4GSkJQFu4zdGKKL6B8vMhI-b95RHxz9QZtadN5zIdYmqpZld1xyxeCYpPAPiH6zxTg1-tUoYCNg1-9xCDc9EY_lPfF4fRbg7ODVKjoeBkkr1143974N2_sNEiXBTSRD3x5r0kANblEpiTo9AQLjOCvSFoXonB2bjcQf0JonFZ3nCsCokYab-TFp9KQ1Kf-USpexeaub7oyJksyPypZyH46pKTYHym4Kl_8QneVxhtxwJdqTnFejQIrBjf1fKQ"/>
+</div>
+</div>
+</header>
+<main class="max-w-[1400px] mx-auto w-full px-6 py-12 flex flex-col gap-12 relative z-10">
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 pb-4 border-b border-white/5">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2 mb-1">
+<span class="h-px w-8 bg-primary"></span>
+<span class="text-primary text-xs font-bold tracking-[0.2em] uppercase font-ptsans">Shared Memories</span>
+</div>
+<h1 class="text-5xl lg:text-7xl font-playfair text-white tracking-tight drop-shadow-lg">Event Gallery</h1>
+<p class="text-white/60 text-lg font-ptsans max-w-2xl leading-relaxed mt-2">
+                    Preserve the beautiful moments of your AI-planned baby shower. Every memory, uniquely framed and celebrated in light.
+                </p>
+</div>
+<div class="flex flex-col gap-4 w-full lg:w-auto">
+<div class="flex gap-2 bg-black/20 backdrop-blur-md p-1.5 rounded-2xl border border-white/5 self-start lg:self-end shadow-inner">
+<button class="px-6 py-2.5 rounded-xl bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 transition-all font-ptsans">All</button>
+<button class="px-6 py-2.5 rounded-xl text-white/50 hover:text-white hover:bg-white/5 text-sm font-medium transition-all font-ptsans">Decor</button>
+<button class="px-6 py-2.5 rounded-xl text-white/50 hover:text-white hover:bg-white/5 text-sm font-medium transition-all font-ptsans">Guests</button>
+<button class="px-6 py-2.5 rounded-xl text-white/50 hover:text-white hover:bg-white/5 text-sm font-medium transition-all font-ptsans">Moments</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<div class="lg:col-span-4 glass-panel p-1 rounded-3xl">
+<div class="bg-black/20 rounded-[1.3rem] p-6 h-full flex flex-col gap-6 backdrop-blur-sm">
+<div class="flex items-center justify-between border-b border-white/5 pb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary text-xl">cloud_upload</span>
+</div>
+<h3 class="text-xl font-bold font-playfair tracking-wide">Upload Memories</h3>
+</div>
+<span class="text-xs text-white/30 font-ptsans uppercase tracking-widest">Drag &amp; Drop</span>
+</div>
+<div class="glow-border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-4 cursor-pointer hover:bg-primary/10 transition-all group border-primary/30 flex-grow">
+<div class="size-16 rounded-full bg-gradient-to-b from-primary/20 to-transparent flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(165,61,245,0.15)]">
+<span class="material-symbols-outlined text-primary text-3xl drop-shadow-[0_0_8px_rgba(165,61,245,0.8)]">add_photo_alternate</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-white font-semibold font-playfair text-lg">Drop photos here</p>
+<p class="text-white/40 text-sm font-ptsans">Supports JPG, PNG, HEIC</p>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-xl btn-glow transition-all flex items-center justify-center gap-2 group">
+<span>Complete Upload</span>
+<span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="lg:col-span-8 glass-panel p-1 rounded-3xl relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-transparent opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+<div class="bg-black/20 rounded-[1.3rem] p-10 h-full flex flex-col justify-center relative z-10">
+<div class="flex flex-col gap-5 max-w-xl">
+<div class="flex items-center gap-3">
+<span class="inline-block px-3 py-1 rounded-full bg-accent-rose/20 border border-accent-rose/30 text-accent-rose text-[10px] font-bold tracking-[0.1em] uppercase shadow-[0_0_10px_rgba(251,113,133,0.2)]">Premium Feature</span>
+</div>
+<h2 class="text-4xl md:text-5xl font-playfair leading-tight">
+                            Create a <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-primary/50">Cinematic Slideshow</span>
+</h2>
+<p class="text-white/60 font-ptsans text-lg max-w-md">
+                            Automatically curate your best photos into a professional-grade video montage set to beautiful, AI-generated melodies.
+                        </p>
+<div class="flex gap-4 mt-6">
+<button class="px-8 py-3 bg-white text-background-dark font-bold rounded-xl hover:bg-white/90 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all font-ptsans flex items-center gap-2">
+<span>Coming Soon</span>
+</button>
+<button class="px-8 py-3 border border-white/20 hover:bg-white/5 hover:border-white/40 font-bold rounded-xl transition-all flex items-center gap-2 backdrop-blur-sm font-ptsans text-white">
+<span class="material-symbols-outlined text-lg">play_circle</span>
+                                View Demo
+                            </button>
+</div>
+</div>
+</div>
+<div class="absolute right-[-10%] top-[-10%] size-96 bg-gradient-to-br from-primary/30 to-accent-rose/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen"></div>
+</div>
+</div>
+<div class="masonry-grid w-full">
+<div class="masonry-item glass-frame rounded-2xl group cursor-zoom-in">
+<div class="relative overflow-hidden rounded-lg w-full h-full">
+<img alt="Floral decoration detail" class="w-full object-cover transition-transform duration-1000 group-hover:scale-105" data-alt="Elegant floral baby shower table centerpieces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV9dLmLMKDFV6Mx2_FMGjkjSAmP1UsrJ0rldkaeWRYcJOkac-5OHv0A-m3K0BJSiyfLRqFh61C8Q6l4-1-bkiOoEvO5LtIDqSWdFGq3a80B3qPrGOszbEpCAoCSQtDyrOfRvIlSxYhqDGSCdfsZ6UO0DF76_htfs5Kj-9XeTshEmVAUhty6UIujfDr-EW_WK9ajoGbWi6_9iR3mLgj4DRV4xeJIAUOh7lyjRM2JRkhm7JzK74C8ThG8jvs9YsEsMwaxXyhgXzyoCc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+<div class="flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+<img alt="Sarah avatar" class="size-9 rounded-full border border-white/30 shadow-md" data-alt="Female user profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ILJCVg_qmPG7KdsGIbVy43O43Oyxj9st5XOLXlhriH4R1F95lKbREIciurfZyqkqzCW7ssqQDP55WrEomlqP-37j-fz6st8K6djiqE68TlJxXdX1JBonM05m0nVSF2rchaIMsrmfD5m_HblHhewhNgb4IzgrjcD-y7xffNHfIFRoihCq6dCYuRg9m_LeDADLbHFQA4cYXaEdA4aj_njZGAEknmMELBhBPYYR8LLkHDymgueg4vc43xj-xnNCO9eNOzZeKdVwz6g"/>
+<div>
+<p class="text-white text-sm font-semibold font-playfair tracking-wide">Sarah Jenkins</p>
+<p class="text-accent-rose text-xs font-ptsans tracking-wide uppercase mt-0.5">Decor</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="masonry-item glass-frame rounded-2xl group cursor-zoom-in">
+<div class="relative overflow-hidden rounded-lg w-full h-full">
+<img alt="Baby shower gifts" class="w-full object-cover transition-transform duration-1000 group-hover:scale-105" data-alt="A pile of beautifully wrapped baby gifts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtnvSBMsWnIxcO9bvdVGdqbVWnJlNG8tEpdc_x3gU51gR6LM-D2fliOx7KK1UfVDKtKWFkrYfBG8YnlcAAOeNa4FYrsEyTWPJOI75rJUyjcLI3Jgx_YPI_ZFSe7bKQlk2sqc2RtvYaipRzp4N0H79zWIaLELnHH5U79DZvDe0XJLsvlCMhcfQtv-DzNcm84I5jihCknA61noUv06ZfC6Y--X6aHnct7AnP_moa9fjQ22oFkZleP1JrBLoKvFm9ry26NPDylIkPjdI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+<div class="flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+<img alt="Mike avatar" class="size-9 rounded-full border border-white/30 shadow-md" data-alt="Male user profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmwz0OTUJnfGx83cnJA4XOgkkyI9RD45JunkMChA7klbIxINKMAvFBgXpSv2NDc70Uk7MA1SYjF-1IqR7qqEcCtCAET6WdtdLoKTwNsoSw1FABPOxXCEt--HWk8XY5anxkNx0ea-6hhiVXJk3R-l7_MLP-N7zjmcsKBGP_NGqVOOhEMGGWNyq-VuAX4VxUaIKjH7FqV4GWGSlopEhS7Um3o1BmWtBvKEWA32WqNICjgcE70KPB5RW_crctr3M0fB4t9lUZnx7GVDY"/>
+<div>
+<p class="text-white text-sm font-semibold font-playfair tracking-wide">Mike Rossi</p>
+<p class="text-accent-rose text-xs font-ptsans tracking-wide uppercase mt-0.5">Moments</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="masonry-item glass-frame rounded-2xl group cursor-zoom-in">
+<div class="relative overflow-hidden rounded-lg w-full h-full">
+<img alt="Happy friends laughing" class="w-full object-cover transition-transform duration-1000 group-hover:scale-105" data-alt="Group of diverse friends laughing at party" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz6KRkkUq1Ma2DkBkH_ZT5mD8gVmqPNvXoHUES5fHJdMi2-yligolQMxxKrqHwpM7d4FDlpfJz-MnI66PGw3ka1T2JSh-Njyo_7qeFQH06HsAQ8B-juWKo33OYT6t8ry928Jk0t-FPf7pvoFhRSPkW-HjGZSOldzim_GlCnn_b9Zr5NVgH9z_EQRDIy9-L-P-DR_cQ-LhwJCevG5rZBID2zE7TAete0XltFyBUjZPrSBScBwep2Unmu2ICxUEeXCE1gMlshYb4-Bk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+<div class="flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+<img alt="Emma avatar" class="size-9 rounded-full border border-white/30 shadow-md" data-alt="Female user profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5Ul-TBAR8RtSStzMOVZSIAVwonbJjxBdWPWcxHCRZIEYGrbWD7hScuaf-L5njkrPH0vksuSmbIiaJ5cvLJnjIjHIP5wTO0H6e-ZZLiewxG-AggwNSopTCfiU9Cpz_rhs9tVf8ULnJ-Ntmryw-GTgGz6kXV8JX2Lme00OWB-hjNTcBmndEGz3N-rv9WtG-jZR80y5LjEp5org9ApGQ-1f8uvaxRE3YNMShZKa622CowSbo6bAMBRWQy-7iw-XjEYkSwvdJ6jswGMw"/>
+<div>
+<p class="text-white text-sm font-semibold font-playfair tracking-wide">Emma Wilson</p>
+<p class="text-accent-rose text-xs font-ptsans tracking-wide uppercase mt-0.5">Guests</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="masonry-item glass-frame rounded-2xl group cursor-zoom-in">
+<div class="relative overflow-hidden rounded-lg w-full h-full">
+<img alt="Cake cutting moment" class="w-full object-cover transition-transform duration-1000 group-hover:scale-105" data-alt="Elegant baby shower cake with custom topper" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2zdn4OehzlQF2eqp4jcvMWMZOYLcD_tSvtOYWkVN4vtNw6BqlEXAStIITTxbyjp8JAd2DkGm5CAcxCxzaYs098eczRp_tvl9oczdoyKiDWUuH4E1U_KqRZRuZCJoHdhAK-utq91Ub0hFQInxUM9r6MNUNDkFjcZqf9YxqEBqlE9C1LtofLdFSOpbfrxxSiIX2fGtS-igc82rVDMilA7Oh1xr0key6CMj6qgeaXkmbB71n3kL_ptp-qkm4mLrZspTeYElt4Qd7ozw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+<div class="flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+<img alt="David avatar" class="size-9 rounded-full border border-white/30 shadow-md" data-alt="Male user profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACwBqeyg7SLhsl4c_Sb6XxObcqMaBIZUsxcmT878f09oqh-n7iHZN9AqDFhYr71W38mWSkSVH8yJWZFRAkgHRMxFupwCEWRW25k0HgAQ5xgeWlsJzZjmIbb65BFZ_lMPv8wFbNv4ILzBNDxJDSYs2z1ky66taxZnpTccmWk3gbnXW6O9MIPXM1Tzhd3am6eXIfJJ1D5ounQrqjMDOIdRuieeZNJj1bOxPLSsnpEHA2P9bC5UZK3Mu3yAZp-s62LBGflQ8quCzsxJ8"/>
+<div>
+<p class="text-white text-sm font-semibold font-playfair tracking-wide">David Chang</p>
+<p class="text-accent-rose text-xs font-ptsans tracking-wide uppercase mt-0.5">Moments</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="masonry-item glass-frame rounded-2xl group cursor-zoom-in">
+<div class="relative overflow-hidden rounded-lg w-full h-full">
+<img alt="Baby shoes decoration" class="w-full object-cover transition-transform duration-1000 group-hover:scale-105" data-alt="Tiny baby shoes used as table decor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADhqGBDwvCPpThr28AS2ocHuVr-Yq6DTATQ5FcW1Jr833EmvWfzgtUFD3FrZgu0WlSBC2MNfbNqgo0V7XW2NZFaVWZ8Qfsad1bP15C1n42J9MqNtoPVQv77hXqwNqvAJnm_ABjYvVElPGOzNp94bh3V3ZXV7dz9XGdZEpnRYws1clpvjHa9XzUnpxohbC-xCM6cMgU-0eZsrg7iz5ZXGx_AWkoe6_j8imCR0dejr1nZ-H1mAiYwBmZ2LtBuj1Egcdtyejvhz2e8mo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+<div class="flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+<img alt="Chloe avatar" class="size-9 rounded-full border border-white/30 shadow-md" data-alt="Female user profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe9DOkwlOWewnHQ4LB9lhp6w65A2zZ41a62dJ3Dubq7yHLtsW_tiAy9zNxt_dX8Oi4-vkCY1P9u-lZE_FIqWvnB5Ghj50r5tcYtxceTBZuBlElnnPRQVD58_91WLR96KttrGX9Sx9A2F1RAXjzxVoCYHo7VIxDmC5lBaleUsMT0TFbs9eemmtCRLNHT1BGSxFXlYj4fxifs4YUzU6McMxe8f5WDwYpNYgEueAE7cs1T2oJD0HH1S7-tBjKy8Fhaih3cCuHgiPeYNY"/>
+<div>
+<p class="text-white text-sm font-semibold font-playfair tracking-wide">Chloe Smith</p>
+<p class="text-accent-rose text-xs font-ptsans tracking-wide uppercase mt-0.5">Decor</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="masonry-item glass-frame rounded-2xl group cursor-zoom-in">
+<div class="relative overflow-hidden rounded-lg w-full h-full">
+<img alt="Festive balloons" class="w-full object-cover transition-transform duration-1000 group-hover:scale-105" data-alt="Colorful pastel balloons floating in a room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl4kYLCZ0RCZdR71JA8ASZk4V0VgBW0bNWAY-oCCkX2NjS55pbweDdMA3YICOKMdLO0NKkIrwyaTi8b8aDWd7dptGBGl4oe5r21b6Q6_dCn2-C_0b34QVoackzxgHDuD1CUp6KJ0OJ-foIl1n7YSZKax5vS684V58S_QEaT_SYRL_z8aA3uSv9gA1Q3uQ8UEYn67Qnfsqmo9pDuuogh95YCy3-PKPjciPmlCkArJgK8qJEG4z2NCR2yW-D-go_KD-eiLg8okRXq-s"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+<div class="flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+<img alt="James avatar" class="size-9 rounded-full border border-white/30 shadow-md" data-alt="Male user profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_Iw03Rel6hT53NzyP7ifiPDo_JbwbKv5mdQSo2K1Wqx0Qnllgq1FrDcj02AkztXFQ61WvteGsotKnOz9AWO9dOrYS7XIYuoi4RvBnIbC0my3tlqKUYqr1rgr5ibKZtJYFTYpvQv_Kkm8Ipj5WxdoPNVhFrYT77hw0QpZjK23dmInaHIH3LT11db4QEGl3MSpLD6BJSdO07hNsyYXKsw5tDOx2R7K7WtQJirRcRsdrJ1twyCUULaIMS3kJ7AGtNRaUuhUnwfI0XeQ"/>
+<div>
+<p class="text-white text-sm font-semibold font-playfair tracking-wide">James Miller</p>
+<p class="text-accent-rose text-xs font-ptsans tracking-wide uppercase mt-0.5">Moments</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer class="mt-10 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 pb-12">
+<div class="flex items-center gap-3 text-white/30">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+<span class="text-sm font-ptsans tracking-wider">© 2024 Passy AI Events. All memories secured.</span>
+</div>
+<div class="flex items-center gap-8">
+<a class="text-white/30 hover:text-primary transition-colors text-sm font-ptsans" href="#">Privacy Policy</a>
+<a class="text-white/30 hover:text-primary transition-colors text-sm font-ptsans" href="#">Terms of Service</a>
+<a class="text-white/30 hover:text-primary transition-colors text-sm font-ptsans" href="#">Support</a>
+</div>
+</footer>
+</main>
+</div>
+
+</body></html>

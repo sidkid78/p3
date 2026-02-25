@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy - Guest Invitation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a53df5",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#1a1022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "sans-details": ["PT Sans", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(45, 36, 56, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            background: radial-gradient(circle, #a53df5 0%, rgba(165, 61, 245, 0) 70%);
+            width: 500px;
+            height: 500px;
+            top: -100px;
+            left: -100px;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            background: radial-gradient(circle, #f53d9d 0%, rgba(245, 61, 157, 0) 70%);
+            width: 400px;
+            height: 400px;
+            bottom: 10%;
+            right: -50px;
+            animation: float 14s ease-in-out infinite reverse;
+        }
+        
+        .orb-3 {
+            background: radial-gradient(circle, #6d28d9 0%, rgba(109, 40, 217, 0) 70%);
+            width: 300px;
+            height: 300px;
+            top: 40%;
+            left: 30%;
+            opacity: 0.4;
+            animation: float 18s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 50px); }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen font-display overflow-x-hidden text-white selection:bg-primary selection:text-white">
+<!-- Decorative Background Orbs -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none">
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+</div>
+<!-- Navigation -->
+<nav class="relative z-50 w-full border-b border-white/5 bg-background-dark/30 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-xl">child_care</span>
+</div>
+<span class="font-display font-bold text-xl tracking-tight text-white">Passy</span>
+</div>
+<div>
+<button class="text-white/70 hover:text-white transition-colors text-sm font-medium">Log In</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="relative z-10 w-full flex flex-col items-center justify-start pt-8 pb-20 px-4 sm:px-6">
+<div class="w-full max-w-2xl flex flex-col gap-6">
+<!-- Primary Invitation Card -->
+<div class="glass-panel rounded-3xl overflow-hidden p-1">
+<!-- Header Image -->
+<div class="relative h-48 sm:h-64 w-full rounded-t-[1.3rem] overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-t from-[#1b1023] via-transparent to-transparent z-10 opacity-90"></div>
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Abstract soft focus background with gentle pink and purple blurred lights representing a celebration" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDXnPkTK3ikgW7Jwrx9f6ZWItcSqFYy1LR3oGees6iYhgOtDdRVAFlQ7-qJDAp3LfuEQny-KVSiK4R04lWXIzcgaw78opQCmjmyiEac76IUGFIb4KadRqTH28CjOeTqx-ZKBPt-MjLTUDoPMEJiQoyIprFznw5dbEPC0HPpJ9DuTYHvOX1Rqpx7d5ETm8R1O_yh3CrVyHnN_13CixtpzBAzMr1xec1HmDA4SOFyQN2-8wvx0XK4SmxmDB7JZChlcr2nCoi72q5Os84');">
+</div>
+<div class="absolute bottom-4 left-0 right-0 z-20 text-center">
+<span class="inline-block px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary-200 text-xs font-bold uppercase tracking-widest backdrop-blur-md mb-2">Baby Shower</span>
+</div>
+</div>
+<!-- Card Content -->
+<div class="px-6 py-8 sm:px-12 sm:py-10 text-center flex flex-col items-center">
+<h1 class="font-serif text-4xl sm:text-5xl md:text-6xl text-white mb-4 leading-tight">
+                        Welcome Baby <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-pink-200">Thompson</span>
+</h1>
+<p class="font-sans-details text-gray-300 text-lg sm:text-xl leading-relaxed max-w-lg mx-auto mb-10">
+                        You are cordially invited to celebrate the upcoming arrival of our little one. Join us for an afternoon of joy, laughter, and new beginnings.
+                    </p>
+<!-- Divider -->
+<div class="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-10"></div>
+<!-- Details Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full mb-10">
+<div class="flex flex-col items-center gap-2 group">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-inner border border-white/5">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<p class="font-sans-details text-gray-400 text-xs uppercase tracking-wider">Date</p>
+<p class="font-display font-semibold text-white">Oct 24, 2024</p>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-inner border border-white/5">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<p class="font-sans-details text-gray-400 text-xs uppercase tracking-wider">Time</p>
+<p class="font-display font-semibold text-white">2:00 PM - 5:00 PM</p>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-inner border border-white/5">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="font-sans-details text-gray-400 text-xs uppercase tracking-wider">Host</p>
+<p class="font-display font-semibold text-white">Sarah Johnson</p>
+</div>
+</div>
+<!-- RSVP Section -->
+<div class="w-full bg-white/5 rounded-2xl p-6 border border-white/5 backdrop-blur-sm">
+<h3 class="font-serif text-2xl text-white mb-6">Will you be attending?</h3>
+<div class="flex gap-4 mb-6 justify-center">
+<button class="flex-1 max-w-[160px] group relative overflow-hidden rounded-xl bg-primary p-3 transition-all hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(165,61,245,0.4)] focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#1b1023]">
+<div class="flex flex-col items-center justify-center gap-1">
+<span class="material-symbols-outlined text-white text-2xl mb-1">check_circle</span>
+<span class="text-white text-sm font-bold tracking-wide">Joyfully Accept</span>
+</div>
+</button>
+<button class="flex-1 max-w-[160px] group relative overflow-hidden rounded-xl bg-white/5 p-3 transition-all hover:bg-white/10 hover:shadow-lg border border-white/10">
+<div class="flex flex-col items-center justify-center gap-1">
+<span class="material-symbols-outlined text-gray-400 text-2xl mb-1 group-hover:text-white">cancel</span>
+<span class="text-gray-400 text-sm font-bold tracking-wide group-hover:text-white">Decline</span>
+</div>
+</button>
+</div>
+<div class="space-y-4 max-w-sm mx-auto">
+<div class="relative">
+<label class="sr-only" for="guests">Number of Guests</label>
+<div class="flex items-center glass-input rounded-lg px-3">
+<span class="material-symbols-outlined text-gray-400">group</span>
+<input class="w-full bg-transparent border-none text-white placeholder-gray-400 focus:ring-0 py-3 text-sm" id="guests" placeholder="Total number of guests" type="number"/>
+</div>
+</div>
+<div class="relative">
+<label class="sr-only" for="message">Message</label>
+<div class="flex items-start glass-input rounded-lg px-3 py-2">
+<span class="material-symbols-outlined text-gray-400 mt-1">edit</span>
+<textarea class="w-full bg-transparent border-none text-white placeholder-gray-400 focus:ring-0 py-1 text-sm" id="message" placeholder="Send a note to the parents (optional)" rows="2"></textarea>
+</div>
+</div>
+<button class="w-full rounded-lg h-10 bg-white text-primary font-bold text-sm tracking-wide hover:bg-gray-100 transition-colors shadow-lg">
+                                Confirm RSVP
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Info Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Registry Card -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 rounded-lg bg-pink-500/20 text-pink-300">
+<span class="material-symbols-outlined">redeem</span>
+</div>
+<h3 class="text-lg font-bold text-white">Gift Registry</h3>
+</div>
+<p class="text-gray-400 text-sm mb-6 font-sans-details">
+                        Your presence is the greatest gift of all. However, if you wish to honor us with a gift, we have registered at the following stores:
+                    </p>
+<div class="flex gap-3 mt-auto">
+<a class="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined text-white text-lg">shopping_bag</span>
+<span class="text-sm font-semibold text-white">Amazon</span>
+</a>
+<a class="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg py-3 transition-colors group" href="#">
+<span class="material-symbols-outlined text-white text-lg">storefront</span>
+<span class="text-sm font-semibold text-white">Target</span>
+</a>
+</div>
+</div>
+<!-- Location Card -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 rounded-lg bg-blue-500/20 text-blue-300">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<h3 class="text-lg font-bold text-white">Location</h3>
+</div>
+<div class="rounded-lg overflow-hidden h-32 w-full mb-4 relative bg-gray-800">
+<div class="w-full h-full bg-cover bg-center opacity-70 hover:opacity-100 transition-opacity" data-alt="Minimalist map view showing street layout with a marker" data-location="San Francisco" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBO_oPb24QoCztiltVF11pAYP-c8lRWKSPuvmGYkPTbTFLEKSUt6pBMK_usbbD1E15K6i3JayfsmFM1MQSSzM_0_uxKcGqpp6pI_gE-o5hos013GOaov-gbsYjXZtOc6LPSFbtx1M0jlISiIKpZHBTdNOBCCDCsGNolzN3jFdqhTFvEclMMENbZcPK7cfk8Ci1YWxH5rzzGPwOTH_Izwhrs9kiHv8sVsQf5oZdOvnLQKjWZT_EJ7vdTcJozpl5nr4357BkEW1r9prM');">
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="material-symbols-outlined text-primary text-4xl drop-shadow-lg">location_on</span>
+</div>
+</div>
+<div class="mt-auto">
+<p class="text-white font-semibold text-sm">The Thompson Residence</p>
+<p class="text-gray-400 text-sm font-sans-details mb-3">123 Maple Avenue, Springfield, IL 62704</p>
+<button class="w-full py-2 rounded-lg border border-white/10 text-xs font-bold text-white hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">directions</span>
+                            Get Directions
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-12 text-center text-white/30 text-xs">
+<p>© 2024 Passy Invitations. All rights reserved.</p>
+</footer>
+</main>
+</body></html>

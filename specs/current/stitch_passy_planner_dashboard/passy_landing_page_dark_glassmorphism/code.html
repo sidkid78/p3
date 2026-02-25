@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy - AI Baby Shower Planner</title>
+<!-- Google Fonts: Plus Jakarta Sans (Theme) and Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a53df5",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#0f0814", /* Deeper charcoal for better neon contrast */
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    backgroundImage: {
+                        'glass-gradient': 'linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Utilities for Glassmorphism & Glows */
+        .glass-panel {
+            background: rgba(30, 20, 40, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-button {
+            background: rgba(165, 61, 245, 0.15);
+            border: 1px solid rgba(165, 61, 245, 0.3);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+
+        .glass-button:hover {
+            background: rgba(165, 61, 245, 0.25);
+            box-shadow: 0 0 15px rgba(165, 61, 245, 0.4);
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 20px rgba(165, 61, 245, 0.5);
+        }
+        
+        .glow-icon-container {
+            box-shadow: 0 0 25px rgba(165, 61, 245, 0.25);
+        }
+
+        /* Ambient Background Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+        }
+        .orb-1 { top: -10%; left: -10%; width: 600px; height: 600px; background: radial-gradient(circle, #a53df5 0%, transparent 70%); }
+        .orb-2 { bottom: 10%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, #3b82f6 0%, transparent 70%); }
+        .orb-3 { top: 40%; left: 30%; width: 300px; height: 300px; background: radial-gradient(circle, #ec4899 0%, transparent 70%); opacity: 0.4; }
+    </style>
+</head>
+<body class="font-display bg-background-dark text-white overflow-x-hidden min-h-screen flex flex-col relative selection:bg-primary selection:text-white">
+<!-- Ambient Background Elements -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden">
+<div class="orb orb-1 animate-pulse" style="animation-duration: 8s;"></div>
+<div class="orb orb-2 animate-pulse" style="animation-duration: 10s;"></div>
+<div class="orb orb-3 animate-pulse" style="animation-duration: 12s;"></div>
+</div>
+<!-- Navigation -->
+<nav class="sticky top-4 z-50 px-4 sm:px-10 lg:px-20">
+<div class="max-w-7xl mx-auto">
+<div class="glass-panel rounded-full px-6 py-3 flex items-center justify-between">
+<!-- Logo -->
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-white text-[20px]">child_care</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-white">Passy</h2>
+</div>
+<!-- Desktop Menu -->
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#">Features</a>
+<a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#">Pricing</a>
+<a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#">About</a>
+</div>
+<!-- Auth CTA -->
+<div class="flex items-center gap-4">
+<a class="hidden sm:block text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#">Log In</a>
+<button class="bg-primary hover:bg-primary/90 text-white text-sm font-bold py-2 px-5 rounded-full shadow-[0_0_15px_rgba(165,61,245,0.4)] transition-all transform hover:scale-105">
+                        Get Started
+                    </button>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<main class="relative z-10 flex-grow flex flex-col">
+<!-- Hero Section -->
+<section class="relative pt-20 pb-16 px-6 sm:px-12 lg:px-24 flex flex-col items-center justify-center min-h-[80vh]">
+<div class="max-w-4xl w-full text-center flex flex-col gap-8 items-center">
+<!-- Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+<span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-medium text-primary uppercase tracking-wider">AI Powered Planning</span>
+</div>
+<!-- Headline -->
+<h1 class="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]">
+                    Plan the Perfect <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-primary glow-text">Baby Shower</span> with AI
+                </h1>
+<!-- Subheadline -->
+<p class="text-lg md:text-xl text-gray-300 max-w-2xl font-light leading-relaxed">
+                    The simplest and smartest way to celebrate. From themes to games, let our AI handle the details so you can enjoy the moment.
+                </p>
+<!-- CTAs -->
+<div class="flex flex-col sm:flex-row gap-4 mt-4 w-full justify-center">
+<button class="group relative flex items-center justify-center gap-2 bg-primary text-white h-14 px-8 rounded-full font-bold text-lg shadow-[0_0_20px_rgba(165,61,245,0.5)] hover:shadow-[0_0_30px_rgba(165,61,245,0.7)] transition-all overflow-hidden">
+<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></span>
+<span>Start Planning for Free</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="flex items-center justify-center gap-2 glass-button text-white h-14 px-8 rounded-full font-bold text-lg">
+<span class="material-symbols-outlined">play_circle</span>
+<span>Watch Demo</span>
+</button>
+</div>
+<!-- Social Proof / Abstract Visual -->
+<div class="mt-16 w-full max-w-5xl glass-panel rounded-2xl border border-white/10 p-2 overflow-hidden shadow-2xl">
+<div class="relative w-full aspect-[16/7] bg-black/40 rounded-xl overflow-hidden group">
+<!-- Abstract Hero Image representing planning interface -->
+<div class="absolute inset-0 bg-cover bg-center opacity-80 mix-blend-screen transition-transform duration-700 group-hover:scale-105" data-alt="Abstract vibrant gradient waves representing AI intelligence and flow" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAiynCDoSB0tTlrltqr7_nRepOgwYJ4dWZdBSUI9_PlvQVFJhM7sY7tu7iVj-I6UBTxLxI6y6719CTFeEx4s5ZBwKUbMCbJiSewxF3sLusT3ZehUV-PmGfq1w4wvdtvLRpZUPnemahHetvyJ11P16DsiLbC43HhRDEhPRYdlq6zaz2-caBnVEnG8YqZJugvnOe4Du-enopA_3IeahlBA1folXO9VkrsJyzqa6e3NEhIQyyZQu7F_7nfc9JNvGthrycexjm2e4rhYrw');">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0f0814] via-transparent to-transparent"></div>
+<!-- UI Mockup Overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col items-center justify-end h-full">
+<div class="glass-panel p-6 rounded-xl max-w-lg w-full transform translate-y-4 opacity-90">
+<div class="flex items-center gap-4 mb-4 border-b border-white/10 pb-4">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<div class="h-2 w-24 bg-white/20 rounded mb-2"></div>
+<div class="h-2 w-16 bg-white/10 rounded"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="h-2 w-full bg-white/10 rounded"></div>
+<div class="h-2 w-3/4 bg-white/10 rounded"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Feature Section -->
+<section class="relative py-20 px-6 sm:px-12 lg:px-24 z-10">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16 space-y-4">
+<h2 class="text-3xl md:text-5xl font-bold text-white tracking-tight">Magical Features</h2>
+<p class="text-gray-400 max-w-2xl mx-auto text-lg">Experience the future of party planning with our intelligent tools designed to make every moment sparkle.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="glass-panel p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300 group">
+<div class="size-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center mb-6 glow-icon-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-purple-300">auto_awesome</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">AI Theme Assistant</h3>
+<p class="text-gray-400 leading-relaxed">
+                            Generate unique themes instantly tailored to your taste. From "Cosmic Jungle" to "Vintage Tea Party", get mood boards in seconds.
+                        </p>
+</div>
+<!-- Feature 2 -->
+<div class="glass-panel p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300 group">
+<div class="size-14 rounded-2xl bg-gradient-to-br from-pink-500/20 to-rose-500/20 border border-white/10 flex items-center justify-center mb-6 glow-icon-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-pink-300">videogame_asset</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Personalized Game Planner</h3>
+<p class="text-gray-400 leading-relaxed">
+                            Curated fun for every guest list to keep the energy high. Our AI suggests games based on guest age range and party vibe.
+                        </p>
+</div>
+<!-- Feature 3 -->
+<div class="glass-panel p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300 group">
+<div class="size-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-white/10 flex items-center justify-center mb-6 glow-icon-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-emerald-300">savings</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Smart Budgeting</h3>
+<p class="text-gray-400 leading-relaxed">
+                            Track expenses without the stress and stay on target. Real-time cost estimation helps you allocate funds where they matter most.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Minimal CTA Section -->
+<section class="relative py-20 px-6 sm:px-12 text-center">
+<div class="max-w-4xl mx-auto glass-panel rounded-3xl p-12 relative overflow-hidden">
+<!-- Decorative background light inside card -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-primary/10 to-transparent pointer-events-none"></div>
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-6 relative z-10">Ready to host the perfect shower?</h2>
+<button class="relative z-10 bg-white text-primary hover:bg-gray-100 text-base font-bold h-12 px-8 rounded-full shadow-lg transition-colors">
+                    Get Started for Free
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="relative z-10 border-t border-white/5 bg-black/20 backdrop-blur-lg">
+<div class="max-w-7xl mx-auto px-6 py-12">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]">child_care</span>
+</div>
+<span class="text-lg font-bold text-white">Passy</span>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-gray-400 hover:text-primary transition-colors text-sm" href="#">Privacy Policy</a>
+<a class="text-gray-400 hover:text-primary transition-colors text-sm" href="#">Terms of Service</a>
+<a class="text-gray-400 hover:text-primary transition-colors text-sm" href="#">Contact Us</a>
+</div>
+<div class="flex gap-4">
+<a class="text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">camera_alt</span> <!-- Instagram proxy -->
+</a>
+<a class="text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">flutter_dash</span> <!-- Twitter proxy -->
+</a>
+<a class="text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">public</span> <!-- Facebook proxy -->
+</a>
+</div>
+</div>
+<div class="mt-8 text-center text-gray-500 text-xs">
+                © 2024 Passy. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

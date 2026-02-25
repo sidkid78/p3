@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Guest Detail Side-Panel - BabyShower AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&amp;family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#9d2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1022",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(26, 16, 34, 0.7);
+            backdrop-filter: blur(40px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(157, 43, 238, 0.4);
+        }
+        .orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+        }
+        .orb-1 { top: 10%; right: -50px; background: rgba(157, 43, 238, 0.2); }
+        .orb-2 { bottom: 20%; right: 100px; background: rgba(57, 35, 72, 0.4); }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white min-h-screen overflow-hidden">
+<!-- Main Dashboard Background (Simulated) -->
+<div class="relative flex h-screen w-full flex-col opacity-40">
+<!-- TopNavBar Component -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392348] px-10 py-3 bg-[#1b1122]">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-3xl">child_care</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">BabyShower AI</h2>
+</div>
+<div class="flex items-center gap-9">
+<a class="text-white text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-primary text-sm font-medium leading-normal border-b-2 border-primary" href="#">Guest Manager</a>
+<a class="text-white text-sm font-medium leading-normal" href="#">Gift Registry</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-xl h-10 w-10 bg-[#392348] text-white">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcmKSH8WLTeDXsCJjKTBmAdd-9jlnizBnV7yWVQKaUSfvFX6x1Q3a0Lp69EE46TMv4hqq_ej_i-lSE2Bwnz0PvlfOdXq5tmuE2YUP6eaA_0AEM41MExqhWVxfuJRWVV8ho6HYwJf0U5l8utg7YcSDbIRKj38uFnVqw0mQT15xq6-XHW_zgG78zLz2UrAwVLEh5BsTbQ9pc1SE0W6-hzIceHj8DwX1nGcYGcvGZa_KaOnEvty5MS8Mxk8fvDYzRVVFK914QU0GE2bQ");'></div>
+</div>
+</header>
+<!-- Main Content Area Simulated -->
+<main class="p-10 grid grid-cols-4 gap-6">
+<div class="col-span-1 h-32 rounded-xl bg-[#392348]/40 border border-[#392348]"></div>
+<div class="col-span-1 h-32 rounded-xl bg-[#392348]/40 border border-[#392348]"></div>
+<div class="col-span-1 h-32 rounded-xl bg-[#392348]/40 border border-[#392348]"></div>
+<div class="col-span-1 h-32 rounded-xl bg-[#392348]/40 border border-[#392348]"></div>
+<div class="col-span-4 h-96 rounded-xl bg-[#392348]/20 border border-[#392348]"></div>
+</main>
+</div>
+<!-- Overlay Backdrop -->
+<div class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"></div>
+<!-- Right Side-Panel -->
+<div class="fixed top-0 right-0 h-full w-[480px] glass-panel z-50 flex flex-col shadow-2xl overflow-hidden">
+<!-- Neon Orbs behind glass -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<!-- Panel Header -->
+<div class="flex justify-between items-start p-6">
+<button class="text-white/60 hover:text-white transition-colors">
+<span class="material-symbols-outlined">arrow_forward_ios</span>
+</button>
+<div class="flex gap-2">
+<button class="h-10 w-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-white/80">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Guest Hero Section -->
+<div class="flex flex-col items-center px-8 pb-8">
+<div class="relative">
+<div class="size-32 rounded-full p-1 bg-gradient-to-tr from-primary to-purple-400">
+<div class="size-full rounded-full border-4 border-background-dark overflow-hidden bg-center bg-cover" data-alt="Elegant portrait of guest Eleanor Vance" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAwAHrcnBD6kZSqYEMAZYH5j7m-jNH-ZLkmApaKdwAUDCnHIMCJCQcw5BIrrawfrf_a0a9J9BH4qreW4v76DG_ubl9Kdxda3Kk5hgvBe4BDY-F6-eLqft71U_Sd1RXy_YaVDNET6v3iw7TcvHjt_-B2Wg9-pafh0jki9Sb-bP9It9ysjXjI6-PL5Y-kHHf7xYef4UWKOu6EB5swhdWkN_bTfuXqSpsKB57lVn5jMy--_8Qi4E6h8rzyCLcxr31d49cXKLQyUk4LmRY");'>
+</div>
+</div>
+<div class="absolute bottom-1 right-1 size-6 bg-green-500 border-2 border-background-dark rounded-full"></div>
+</div>
+<h1 class="font-serif text-4xl mt-6 text-white tracking-tight">Eleanor Vance</h1>
+<p class="text-primary font-medium tracking-wide text-sm uppercase mt-2">Family • Close Friend</p>
+<div class="flex gap-3 mt-6">
+<div class="flex h-8 items-center gap-x-2 rounded-full bg-primary/20 border border-primary/30 pl-2 pr-4 text-primary neon-glow">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<p class="text-xs font-bold leading-normal">CONFIRMED</p>
+</div>
+<div class="flex h-8 items-center gap-x-2 rounded-full bg-white/5 border border-white/10 pl-2 pr-4 text-white/60">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<p class="text-xs font-bold leading-normal">+1 GUEST</p>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto px-8 space-y-8 pb-32 custom-scrollbar">
+<!-- RSVP Details -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">event_available</span>
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-widest">RSVP Status</h3>
+</div>
+<div class="bg-white/5 rounded-xl p-4 border border-white/10">
+<div class="flex justify-between items-center mb-3">
+<span class="text-sm text-white/70">Response Date</span>
+<span class="text-sm font-medium">Oct 12, 2023</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-white/70">Guest Name</span>
+<span class="text-sm font-medium">Theodore Vance</span>
+</div>
+</div>
+</section>
+<!-- Preferences -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-widest">Dietary Requirements</h3>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white/80">Vegan</span>
+<span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white/80">Gluten-Free</span>
+<span class="px-3 py-1.5 rounded-lg border border-primary/40 bg-primary/10 text-sm text-primary">Nut Allergy</span>
+</div>
+</section>
+<!-- Mailing Address -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-widest">Mailing Address</h3>
+</div>
+<div class="bg-white/5 rounded-xl p-4 border border-white/10 relative group">
+<button class="absolute top-3 right-3 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<p class="text-sm leading-relaxed text-white/90">
+                        892 Wisteria Lane<br/>
+                        Maplewood, NJ 07040<br/>
+                        United States
+                    </p>
+</div>
+</section>
+<!-- Gift History -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">featured_seasonal_and_gifts</span>
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-widest">Gift History</h3>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+<div class="size-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">baby_changing_station</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Premium Diaper Bag</p>
+<p class="text-xs text-white/50">Baby Shower '23</p>
+</div>
+<p class="text-sm font-bold text-primary">$120.00</p>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+<div class="size-10 rounded-lg bg-[#392348] flex items-center justify-center text-white/60">
+<span class="material-symbols-outlined">toys</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Organic Wooden Toy Set</p>
+<p class="text-xs text-white/50">Registry Purchase</p>
+</div>
+<p class="text-sm font-bold text-white/80">$45.00</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Sticky Bottom Actions -->
+<div class="p-8 border-t border-white/10 bg-background-dark/80 backdrop-blur-md absolute bottom-0 left-0 w-full flex flex-col gap-3">
+<button class="w-full flex items-center justify-center gap-2 h-14 bg-primary text-white font-bold rounded-xl neon-glow hover:bg-primary/90 transition-all">
+<span class="material-symbols-outlined">send</span>
+                Send Direct Invitation
+            </button>
+<button class="w-full flex items-center justify-center gap-2 h-14 bg-transparent border border-white/20 text-white font-bold rounded-xl hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">edit</span>
+                Edit Guest Details
+            </button>
+</div>
+</div>
+</body></html>

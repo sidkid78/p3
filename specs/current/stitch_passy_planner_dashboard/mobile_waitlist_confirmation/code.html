@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy - Mobile Waitlist Confirmation</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a53df5",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#1a1022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles for glassmorphism and glow effects */
+        .glass-card {
+            background: rgba(26, 16, 34, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .input-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+        }
+        
+        .input-glass:focus-within {
+            border-color: #a53df5;
+            box-shadow: 0 0 15px rgba(165, 61, 245, 0.2);
+        }
+
+        .icon-glow {
+            filter: drop-shadow(0 0 8px rgba(165, 61, 245, 0.5));
+        }
+
+        .badge-glow {
+            box-shadow: 0 0 12px rgba(165, 61, 245, 0.3);
+        }
+    </style>
+</head>
+<body class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-[#0f0518] overflow-x-hidden font-display text-white">
+<!-- Background Glow Effects -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+<div class="glow-orb bg-primary w-[500px] h-[500px] top-[-100px] left-[-100px] opacity-20"></div>
+<div class="glow-orb bg-primary w-[400px] h-[400px] bottom-[-50px] right-[-50px] opacity-20"></div>
+<div class="glow-orb bg-[#5b2a8f] w-[300px] h-[300px] top-[40%] left-[60%] opacity-10"></div>
+</div>
+<div class="layout-container flex h-full grow flex-col relative z-10">
+<!-- Header -->
+<div class="px-4 md:px-10 lg:px-40 flex justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap px-4 py-3">
+<div class="flex items-center gap-2 text-white">
+<div class="size-8 text-primary icon-glow">
+<span class="material-symbols-outlined" style="font-size: 32px;">baby_changing_station</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-wide">Passy</h2>
+</div>
+</header>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex flex-1 justify-center items-center py-5 px-4">
+<div class="layout-content-container flex flex-col max-w-[580px] w-full">
+<!-- Glass Card -->
+<div class="glass-card rounded-2xl p-8 md:p-12 flex flex-col gap-10 items-center text-center relative overflow-hidden">
+<!-- Decorative Top Light -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+<!-- Icon & Rank -->
+<div class="flex flex-col items-center gap-6 w-full">
+<div class="relative">
+<div class="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+<div class="relative size-20 bg-gradient-to-br from-[#2a1b36] to-[#150a1f] border border-primary/30 rounded-2xl flex items-center justify-center shadow-lg icon-glow">
+<span class="material-symbols-outlined text-primary text-4xl">phonelink_ring</span>
+</div>
+<!-- Success Checkmark -->
+<div class="absolute -bottom-2 -right-2 bg-primary text-white rounded-full p-1 border-4 border-[#1a1022] flex items-center justify-center">
+<span class="material-symbols-outlined text-sm font-bold">check</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Rank Badge -->
+<div class="mx-auto inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 badge-glow">
+<span class="text-xs font-semibold text-primary/80 uppercase tracking-widest">Your Position</span>
+<span class="h-4 w-[1px] bg-primary/20"></span>
+<span class="text-sm font-bold text-white">#4,289</span>
+</div>
+</div>
+</div>
+<!-- Text Content -->
+<div class="flex flex-col gap-4">
+<h1 class="text-white text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                            You're on the list!
+                        </h1>
+<p class="text-slate-300 text-base md:text-lg font-medium leading-relaxed max-w-[400px] mx-auto">
+                            We'll notify you as soon as the iOS and Android apps are ready for download.
+                        </p>
+</div>
+<!-- Referral Section -->
+<div class="w-full flex flex-col gap-6 pt-4 border-t border-white/5 w-full">
+<div class="flex flex-col gap-2">
+<h3 class="text-white text-lg font-bold">Bump your spot?</h3>
+<p class="text-sm text-slate-400">Refer a friend to move up the queue instantly.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-3 w-full">
+<div class="input-glass flex-1 rounded-xl flex items-center px-4 h-12 relative group">
+<span class="material-symbols-outlined text-slate-400 mr-3 text-lg">link</span>
+<input class="bg-transparent border-none outline-none text-slate-200 text-sm w-full placeholder-slate-500 focus:ring-0 px-0" onclick="this.select()" readonly="" value="passy.ai/invite/u/8392"/>
+</div>
+<button class="h-12 px-6 rounded-xl bg-primary hover:bg-[#b052f7] transition-all duration-300 text-white font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(165,61,245,0.3)] hover:shadow-[0_0_30px_rgba(165,61,245,0.5)] flex items-center justify-center gap-2 whitespace-nowrap active:scale-95">
+<span class="material-symbols-outlined text-lg">content_copy</span>
+<span>Copy Link</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Links -->
+<div class="mt-8 flex justify-center gap-6 text-slate-500 text-sm">
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+<a class="hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+</div>
+</div>
+</div>
+</body></html>

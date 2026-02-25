@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Thank You Note Helper | BabyBloom AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Dancing+Script:wght@400;700&amp;family=Noto+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d1bae3",
+                        "background-dark": "#0d0a0f",
+                        "glass-bg": "rgba(255, 255, 255, 0.03)",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                        "stationery-lavender": "#f3effa",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "handwritten": ["Dancing Script", "cursive"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer components {
+            .glass-card {
+                @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+            }
+            .glass-input {
+                @apply bg-white/[0.05] border border-white/[0.1] focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-white placeholder-white/30 transition-all;
+            }
+            .stationery-glass {
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+                backdrop-filter: blur(24px);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                box-shadow: 0 0 40px rgba(209, 186, 227, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            }
+            .soft-glow-bg {
+                background: radial-gradient(circle at 50% 50%, rgba(209, 186, 227, 0.1) 0%, transparent 70%);
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(209, 186, 227, 0.3);
+            border-radius: 10px;
+        }
+        body {
+            background-color: #0d0a0f;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(209, 186, 227, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(209, 186, 227, 0.05) 0px, transparent 50%);
+        }
+    </style>
+</head>
+<body class="font-display text-[#faf9fb] min-h-screen">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-white/10 px-10 py-3 bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="text-primary">
+<span class="material-symbols-outlined text-3xl">child_care</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">BabyBloom AI</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="flex items-center gap-9 hidden md:flex">
+<a class="text-sm font-medium leading-normal text-white/70 hover:text-primary transition-colors" href="#">Guest List</a>
+<a class="text-sm font-medium leading-normal text-white/70 hover:text-primary transition-colors" href="#">Registry</a>
+<a class="text-sm font-medium leading-normal text-white/70 hover:text-primary transition-colors" href="#">Invites</a>
+<a class="text-primary text-sm font-bold leading-normal" href="#">Thank You Notes</a>
+</nav>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-white/5 text-white/80 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-white/5 text-white/80 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/50" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCAe9aBc4iDVM-hF4vIq4NHMHK4-IJPBbp2_2xjldW2tYpVksBPnupqtblkPxb0Iki_C47j7CTiKn3GlA6K05kCd4RmevHRY6IdeNAHbiAwDai4msNK08RqWq-oW3vSb8Zk8xUlDY2gUZKaJtSUzYYVDGgAtz9vrgQbACIGfSV-5V8x-JnR8wu0LCKE5dMg36CP8Nn_iN0AwldDqmjFBLcwuzubvRun_jno5rThg5c20YaxT8Jh7-r5u4cQA2sAenGgOE70V6zcr6s");'></div>
+</div>
+</header>
+<main class="flex-1 flex flex-col max-w-[1440px] mx-auto w-full px-4 md:px-10 py-8">
+<div class="flex flex-wrap justify-between items-end gap-4 mb-10">
+<div class="flex flex-col gap-2">
+<h1 class="text-4xl font-black leading-tight tracking-tight bg-gradient-to-r from-white to-primary/60 bg-clip-text text-transparent">AI Thank You Note Helper</h1>
+<p class="text-white/50 text-lg font-normal">Draft heartfelt messages for your baby shower gifts in seconds.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-xl h-11 px-6 bg-white/5 border border-white/10 text-sm font-bold hover:bg-white/10 transition-all">
+                    View Sent History
+                </button>
+<button class="flex items-center justify-center rounded-xl h-11 px-6 bg-primary text-background-dark text-sm font-bold shadow-[0_0_20px_rgba(209,186,227,0.3)] hover:scale-[1.02] transition-all">
+                    Bulk Export (PDF)
+                </button>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row gap-10 grow items-stretch">
+<div class="w-full lg:w-5/12 flex flex-col gap-6 glass-card p-8 rounded-3xl">
+<h2 class="text-xl font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">tune</span>
+                    Personalize Your Message
+                </h2>
+<div class="space-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-wider text-white/40">Which guest sent this gift?</label>
+<div class="relative">
+<select class="glass-input block w-full rounded-xl h-14 px-4 appearance-none">
+<option class="bg-neutral-900">Select a guest...</option>
+<option class="bg-neutral-900" selected="">Aunt Martha</option>
+<option class="bg-neutral-900">The Miller Family</option>
+<option class="bg-neutral-900">Sarah Jenkins</option>
+<option class="bg-neutral-900">Grandma Rose</option>
+</select>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/40">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-wider text-white/40">What was the gift?</label>
+<input class="glass-input block w-full rounded-xl h-14 px-4" placeholder="e.g. Handmade baby blanket" type="text" value="Hand-knit bunny sweater and booties"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-wider text-white/40">Message Tone</label>
+<div class="grid grid-cols-3 gap-2 p-1.5 bg-white/5 rounded-2xl border border-white/5">
+<button class="py-2.5 px-2 rounded-xl text-sm font-bold transition-all bg-primary/20 text-primary border border-primary/20">Informal</button>
+<button class="py-2.5 px-2 rounded-xl text-sm font-bold transition-all text-white/60 hover:text-white hover:bg-white/5">Formal</button>
+<button class="py-2.5 px-2 rounded-xl text-sm font-bold transition-all text-white/60 hover:text-white hover:bg-white/5">Humorous</button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-wider text-white/40">Additional Details (Optional)</label>
+<textarea class="glass-input block w-full rounded-xl p-4 resize-none" placeholder="Mention specific memories or plans..." rows="4"></textarea>
+</div>
+<button class="w-full bg-primary hover:brightness-110 text-background-dark font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(209,186,227,0.2)] mt-4">
+<span class="material-symbols-outlined fill-1">auto_awesome</span>
+                        GENERATE MAGIC NOTE
+                    </button>
+</div>
+</div>
+<div class="w-full lg:w-7/12 flex flex-col gap-4 relative">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-xl font-bold flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">auto_fix_high</span>
+                        Draft Preview
+                    </h2>
+<div class="flex gap-1">
+<button class="p-2.5 rounded-full hover:bg-white/10 transition-colors text-white/50 hover:text-white">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="p-2.5 rounded-full hover:bg-white/10 transition-colors text-white/50 hover:text-white">
+<span class="material-symbols-outlined">palette</span>
+</button>
+</div>
+</div>
+<div class="soft-glow-bg flex-1 flex items-center justify-center p-4">
+<div class="relative w-full max-w-[600px] stationery-glass rounded-[40px] p-10 md:p-16 overflow-hidden min-h-[550px] flex flex-col justify-between">
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 40px 40px;"></div>
+<div class="absolute top-0 left-0 w-56 h-56 opacity-10 pointer-events-none bg-center bg-no-repeat bg-contain" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDlMFKi97efjwkckGD1ELEp3lqnFlvct7BzkebLVh0esz3CJ75Yp_7XQCGEjf6wPuOwX70SVzN-qFyrcYZzgKEq-tXu5DBUGzBxaja0_1QFXKD0uxBR1ngovfxAy1dEnAuVNAOuaiRkkcgaPI9Lrh5S2GgnWIFKBmrld2ywHFyNueTJbB8JOyDyfWhLr6mGAfih-W2xC9EFu1SJA-qTtS8fZaeFsUM-3aZZ2FjuUpTRZhR7-njwcjoy-VxReTvs6mSTaIXg-XUQipA"); filter: brightness(2) saturate(0.5);'></div>
+<div class="absolute bottom-0 right-0 w-56 h-56 opacity-10 pointer-events-none bg-center bg-no-repeat bg-contain rotate-180" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCAfRkeJja3SAERhWBrsNWFDn3PYFuuHqR_BnNI26YD7bQgNHLLnzUMQaizXBHaFkvf2ViFQfDoW3a19mELIlj8CL8860P_F8RfWZfUR7IYp83Qg9-kLVK7Xfu-V2ftHLw-hiIc350HP277lFVuZ3i6Tg-E2mtlGy8m-bOdDVZw10-eAdkEakrkluDOnB3d1lt7-5BO9isWbNPYtE33eLoY-difZP1ubHFsrgpLeXPMsejpQa7rhsBLu2Hu1Np6GW0qwAGYIoVAtXM"); filter: brightness(2) saturate(0.5);'></div>
+<div class="z-10 w-full flex flex-col grow justify-between">
+<div class="font-handwritten text-3xl md:text-4xl leading-relaxed text-stationery-lavender mb-6">
+                                Dear Aunt Martha,
+                            </div>
+<div class="font-handwritten text-2xl md:text-[28px] leading-[1.7] text-white/90 custom-scrollbar overflow-y-auto max-h-[380px] pr-4">
+                                Thank you so much for the absolutely adorable hand-knit bunny sweater and booties! They are beyond precious and feel so incredibly soft. I can already imagine dressing the little one in them for our first stroll in the park this spring. Your thoughtfulness always warms my heart, and I'm so grateful to have you in our lives. Can't wait for you to meet the baby soon!
+                            </div>
+<div class="font-handwritten text-3xl md:text-4xl leading-relaxed text-stationery-lavender mt-10">
+                                Love, Sarah &amp; Baby
+                            </div>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-4 py-6">
+<button class="flex items-center gap-3 px-10 py-4 bg-primary text-background-dark rounded-full font-bold shadow-[0_10px_25px_rgba(209,186,227,0.3)] hover:scale-[1.05] transition-all">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+                        Copy Message
+                    </button>
+<button class="flex items-center gap-2 px-8 py-4 bg-white/5 border border-white/10 rounded-full font-bold hover:bg-white/10 transition-all text-white">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+                        Edit
+                    </button>
+<button class="flex items-center gap-2 px-8 py-4 bg-white/5 border border-white/10 rounded-full font-bold hover:bg-white/10 transition-all text-white">
+<span class="material-symbols-outlined text-[20px]">send</span>
+                        Share SMS
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<footer class="md:px-40 py-12 border-t border-white/5 bg-black/40 mt-auto backdrop-blur-sm">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2 opacity-40">
+<span class="material-symbols-outlined text-sm">copyright</span>
+<span class="text-xs font-medium tracking-wider uppercase">2024 BabyBloom AI Assistant</span>
+</div>
+<div class="flex gap-8">
+<a class="text-xs font-bold uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="text-xs font-bold uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity" href="#">Terms</a>
+<a class="text-xs font-bold uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity" href="#">Support</a>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

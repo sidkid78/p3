@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Theme Moodboard: Visual Vision - Passy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#9d2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1022",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "technical": ["PT Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Spline Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-dark {
+            background: rgba(15, 7, 20, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .orb {
+            position: absolute;
+            filter: blur(100px);
+            z-index: -1;
+            border-radius: 50%;
+        }
+        .masonry-container {
+            column-count: 4;
+            column-gap: 1.5rem;
+        }
+        @media (max-width: 1280px) { .masonry-container { column-count: 3; } }
+        @media (max-width: 1024px) { .masonry-container { column-count: 2; } }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen relative">
+<!-- Background Ambient Orbs -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+<div class="orb w-[500px] h-[500px] bg-primary/20 -top-20 -left-20"></div>
+<div class="orb w-[600px] h-[600px] bg-rose-500/10 bottom-0 right-0"></div>
+<div class="orb w-[400px] h-[400px] bg-indigo-600/10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+</div>
+<!-- Top Navigation / Control Panel -->
+<header class="sticky top-0 z-50 px-8 py-6 flex justify-between items-center bg-transparent">
+<div>
+<h1 class="font-serif text-4xl md:text-5xl tracking-tight text-white">Theme Vision</h1>
+<p class="font-technical text-sm uppercase tracking-widest text-primary mt-2">Curated by Passy AI</p>
+</div>
+<div class="glass-dark rounded-full px-4 py-2 flex items-center gap-3 shadow-2xl">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/5 transition-colors font-technical text-xs font-bold uppercase tracking-wider text-slate-200">
+<span class="material-icons text-sm">share</span>
+                Share Moodboard
+            </button>
+<div class="w-px h-6 bg-white/10"></div>
+<button class="flex items-center gap-2 px-6 py-2 rounded-full bg-primary hover:bg-primary/80 transition-all font-technical text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-primary/20">
+<span class="material-icons text-sm">picture_as_pdf</span>
+                Export PDF
+            </button>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="max-w-[1600px] mx-auto px-8 pb-20 mt-8">
+<div class="masonry-container">
+<!-- Hero Aesthetic Image -->
+<div class="masonry-item">
+<div class="glass p-2 rounded-xl group relative overflow-hidden">
+<img class="w-full rounded-lg object-cover h-[450px] transition-transform duration-500 group-hover:scale-105" data-alt="Dreamy outdoor baby shower setup with white drapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJYV0CVmfPWwOKlSm2SjATCesTwZIQqn6_T5Q4MSi488l_DtKwwiPoI706zhI2tQAuswEKFHhtMHy7SAkD1zqThhoafj0YfO5qyGfTgQWeOjbv4bBMDXW3t4vTA1YWZ5mXyJ_PL9A1Gx2VftS2WbsbF7c2FdiN_flYU_ZpJm2q6gLyA9-lw9uUR9JUmurxtCgdeC10IaDqpKk679DmjXWTd6r_3OVtljAKTRHpAIymZujIPlXNs8tMZ1U0peBOWo1TpTLfq0wMe0o"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+<span class="font-technical text-white text-xs uppercase tracking-widest">Atmosphere Concept</span>
+</div>
+</div>
+</div>
+<!-- Inspiration Card: Color Swatches -->
+<div class="masonry-item">
+<div class="glass p-6 rounded-xl flex flex-col gap-6">
+<h3 class="font-technical text-xs uppercase tracking-[0.2em] text-slate-400">Color Palette</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-[#E6E6FA] shadow-lg shadow-white/5 border border-white/20"></div>
+<div>
+<p class="text-sm font-bold">Lavender Mist</p>
+<p class="font-technical text-[10px] text-slate-400">#E6E6FA</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-[#BC8F8F] shadow-lg shadow-white/5 border border-white/20"></div>
+<div>
+<p class="text-sm font-bold">Dusty Rose</p>
+<p class="font-technical text-[10px] text-slate-400">#BC8F8F</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-[#B2AC88] shadow-lg shadow-white/5 border border-white/20"></div>
+<div>
+<p class="text-sm font-bold">Sage Leaf</p>
+<p class="font-technical text-[10px] text-slate-400">#B2AC88</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-[#D4AF37] shadow-lg shadow-white/5 border border-white/20"></div>
+<div>
+<p class="text-sm font-bold">Antique Gold</p>
+<p class="font-technical text-[10px] text-slate-400">#D4AF37</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Image -->
+<div class="masonry-item">
+<div class="glass p-2 rounded-xl group relative overflow-hidden">
+<img class="w-full rounded-lg object-cover h-[300px] transition-transform duration-500 group-hover:scale-105" data-alt="Macro shot of elegant floral table centerpieces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe1RUyr02BYs7d5eZzjlX90aXTVpXqra3AO5d1LVa2Gr_4J1ov8iGH7oAUvulg1YrIrn27fhibxU8WbjOsd5CzLG2ajwJs-NA9eYZPz7ETS4xCiujGAmtR5uiDSWT633-TyICgIevFhH4c2E-JgdoFWQ34Zd0HVkzoPWO1tcIUGWR9CWQpoGjK_SAIq_c6sUG-vlgJj00ZW0tmJw5qtA5KtwQJqoApt-BrVnEdY-CsMzaFDW7NOaozl5Ks_2EFqHnNtjlrs7VrG8A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+<span class="font-technical text-white text-xs uppercase tracking-widest">Floral Detail</span>
+</div>
+</div>
+</div>
+<!-- Typography Card -->
+<div class="masonry-item">
+<div class="glass p-6 rounded-xl space-y-6">
+<h3 class="font-technical text-xs uppercase tracking-[0.2em] text-slate-400">Typography Pairing</h3>
+<div class="space-y-4">
+<div class="border-b border-white/10 pb-4">
+<p class="font-serif text-3xl italic text-white">Ethereal Moments</p>
+<p class="font-technical text-[10px] text-slate-400 mt-1">PRIMARY: PLAYFAIR DISPLAY</p>
+</div>
+<div>
+<p class="font-display text-lg text-slate-200">The beauty of waiting for a new beginning.</p>
+<p class="font-technical text-[10px] text-slate-400 mt-1">SECONDARY: SPLINE SANS</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Tall Aesthetic Image -->
+<div class="masonry-item">
+<div class="glass p-2 rounded-xl group relative overflow-hidden">
+<img class="w-full rounded-lg object-cover h-[600px] transition-transform duration-500 group-hover:scale-105" data-alt="Artistic baby shower cake with pastel frosting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzcX-A7-bd22aFz0RefXmLmHYt_vkB_CjzBG7z_quxHkrs2OhlzrZQB--ddalKh0Dx_KhYt-sZuONUwmLDxD8vibfqsAM_zuqVKvXLw_LzTT36lkSXqmBMlfDrGHlzMwQcP3AYaZvFtKmsl2UMDdvoU_DTURI_OhnNGClxUqmDc9dVi842buNLOwEo641SelahzCMeEbrC0ce2lk7WzUO8YM97uinl_wIDqh2ziOf5BqlOxCR2kjDL8pstRgAOam6YLmRzK0avu78"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+<span class="font-technical text-white text-xs uppercase tracking-widest">Confectionery Design</span>
+</div>
+</div>
+</div>
+<!-- Keyword Tags Card -->
+<div class="masonry-item">
+<div class="glass p-6 rounded-xl">
+<h3 class="font-technical text-xs uppercase tracking-[0.2em] text-slate-400 mb-6">Aesthetic Keywords</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-2 rounded-full bg-primary/20 border border-primary/30 text-xs font-technical uppercase tracking-wider text-primary">Bohemian</span>
+<span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-technical uppercase tracking-wider text-slate-300">Ethereal</span>
+<span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-technical uppercase tracking-wider text-slate-300">Organic</span>
+<span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-technical uppercase tracking-wider text-slate-300">Soft Glow</span>
+<span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-technical uppercase tracking-wider text-slate-300">Serene</span>
+<span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-technical uppercase tracking-wider text-slate-300">Whimsical</span>
+<span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-technical uppercase tracking-wider text-slate-300">Luxe</span>
+</div>
+</div>
+</div>
+<!-- Decor Image -->
+<div class="masonry-item">
+<div class="glass p-2 rounded-xl group relative overflow-hidden">
+<img class="w-full rounded-lg object-cover h-[350px] transition-transform duration-500 group-hover:scale-105" data-alt="Hanging decorations and fairy lights in a venue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1n1Sh0i28GLHqb9Z4zJw5_jNkoy6e_B-y1DMmGhIdlOjR4OCMQ3bfFPnEO7IXEOTGJpFjKG1WtGdC37OrdsTrXJ_kDx7j1HknnPY9UpHO_XaBtXThiP6TZ_wDjng3NXHc6n6UHVBeTNrAIwOHZPu3xf06xzagbZ7J2NuDcVjCR5vsjI5E3yYsoJEjjem6lmj1dmd06Ax6LQDHIz1zgU0Us65TvNx4q2XHzu7FuDocbC77SozRM92yjVOKVjqy_j6BSnknrqrKpl8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+<span class="font-technical text-white text-xs uppercase tracking-widest">Lighting &amp; Decor</span>
+</div>
+</div>
+</div>
+<!-- Invitation Concept -->
+<div class="masonry-item">
+<div class="glass p-2 rounded-xl group relative overflow-hidden">
+<img class="w-full rounded-lg object-cover h-[400px] transition-transform duration-500 group-hover:scale-105" data-alt="Beautifully designed baby shower invitation on linen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRPfXvfoQUzZ7nReMizHY0NKGxbSnvn-odn7qR31MhM5GCGFg9Dy10rF0Dq0zDBKYLCT8InFKdg2pGTo4PxJ71XDBoL436kSKWnsUPRfroa8HNS9IDcdwQ_vn67R5vrDvbBZgo4Uy1Q5TI-KTMVUwKrMV_lCpTxxSX82bduxN1Ij77yyEcxtFfUMJA0-NCMYMZzRcyRotoNnetrGHbq-o847IoqWrdAv-m2VpuHf9Cds3hdXnG_kg7ltOmYy4xJBysuTRiXR-ykV0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+<span class="font-technical text-white text-xs uppercase tracking-widest">Stationery Concept</span>
+</div>
+</div>
+</div>
+<!-- Mini Layout Card -->
+<div class="masonry-item">
+<div class="glass-dark p-6 rounded-xl border-dashed border-white/20">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-technical text-xs uppercase tracking-[0.2em] text-slate-400">Layout Preview</h3>
+<span class="material-icons text-primary text-sm">auto_awesome</span>
+</div>
+<div class="grid grid-cols-2 gap-2 aspect-square">
+<div class="bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
+<span class="material-icons text-white/20 text-xl">image</span>
+</div>
+<div class="bg-primary/10 rounded-lg border border-primary/20 flex items-center justify-center">
+<span class="material-icons text-primary/40 text-xl">text_fields</span>
+</div>
+<div class="bg-white/5 rounded-lg border border-white/10 col-span-2 flex items-center justify-center">
+<span class="material-icons text-white/20 text-xl">palette</span>
+</div>
+</div>
+<p class="font-technical text-[10px] text-slate-500 mt-4 text-center">AI OPTIMIZED GRID v2.4</p>
+</div>
+</div>
+</div>
+<!-- Sticky AI Action Button -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+<button class="flex items-center gap-3 px-8 py-4 rounded-full bg-white dark:bg-background-dark border border-primary/50 text-slate-900 dark:text-white shadow-[0_0_30px_rgba(157,43,238,0.4)] hover:shadow-[0_0_50px_rgba(157,43,238,0.6)] transition-all duration-300">
+<span class="material-icons text-primary">auto_fix_high</span>
+<span class="font-technical font-bold uppercase tracking-wider text-sm">Refine with AI</span>
+</button>
+</div>
+</main>
+<!-- Footer Stats -->
+<footer class="px-8 py-10 flex justify-between items-center opacity-40 border-t border-white/5">
+<p class="font-technical text-[10px] uppercase tracking-widest">© 2024 Passy AI Technologies</p>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="font-technical text-[10px] uppercase tracking-widest">Mood Intensity</p>
+<p class="text-xs font-bold">88% Serene</p>
+</div>
+<div class="text-right">
+<p class="font-technical text-[10px] uppercase tracking-widest">Asset Count</p>
+<p class="text-xs font-bold">12 High Fidelity</p>
+</div>
+</div>
+</footer>
+</body></html>

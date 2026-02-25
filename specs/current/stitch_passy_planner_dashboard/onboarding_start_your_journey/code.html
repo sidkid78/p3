@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy Onboarding: Start Your Journey</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#9d2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(157, 43, 238, 0.2);
+            box-shadow: inset 0 0 10px rgba(157, 43, 238, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            border-color: rgba(157, 43, 238, 0.6);
+            box-shadow: inset 0 0 15px rgba(157, 43, 238, 0.2), 0 0 15px rgba(157, 43, 238, 0.1);
+            outline: none;
+        }
+        .vibe-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .vibe-card:hover, .vibe-card.active {
+            background: rgba(157, 43, 238, 0.1);
+            border-color: rgba(157, 43, 238, 0.4);
+            transform: translateY(-2px);
+        }
+        .bg-orb-1 {
+            background: radial-gradient(circle, rgba(157, 43, 238, 0.2) 0%, rgba(157, 43, 238, 0) 70%);
+            filter: blur(60px);
+        }
+        .bg-orb-2 {
+            background: radial-gradient(circle, rgba(238, 43, 140, 0.1) 0%, rgba(238, 43, 140, 0) 70%);
+            filter: blur(80px);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #9d2bee 0%, #e25ba9 100%);
+            box-shadow: 0 10px 25px -5px rgba(157, 43, 238, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen relative overflow-hidden">
+<!-- Background Elements -->
+<div class="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-orb-1 rounded-full pointer-events-none"></div>
+<div class="absolute bottom-[0%] right-[0%] w-[600px] h-[600px] bg-orb-1 rounded-full pointer-events-none"></div>
+<div class="absolute top-[20%] right-[10%] w-[400px] h-[400px] bg-orb-2 rounded-full pointer-events-none"></div>
+<div class="relative z-10 flex h-screen w-full flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap px-10 py-6 max-w-[1280px] mx-auto w-full">
+<div class="flex items-center gap-2 text-white">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-2xl font-bold leading-tight tracking-tight">Passy</h2>
+</div>
+<div class="flex items-center gap-8">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-white/70 hover:text-white text-sm font-medium transition-colors" href="#">Features</a>
+<a class="text-white/70 hover:text-white text-sm font-medium transition-colors" href="#">Gallery</a>
+<a class="text-white/70 hover:text-white text-sm font-medium transition-colors" href="#">About</a>
+</nav>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-11 px-6 bg-white/10 hover:bg-white/20 text-white text-sm font-bold transition-all border border-white/10">
+                    Sign In
+                </button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex items-center justify-center px-4">
+<div class="glass-card max-w-[1100px] w-full rounded-3xl p-8 md:p-16 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
+<!-- 3D Illustration Layer (Visual) -->
+<div class="hidden lg:block absolute right-[-120px] top-[15%] w-[450px] h-[450px] pointer-events-none opacity-80">
+<div class="relative w-full h-full">
+<!-- Abstract 3D Cloud Representation -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-48 bg-white/20 blur-[60px] rounded-full"></div>
+<img alt="3D floating lavender cloud" class="w-full h-full object-contain animate-pulse" data-alt="A soft 3D floating cloud with lavender neon glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLiiVYaiob4zH1zRFx9CBYCNe3r8jMEb9vkxH6lx_XYFPIkPK0FFxSngInK8SbxLo6Kue77HXmsdxJJRnyjAaT1QLtXe-tLZeScISKHAxtt0rti1hpQ8gtzL-FesPJrO174qlyZmjY6IEE-AK0GBsLW6ZK-LEXLyjQZgj8PbIlJ9vV7p1b0wdi9DTHkBY-dZsFz1ukKTa1Lr9iG8686YczrcKRAw7kv0RCuVEGJYEAuKv9Lj9v_MoxCxzu2whLus2eqXHXqaSt764" style="animation-duration: 4s;"/>
+</div>
+</div>
+<!-- Form Section -->
+<div class="flex-1 z-20 max-w-[500px]">
+<h1 class="font-serif text-white text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight">
+                        Let's create your dream shower
+                    </h1>
+<p class="text-white/60 text-lg mb-10 font-medium">Start your journey to a perfect celebration in just a few steps.</p>
+<div class="space-y-6">
+<!-- Inputs -->
+<div class="grid grid-cols-1 gap-6">
+<label class="flex flex-col gap-2">
+<span class="text-white/80 text-sm font-semibold ml-1">Mother-to-be's Name</span>
+<input class="glass-input h-14 px-5 rounded-xl text-white placeholder:text-white/30 text-base" placeholder="Enter name" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-white/80 text-sm font-semibold ml-1">Expected Due Date</span>
+<div class="relative group">
+<input class="glass-input w-full h-14 px-5 pr-12 rounded-xl text-white placeholder:text-white/30 text-base cursor-pointer" placeholder="Select date" readonly="" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-primary opacity-70">calendar_today</span>
+</div>
+</label>
+</div>
+<!-- Vibe Selector -->
+<div class="pt-4">
+<h3 class="text-white/80 text-sm font-semibold ml-1 mb-4">Choose your Event Vibe</h3>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<button class="vibe-card active p-4 rounded-xl flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-primary text-2xl group-hover:scale-110 transition-transform">auto_awesome</span>
+<span class="text-white text-xs font-bold uppercase tracking-wider">Classic</span>
+</button>
+<button class="vibe-card p-4 rounded-xl flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-white/50 group-hover:text-primary transition-colors text-2xl group-hover:scale-110 transition-transform">diamond</span>
+<span class="text-white/60 text-xs font-bold uppercase tracking-wider">Modern</span>
+</button>
+<button class="vibe-card p-4 rounded-xl flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-white/50 group-hover:text-primary transition-colors text-2xl group-hover:scale-110 transition-transform">filter_vintage</span>
+<span class="text-white/60 text-xs font-bold uppercase tracking-wider">Bohemian</span>
+</button>
+<button class="vibe-card p-4 rounded-xl flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-white/50 group-hover:text-primary transition-colors text-2xl group-hover:scale-110 transition-transform">storm</span>
+<span class="text-white/60 text-xs font-bold uppercase tracking-wider">Whimsical</span>
+</button>
+</div>
+</div>
+<!-- CTA -->
+<div class="pt-6">
+<button class="btn-gradient w-full h-16 rounded-xl text-white text-lg font-bold tracking-wide hover:opacity-90 transition-all flex items-center justify-center gap-3 group">
+<span>Begin Journey</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Spacer for layout balance on large screens -->
+<div class="hidden lg:block lg:w-[200px]"></div>
+</div>
+</main>
+<!-- Footer / Page Indicators -->
+<footer class="py-8 px-10 flex justify-between items-center text-white/30 text-xs font-bold uppercase tracking-widest">
+<div>Step 01 / 04</div>
+<div class="flex gap-2">
+<div class="w-8 h-1 bg-primary rounded-full"></div>
+<div class="w-2 h-1 bg-white/10 rounded-full"></div>
+<div class="w-2 h-1 bg-white/10 rounded-full"></div>
+<div class="w-2 h-1 bg-white/10 rounded-full"></div>
+</div>
+<div>Onboarding</div>
+</footer>
+</div>
+</body></html>

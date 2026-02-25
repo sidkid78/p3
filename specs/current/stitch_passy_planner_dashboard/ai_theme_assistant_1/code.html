@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Theme Assistant: Premium Glassmorphism</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d8b4fe",
+                        "primary-dark": "#a855f7",
+                        "accent-rose": "#f472b6",
+                        "background-dark": "#050308",
+                    },
+                    fontFamily: {
+                        "display": ["Playfair Display", "serif"],
+                        "sans": ["PT Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --glass-bg: rgba(20, 15, 25, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-purple: 0 0 20px rgba(192, 132, 252, 0.4);
+            --neon-pink: 0 0 20px rgba(244, 114, 182, 0.4);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'PT Sans', sans-serif;
+            background-color: #050308;
+            color: #f3f4f6;
+        }.bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(168, 85, 247, 0.25) 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(236, 72, 153, 0.2) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 10%, rgba(56, 189, 248, 0.15) 0%, transparent 40%);
+            filter: blur(40px);
+        }.glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }.chat-bubble-ai {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chat-bubble-user {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }.glow-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 20px rgba(216, 180, 254, 0.6);
+            transform: translateY(-1px);
+        }
+        .glow-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+        .glow-button:hover::after {
+            transform: translateX(100%);
+        }
+        .accent-glow-card {
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .accent-glow-card:hover {
+            box-shadow: 0 10px 40px -10px rgba(168, 85, 247, 0.3);
+            border-color: rgba(216, 180, 254, 0.3);
+            transform: translateY(-4px);
+        }.chat-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }.input-magical:focus {
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+            border-color: rgba(216, 180, 254, 0.5);
+        }
+    </style>
+</head>
+<body class="dark:bg-background-dark text-slate-200 min-h-screen flex flex-col font-sans selection:bg-primary/30 selection:text-white">
+<div class="bg-mesh"></div>
+<header class="flex items-center justify-between whitespace-nowrap border-b border-white/5 glass-panel px-10 py-4 z-20">
+<div class="flex items-center gap-4 text-white">
+<div class="size-7 text-primary drop-shadow-[0_0_12px_rgba(216,180,254,0.6)]">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<h2 class="text-2xl font-display font-bold leading-tight tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-accent-rose">Passy</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium tracking-wide text-white/60 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300" href="#">Dashboard</a>
+<a class="text-sm font-medium tracking-wide text-white hover:drop-shadow-[0_0_8px_rgba(216,180,254,0.5)] transition-all duration-300" href="#">Themes</a>
+<a class="text-sm font-medium tracking-wide text-white/60 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300" href="#">Guest List</a>
+<a class="text-sm font-medium tracking-wide text-white/60 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300" href="#">Registry</a>
+</nav>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-white text-black text-sm font-bold tracking-wide glow-button shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+<span>Save Theme</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-white/20 shadow-[0_0_15px_rgba(216,180,254,0.3)]" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQhHslykgI9YK1p2MRsCBDKg0WVQk4MRquSuNED66Ei3k0Fs6DY3NTafHocuGwhJH_Ar6RTSJ3sByfHiWcbrUKmNXISLh2K6UVhifbYnTy-aHv-XScSyWU9lZVFWlzXAM-egjpC2JA3HYnv7wBJZBUMq7BBhljigwa8RAjSIRuxU54nfOpOoFyWYTmCLjWTA1Jb-a2M6ODG3M5g17nThTIksjDy1mf07thQSy1907H6CCJ3z4yoZFXKQpud_EuBLNrKOVjNg58KSs");'></div>
+</div>
+</header>
+<main class="flex-1 flex flex-col max-w-[1600px] mx-auto w-full px-4 md:px-8 py-8 overflow-hidden">
+<div class="flex flex-col gap-3 mb-8">
+<div class="flex flex-wrap items-center gap-3">
+<a class="text-primary/70 hover:text-primary transition-colors text-sm font-medium uppercase tracking-wider" href="#">Planner</a>
+<span class="material-symbols-outlined text-[10px] text-white/20">arrow_forward_ios</span>
+<span class="text-white text-sm font-medium uppercase tracking-wider drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">AI Theme Assistant</span>
+</div>
+<div class="flex flex-wrap justify-between items-end gap-6">
+<div class="max-w-3xl">
+<h1 class="text-white text-5xl font-display font-medium tracking-tight mb-2 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+                    Design your <span class="italic text-primary">dream</span> shower
+                </h1>
+<p class="text-slate-300 text-lg font-light max-w-xl">Collaborate with Gemini AI to design your perfect baby shower mood board in a magical, interactive space.</p>
+</div>
+<div class="bg-primary/5 border border-primary/30 px-5 py-2.5 rounded-full flex items-center gap-3 backdrop-blur-md shadow-[0_0_20px_rgba(168,85,247,0.15)] animate-pulse-slow">
+<span class="material-symbols-outlined text-primary text-xl drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]">auto_awesome</span>
+<span class="text-sm font-bold text-primary tracking-wide">Active Concept: Boho Forest Adventure</span>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col md:flex-row gap-8 overflow-hidden">
+<div class="flex flex-col w-full md:w-[35%] rounded-3xl glass-panel overflow-hidden h-[calc(100vh-320px)] min-h-[550px] transition-all hover:border-white/20">
+<div class="p-5 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-white/5 to-transparent">
+<div class="flex gap-4 items-center">
+<div class="relative">
+<div class="absolute inset-0 bg-primary/40 rounded-full blur-md"></div>
+<div class="bg-black/40 p-1 rounded-full border border-primary/30 relative z-10">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA26utPMIejWKTVm5rKMR-YTkeyCGRldcRyd4zd2p-z5LzvU9kFfAfclN7algFqUMoP0db0p1jaBEVlDcf6EYua3LjMugzRD51VsdMZvyw2WEtfyuD9MSYjc8QeQ3yXZ6A2A6n6xTlBljokkeCUWjByc5BFo5XYoAnPf93vfTgtllwnknf5pElGHi8ufAp2xgCNeQd1XKBrl7Jgp4U0UUoB6I9KgYDKXrqgq9Zn1VSI-lcmiJncnxf9ZmP7XZ15pvl8yLFNWga-Nm8");'></div>
+</div>
+<span class="absolute bottom-0 right-0 size-3 bg-green-400 border-2 border-[#1a151d] rounded-full z-20 shadow-[0_0_8px_rgba(74,222,128,0.8)]"></span>
+</div>
+<div class="flex flex-col">
+<h3 class="text-white font-display text-lg font-bold tracking-wide">Gemini AI</h3>
+<p class="text-primary/60 text-xs uppercase tracking-widest font-bold">Theme Expert</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="size-9 flex items-center justify-center hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">history</span></button>
+<button class="size-9 flex items-center justify-center hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">more_horiz</span></button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6 chat-container bg-gradient-to-b from-transparent via-transparent to-black/20">
+<div class="flex flex-col gap-2 items-start max-w-[90%] group">
+<div class="chat-bubble-ai p-5 rounded-3xl rounded-tl-sm">
+<p class="text-[15px] text-slate-200 leading-relaxed font-light">
+                            Hello! I'm ready to help you visualize your baby shower. I've started with a <span class="text-primary font-semibold">"Boho Forest Adventure"</span> concept. How do you feel about adding some soft eucalyptus and sage green accents to the palette?
+                        </p>
+</div>
+<span class="text-[11px] text-white/20 ml-2 font-medium tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">10:42 AM</span>
+</div>
+<div class="flex flex-col gap-2 items-end ml-auto max-w-[90%] group">
+<div class="chat-bubble-user p-5 rounded-3xl rounded-tr-sm">
+<p class="text-[15px] text-white font-medium leading-relaxed">
+                            That sounds beautiful. Can we also include some soft gold highlights for a bit of elegance? Maybe for the table settings.
+                        </p>
+</div>
+<span class="text-[11px] text-white/20 mr-2 font-medium tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">10:43 AM</span>
+</div>
+<div class="flex flex-col gap-2 items-start max-w-[90%] group">
+<div class="chat-bubble-ai p-5 rounded-3xl rounded-tl-sm">
+<p class="text-[15px] text-slate-200 leading-relaxed font-light">
+                            Absolutely! Gold highlights will elevate the rustic boho feel perfectly. I've updated the mood board to reflect that sophisticated "Boho Forest" look with gold flatware and delicate hanging lanterns. 
+                        </p>
+</div>
+<span class="text-[11px] text-white/20 ml-2 font-medium tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">10:44 AM</span>
+</div>
+<div class="flex flex-wrap gap-2.5 mt-2">
+<button class="px-4 py-2 border border-primary/30 bg-primary/10 rounded-xl text-xs font-bold hover:bg-primary/20 hover:border-primary/50 transition-all text-primary shadow-[0_0_10px_rgba(168,85,247,0.1)]">Show more gold accents</button>
+<button class="px-4 py-2 border border-accent-rose/30 bg-accent-rose/10 rounded-xl text-xs font-bold hover:bg-accent-rose/20 hover:border-accent-rose/50 transition-all text-accent-rose shadow-[0_0_10px_rgba(244,114,182,0.1)]">Change floral types</button>
+</div>
+</div>
+<div class="p-5 border-t border-white/5 bg-black/10 backdrop-blur-sm">
+<div class="relative flex items-center">
+<input class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-5 pr-14 text-[15px] input-magical text-white placeholder-white/30 focus:outline-none transition-all duration-300" placeholder="Type a message to refine..." type="text"/>
+<button class="absolute right-2 p-2.5 bg-gradient-to-tr from-primary to-primary-dark rounded-xl text-white shadow-[0_0_15px_rgba(168,85,247,0.5)] hover:shadow-[0_0_25px_rgba(168,85,247,0.7)] transition-all transform hover:scale-105">
+<span class="material-symbols-outlined block text-[20px]">arrow_upward</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-6 overflow-hidden h-[calc(100vh-320px)] min-h-[550px]">
+<div class="flex items-center justify-between px-2">
+<h3 class="text-white text-xl font-display font-bold flex items-center gap-3">
+                    Generated Mood Board 
+                    <span class="text-[10px] bg-gradient-to-r from-accent-rose/20 to-primary/20 border border-white/10 text-white px-2 py-1 rounded-md uppercase tracking-widest font-sans font-bold shadow-[0_0_10px_rgba(255,255,255,0.1)]">Imagen 4.0</span>
+</h3>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-white/80 hover:bg-white/10 hover:text-white hover:border-white/30 transition-all uppercase tracking-wide">
+<span class="material-symbols-outlined text-sm">download</span> Export
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-white/80 hover:bg-white/10 hover:text-white hover:border-white/30 transition-all uppercase tracking-wide">
+<span class="material-symbols-outlined text-sm">share</span> Share
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1 overflow-y-auto chat-container pb-4 pr-2">
+<div class="col-span-1 lg:col-span-2 group relative rounded-3xl overflow-hidden glass-panel accent-glow-card">
+<div class="aspect-[16/10] w-full bg-cover bg-center transition-transform duration-700 ease-in-out group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBIq5dvq_cfWprVpDlNeZab-c5xnGEcqEZpvG7dvQ-46H3b5UHEi6hztCNfkIjGUoplReE5hhzKnXOMonOgL4TdSIumCxzb1ebwt54ksk9gwFyKotw6x63TCckoz69cw2T-5N1oA4mpeVi9wHYWcwPFmrwyVt2cWjpO3x9Sbx2XuMlIISA0MUuC2w5qRRww_tSfqqnr6JMqLWfDvLYY7Gq4IgM-vbwP8yyH7E0E5tHIkjwm-6ypilzBN7GELUlKrR5e004Ngh1YvEs");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
+<p class="text-white text-2xl font-display font-bold translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Venue Concept</p>
+<p class="text-primary/90 text-sm mt-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 font-medium">Soft forest lighting with sage drapes</p>
+</div>
+<button class="absolute top-5 right-5 p-3 bg-black/30 backdrop-blur-xl rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white/20 border border-white/10 hover:scale-110">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="col-span-1 group relative rounded-3xl overflow-hidden glass-panel accent-glow-card">
+<div class="aspect-square lg:aspect-auto h-full w-full bg-cover bg-center transition-transform duration-700 ease-in-out group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBPHWY2mje3RfXr0QFnOrH7qQOZnvmmqqPX1JBQy9ij3S72-Kt3gGYFYdv-pg4ohgiT_OwJkfX9AyVzs1p0NsSAL-VaLtcJ9RBrPS86Z5k-JD3ATmokunBbJRmy_uQT0pB0vSjjdVoioWo64EYjj-IXe_7DjHiSoqhwM5SxRQJ_2SjEpEnmDDb6jdvWzRs6A1NhsxkZJZnVFcqKrfvMdFV6_uIhS1wAi4ZXVtz00jvJy4_AvEA2PuKaBxepJ9AVe8o2E9C8lqepmTY");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+<p class="text-white text-xl font-display font-bold translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Table Details</p>
+<p class="text-primary/90 text-xs mt-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 font-medium">Gold accents and wood textures</p>
+</div>
+<button class="absolute top-5 right-5 p-3 bg-black/30 backdrop-blur-xl rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white/20 border border-white/10 hover:scale-110">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="col-span-1 group relative rounded-3xl overflow-hidden glass-panel accent-glow-card">
+<div class="aspect-square w-full bg-cover bg-center transition-transform duration-700 ease-in-out group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAnAw_xJ2AJzjwLHbEVnW-Pn7vRTbb7XFaygtLHw2EjAREA2oIK9bTP7Zkzbmos6BPEGkrUfniyAzLf4KJnsLyZ2aJYct9PIEmTF-_gW1xyvgt9n-kU4elvhUTFoTnpeuvWwKqJJqD3zW-AFe5i9mzM7fss7TecqAn62Xg6iBnWJGsAt22FRMhQj5rd4RCZRRZK6ziqXEqv5h3HbscanHe_Hi96vbM-bs_b4wJt5Gs-X2Xqy9vNFhY4156HIpVgvisXGqi1jVHojU8");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+<p class="text-white text-xl font-display font-bold translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Invitations</p>
+<p class="text-primary/90 text-xs mt-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 font-medium">Botanical illustrations</p>
+</div>
+<button class="absolute top-5 right-5 p-3 bg-black/30 backdrop-blur-xl rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white/20 border border-white/10 hover:scale-110">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="col-span-1 group relative rounded-3xl overflow-hidden glass-panel accent-glow-card">
+<div class="aspect-square w-full bg-cover bg-center transition-transform duration-700 ease-in-out group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA4-FSFX3egoeb3RCbBuiwlPCGxXn_XlVJOCwxGVg-5e30shEL4ROQHPvrO5iqB6XzKab_8ID69QwZXtKrputDBq3csFWWsDPWq2wc3awbPc3bsHwS_mJQCuhS2Kgk7Sa0s8-_uZCEtf6bZfjQD9qjAqOL5Qcf7LX8shuORURm8et7_wdZeYb_7zJ8VO-5zQXG3sHN4hJUTHN9VNI0ajmyyg4Ug6UiwIcOU9EFXPp79zZuyG454paSI7hRkQYMd9MTC35f0D1pPusc");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+<p class="text-white text-xl font-display font-bold translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Decor Elements</p>
+<p class="text-primary/90 text-xs mt-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 font-medium">Organic balloon arches</p>
+</div>
+<button class="absolute top-5 right-5 p-3 bg-black/30 backdrop-blur-xl rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white/20 border border-white/10 hover:scale-110">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="col-span-1 group relative rounded-3xl overflow-hidden glass-panel accent-glow-card">
+<div class="aspect-square w-full bg-cover bg-center transition-transform duration-700 ease-in-out group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCoUWqNWjXathDFgg1NvKY60JhBH4Fxyzgj7_B0Hqc4YqCWPDHfvlh7aIcj2ZvHZPDS-_Jn_pkp02xHlCPUctt6QIwJ7MJ0EkwbR3YmsdqZqS44nfdwb7msp9XFUj2dw-8mEJnUkoYHoLxyyoXqLCYe5gj45weO3chphdZnwp0cHGf5CpcvhceJFg8hh0XzEKM4mC1wcfQOU1EhhB9tZBAA_wyEQRRxU5PMGGaBJz8IuVrL0wUZugHg7YJ85slTmm5KYGUMcixh7MU");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+<p class="text-white text-xl font-display font-bold translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Dessert Table</p>
+<p class="text-primary/90 text-xs mt-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 font-medium">Custom tiered cake designs</p>
+</div>
+<button class="absolute top-5 right-5 p-3 bg-black/30 backdrop-blur-xl rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white/20 border border-white/10 hover:scale-110">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-5 glass-panel p-5 rounded-3xl border-primary/20 bg-gradient-to-r from-primary/10 to-transparent">
+<div class="bg-gradient-to-br from-primary/30 to-accent-rose/30 p-3 rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(216,180,254,0.3)]">
+<span class="material-symbols-outlined text-white text-2xl">auto_awesome</span>
+</div>
+<div>
+<p class="text-lg font-bold text-white font-display">Ready to finalize?</p>
+<p class="text-sm text-slate-300 opacity-90 font-light">Save this collection to your dashboard or continue refining.</p>
+</div>
+<button class="ml-auto bg-gradient-to-r from-accent-rose to-pink-500 text-white font-bold text-sm px-8 py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-[0_0_25px_rgba(244,114,182,0.4)] hover:shadow-[0_0_35px_rgba(244,114,182,0.6)]">Confirm Theme</button>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-auto py-6 text-center z-10">
+<div class="inline-flex items-center gap-4 px-6 py-2 rounded-full glass-panel border-white/5">
+<p class="text-white/40 text-[10px] tracking-[0.3em] uppercase font-bold">Powered by Gemini AI &amp; Imagen 4.0</p>
+</div>
+</footer>
+
+</body></html>

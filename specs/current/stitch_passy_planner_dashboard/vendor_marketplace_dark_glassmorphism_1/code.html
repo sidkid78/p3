@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy | Vendor Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a060e",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-sidebar {
+            background: rgba(140, 43, 238, 0.05);
+            backdrop-filter: blur(30px);
+            border-right: 1px solid rgba(140, 43, 238, 0.2);
+        }
+        .neon-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+        .glow-button {
+            box-shadow: 0 0 15px rgba(140, 43, 238, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 25px rgba(140, 43, 238, 0.6);
+            transform: translateY(-1px);
+        }
+        .badge-glow {
+            box-shadow: 0 0 10px rgba(140, 43, 238, 0.3);
+            border: 1px solid rgba(140, 43, 238, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-white overflow-x-hidden min-h-screen">
+<!-- Decorative Background Orbs -->
+<div class="neon-orb bg-primary w-[500px] h-[500px] -top-48 -left-48"></div>
+<div class="neon-orb bg-rose-500 w-[400px] h-[400px] top-1/2 -right-24"></div>
+<div class="neon-orb bg-indigo-600 w-[600px] h-[600px] -bottom-48 left-1/4"></div>
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-10 py-3 glass sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-2xl font-black leading-tight tracking-tight">Passy</h2>
+</div>
+<label class="flex flex-col min-w-64 h-10">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full glass">
+<div class="text-white/60 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-transparent text-white focus:ring-0 h-full placeholder:text-white/40 px-4 text-sm" placeholder="Find florists, bakers..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-8">
+<a class="text-white/80 hover:text-white text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-white/80 hover:text-white text-sm font-medium transition-colors" href="#">Themes</a>
+<a class="text-primary text-sm font-bold transition-colors border-b-2 border-primary pb-1" href="#">Vendors</a>
+<a class="text-white/80 hover:text-white text-sm font-medium transition-colors" href="#">Invitations</a>
+<a class="text-white/80 hover:text-white text-sm font-medium transition-colors" href="#">Budget</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 glass text-white hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-10 w-10 border border-white/20" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpbAgWZWiHrF76E2YfuRv8T--umA8ZRwBR45PXn01fjJ1slhjeSusiTKq6MzIFQU-XnDMZQh38xFV7qu3eTmRB6A5lWVlgvuA8mISt3M90dWZ6L6KCAGn0Xt_4PWIwlFyz0FN1iL_cq2_NyiDXO0xIr4nE3LJshS9lvl-ejeJhArktCLVFLOJ2F7bXKBN-MaGOcEZXazt8i8Ny4h-VrOP4VdZau2NWE1FIRGZypQoyy50gTwoDE7Zvr1hJ3F87eeCJGDkzX_z7m5c");'></div>
+</div>
+</div>
+</header>
+<main class="flex flex-1">
+<!-- SideNavBar (Filter Sidebar) -->
+<aside class="w-80 glass-sidebar sticky top-[73px] h-[calc(100vh-73px)] p-8 overflow-y-auto">
+<div class="flex flex-col gap-8">
+<div class="flex flex-col gap-1">
+<h3 class="text-white text-lg font-bold">Filters</h3>
+<p class="text-white/50 text-xs">Personalize your marketplace results</p>
+</div>
+<!-- Category Filter -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-lg">category</span>
+<span class="text-sm font-bold uppercase tracking-wider">Category</span>
+</div>
+<div class="flex flex-col gap-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded border-white/20 bg-white/5 text-primary focus:ring-primary/50" type="checkbox"/>
+<span class="text-sm text-white/70 group-hover:text-white">Florists</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded border-white/20 bg-white/5 text-primary focus:ring-primary/50" type="checkbox"/>
+<span class="text-sm text-white/70 group-hover:text-white">Bakers &amp; Cakes</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-white/20 bg-white/5 text-primary focus:ring-primary/50" type="checkbox"/>
+<span class="text-sm text-white/70 group-hover:text-white">Venues</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-white/20 bg-white/5 text-primary focus:ring-primary/50" type="checkbox"/>
+<span class="text-sm text-white/70 group-hover:text-white">Decorators</span>
+</label>
+</div>
+</div>
+<!-- Slider Component (Price Range) -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-lg">payments</span>
+<span class="text-sm font-bold uppercase tracking-wider">Price Range</span>
+</div>
+<div class="px-2 pt-2 pb-6">
+<div class="h-1 w-full rounded-full bg-white/10 relative">
+<div class="absolute h-full left-[20%] right-[30%] bg-primary rounded-full"></div>
+<div class="absolute left-[20%] -top-1.5 size-4 rounded-full bg-primary ring-4 ring-primary/20 cursor-pointer"></div>
+<div class="absolute right-[30%] -top-1.5 size-4 rounded-full bg-primary ring-4 ring-primary/20 cursor-pointer"></div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] text-white/40 font-bold uppercase tracking-tighter">
+<span>$100</span>
+<span>$5000+</span>
+</div>
+</div>
+</div>
+<!-- Rating Filter -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="text-sm font-bold uppercase tracking-wider">Minimum Rating</span>
+</div>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary fill-1">star</span>
+<span class="material-symbols-outlined text-primary fill-1">star</span>
+<span class="material-symbols-outlined text-primary fill-1">star</span>
+<span class="material-symbols-outlined text-primary fill-1">star</span>
+<span class="material-symbols-outlined text-white/20">star</span>
+<span class="ml-2 text-sm text-white/60">4.0+</span>
+</div>
+</div>
+<!-- Location -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span class="text-sm font-bold uppercase tracking-wider">Location</span>
+</div>
+<div class="glass p-3 rounded-lg flex items-center gap-2">
+<span class="text-xs text-white/70">Within 25 miles of Los Angeles</span>
+<span class="material-symbols-outlined text-xs ml-auto">edit</span>
+</div>
+</div>
+<button class="mt-4 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white/5 border border-white/10 text-white text-sm font-bold hover:bg-white/10 transition-colors">
+                        Reset Filters
+                    </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<section class="flex-1 p-10 max-w-[1200px] mx-auto">
+<!-- PageHeading -->
+<div class="flex flex-col mb-10">
+<h1 class="font-serif text-5xl text-white mb-3">Curated Vendors for Your Theme</h1>
+<div class="flex items-center justify-between">
+<p class="text-white/60 text-lg flex items-center gap-2">
+                            Hand-picked for your <span class="text-primary font-bold">Whimsical Woodland</span> baby shower.
+                        </p>
+<button class="flex items-center gap-2 px-4 py-2 glass rounded-lg hover:bg-white/10 transition-colors text-sm font-bold">
+<span class="material-symbols-outlined text-lg">bookmark</span>
+                            Saved Vendors
+                        </button>
+</div>
+</div>
+<!-- Chips (Sub-categories) -->
+<div class="flex gap-3 mb-8">
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-full bg-primary px-6 text-sm font-bold shadow-lg shadow-primary/20">
+                        All Matches
+                    </button>
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-full glass px-6 text-sm font-medium hover:bg-white/10">
+                        Top Rated
+                    </button>
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-full glass px-6 text-sm font-medium hover:bg-white/10">
+                        Budget Friendly
+                    </button>
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-full glass px-6 text-sm font-medium hover:bg-white/10">
+                        Available Soon
+                    </button>
+</div>
+<!-- Vendor Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Vendor Card 1 -->
+<div class="glass rounded-xl overflow-hidden group flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Woodland themed floral arrangement" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkDB0AvypszsFVYv7Q5k9nLs1dCEmXNxYQLClHCWucuL9fiDkdAK77AwtYmM4hzK2IpGUl-Q2ozQB7H1laF5xqpt2xXpP3IMTBgJumOfuwWlxi75cJuG1iopQgFUfyPEihWOJrtP1BoL7aO1szXToWjSilIRYk-lwAQ-fXDLuDBKyrobId03c86ie_kX6aMQyY8c5w8S_E2pKSfgjf3UtKEQunITW_xvYOaFwRARm8jBnJjRBkgmHOPk94soDXI09PyF5JSd_vwvc"/>
+<div class="absolute top-4 left-4 badge-glow bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                Matches Theme
+                            </div>
+<button class="absolute top-4 right-4 h-10 w-10 glass rounded-full flex items-center justify-center text-white hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold">Wildflower &amp; Ferns</h3>
+<div class="flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded text-sm">
+<span class="material-symbols-outlined text-sm text-yellow-400 fill-1">star</span>
+<span>4.9</span>
+</div>
+</div>
+<p class="text-white/50 text-sm mb-4">Floral Design &amp; Tablescapes</p>
+<div class="flex gap-4 mb-6">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-white/30 font-bold">Starting At</span>
+<span class="text-sm font-bold">$450</span>
+</div>
+<div class="flex flex-col border-l border-white/10 pl-4">
+<span class="text-[10px] uppercase text-white/30 font-bold">Availability</span>
+<span class="text-sm font-bold text-green-400">Open Aug-Sep</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 glow-button bg-primary text-white h-11 rounded-lg font-bold text-sm">Book Now</button>
+<button class="h-11 w-11 glass flex items-center justify-center rounded-lg hover:bg-white/10">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Vendor Card 2 -->
+<div class="glass rounded-xl overflow-hidden group flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Rustic tiered forest cake" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC79qBjFQs0J3Z3W7gKcB-5LlhNhTKd8Hr2QwCVpdGvK5ylUVJ_Fq8XnzlSgKeg1HK7cHMB2wMgZXsjkPUBtiFfdNJa6zmwTFf96pWuAAWLJ4OGGeU5m7QBJl-K9EWhMzEpXL2JvivZy8_wVMavrOqaOTThsSOUV5SHCpHMGYqrINwTh47yjzr6ZNmAXl-szuX6wmlJ9uB9WvX8yxRQPQDoAs5RkmmqTk9q_cgWp2lVrd81D7hVJ4jHvGL3q6ZeooC63eQQhFqQr0w"/>
+<div class="absolute top-4 left-4 badge-glow bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                Matches Theme
+                            </div>
+<button class="absolute top-4 right-4 h-10 w-10 glass rounded-full flex items-center justify-center text-white hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold">The Rustic Whisk</h3>
+<div class="flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded text-sm">
+<span class="material-symbols-outlined text-sm text-yellow-400 fill-1">star</span>
+<span>4.8</span>
+</div>
+</div>
+<p class="text-white/50 text-sm mb-4">Artisanal Bakery &amp; Desserts</p>
+<div class="flex gap-4 mb-6">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-white/30 font-bold">Starting At</span>
+<span class="text-sm font-bold">$220</span>
+</div>
+<div class="flex flex-col border-l border-white/10 pl-4">
+<span class="text-[10px] uppercase text-white/30 font-bold">Availability</span>
+<span class="text-sm font-bold text-primary">Limited</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 glow-button bg-primary text-white h-11 rounded-lg font-bold text-sm">Book Now</button>
+<button class="h-11 w-11 glass flex items-center justify-center rounded-lg hover:bg-white/10">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Vendor Card 3 -->
+<div class="glass rounded-xl overflow-hidden group flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Forest garden event space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdSdUIJFZPWLJaWA8JUTnytFVM-1DeOKbH4a0fP6BewwKQVibrWARnH5GGPJowM0PLBkNphEGGimplDxpeDRhNuNSOek5qxX3toIdRohZsBKIZEn1H5_0htPZQy4COkCeWUi4bHh-mjclPbwSoKH3mBvR174tfJn0q4PFdpXCo1tOjBuzX2VQRPF41tipU45k5CzowC2TJrr3NkDlIKl0lC9yBe_8IVX4svLABEU5r7OJ4CGQIaCRLoAAZQh1609GxMPMlxYGWdp8"/>
+<div class="absolute top-4 left-4 badge-glow bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                Matches Theme
+                            </div>
+<button class="absolute top-4 right-4 h-10 w-10 glass rounded-full flex items-center justify-center text-white hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold">Oak Hollow Estate</h3>
+<div class="flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded text-sm">
+<span class="material-symbols-outlined text-sm text-yellow-400 fill-1">star</span>
+<span>5.0</span>
+</div>
+</div>
+<p class="text-white/50 text-sm mb-4">Garden Venue &amp; Catering</p>
+<div class="flex gap-4 mb-6">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-white/30 font-bold">Starting At</span>
+<span class="text-sm font-bold">$1,800</span>
+</div>
+<div class="flex flex-col border-l border-white/10 pl-4">
+<span class="text-[10px] uppercase text-white/30 font-bold">Availability</span>
+<span class="text-sm font-bold text-green-400">Available</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 glow-button bg-primary text-white h-11 rounded-lg font-bold text-sm">Book Now</button>
+<button class="h-11 w-11 glass flex items-center justify-center rounded-lg hover:bg-white/10">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Vendor Card 4 -->
+<div class="glass rounded-xl overflow-hidden group flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Balloon woodland decor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMO72Ht8UffyE0UnnJwyL-Gyp2vKjd1UY6KehMWDf2EzbT5EMcLlKh8h5YbEX9VCnQylL8QHqJUgZ0pYHpHJxhXzHm8gtZPSel0RIOem0TxG3xxMtoRngC0UrEFxV-JQeZANGcIIYM_QBX3Q3n3_pUuf-9ba9UHVcVx_cWPDQJORXikx0jl82wQEx9qLhxrdBxrEjJDgQoiLsSg3mgCrH_vZoCj3vkGDOK5N1kuTDN35sNWUq4eAgXof-7_UK3c6plteGiouH5HUA"/>
+<div class="absolute top-4 left-4 badge-glow bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                Matches Theme
+                            </div>
+<button class="absolute top-4 right-4 h-10 w-10 glass rounded-full flex items-center justify-center text-white hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold">Enchanted Events</h3>
+<div class="flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded text-sm">
+<span class="material-symbols-outlined text-sm text-yellow-400 fill-1">star</span>
+<span>4.7</span>
+</div>
+</div>
+<p class="text-white/50 text-sm mb-4">Event Decoration &amp; Styling</p>
+<div class="flex gap-4 mb-6">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-white/30 font-bold">Starting At</span>
+<span class="text-sm font-bold">$600</span>
+</div>
+<div class="flex flex-col border-l border-white/10 pl-4">
+<span class="text-[10px] uppercase text-white/30 font-bold">Availability</span>
+<span class="text-sm font-bold text-green-400">Weekends</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 glow-button bg-primary text-white h-11 rounded-lg font-bold text-sm">Book Now</button>
+<button class="h-11 w-11 glass flex items-center justify-center rounded-lg hover:bg-white/10">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Vendor Card 5 -->
+<div class="glass rounded-xl overflow-hidden group flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Forest photography setup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIjK7vipxn4Iw6K9EO8CrajLed605I09afk7OXt9eVj0ZJ9onH2N5OSpaJ8DbNiMkOxF8Yy6zaA8hdWl5KewEMRlS0lEBedELE80xP-0d0d8ioUW2ZlvU59fOvM67cyMC9JKavrtQpC6wqGfO6ZOX0fS6Lmtcp7mmD4MPFlgonrXrnB1RQQgx28SGf1h54wgTLpTgKBlOpZrODldeX7WX0HEoX3gr6L7VBaJC7sV-SpCIcLGpdyv0uzVPic8RI1bCKbgoZJXZjX2E"/>
+<div class="absolute top-4 left-4 badge-glow bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                Matches Theme
+                            </div>
+<button class="absolute top-4 right-4 h-10 w-10 glass rounded-full flex items-center justify-center text-white hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold">Lumina Portraits</h3>
+<div class="flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded text-sm">
+<span class="material-symbols-outlined text-sm text-yellow-400 fill-1">star</span>
+<span>4.9</span>
+</div>
+</div>
+<p class="text-white/50 text-sm mb-4">Baby &amp; Event Photography</p>
+<div class="flex gap-4 mb-6">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-white/30 font-bold">Starting At</span>
+<span class="text-sm font-bold">$350</span>
+</div>
+<div class="flex flex-col border-l border-white/10 pl-4">
+<span class="text-[10px] uppercase text-white/30 font-bold">Availability</span>
+<span class="text-sm font-bold text-primary">High Demand</span>
+</div>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 glow-button bg-primary text-white h-11 rounded-lg font-bold text-sm">Book Now</button>
+<button class="h-11 w-11 glass flex items-center justify-center rounded-lg hover:bg-white/10">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Empty/Load More Skeleton Placeholder -->
+<div class="glass rounded-xl overflow-hidden flex items-center justify-center border-dashed border-white/20">
+<div class="flex flex-col items-center gap-4 text-white/30 p-10">
+<span class="material-symbols-outlined text-5xl">add_circle</span>
+<p class="text-center font-bold">Load More Vendors</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

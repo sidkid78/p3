@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy | Invitation Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d946ef","secondary": "#8b5cf6",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#050308",},
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "ui": ["PT Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-surface {
+            background: rgba(18, 12, 28, 0.65);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .glass-header {
+            background: rgba(18, 12, 28, 0.65);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-sidebar {
+            background: rgba(18, 12, 28, 0.55);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(60px) saturate(140%);
+            -webkit-backdrop-filter: blur(60px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 30px 60px -12px rgba(0, 0, 0, 0.7),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: 0;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .gradient-glow-btn {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .gradient-glow-btn:hover {
+            box-shadow: 0 0 35px rgba(236, 72, 153, 0.6);
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+        .gradient-glow-btn:active {
+            transform: translateY(0);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(236, 72, 153, 0.5);
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.15);
+            outline: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-white min-h-screen relative overflow-hidden">
+<div class="orb bg-fuchsia-600 w-[500px] h-[500px] -top-32 -left-32 animate-pulse" style="animation-duration: 8s;"></div>
+<div class="orb bg-rose-600 w-[400px] h-[400px] bottom-0 right-0 opacity-40"></div>
+<div class="orb bg-violet-700 w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30"></div>
+<div class="orb bg-indigo-500 w-[300px] h-[300px] top-20 right-20 opacity-40"></div>
+<div class="layout-container flex h-screen flex-col relative z-10">
+<header class="flex items-center justify-between px-8 py-3 glass-header">
+<div class="flex items-center gap-4">
+<div class="text-fuchsia-400 size-8 drop-shadow-[0_0_10px_rgba(232,121,249,0.5)]">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold tracking-tight drop-shadow-lg">Passy</h2>
+</div>
+<div class="flex items-center gap-8">
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-white/70 hover:text-fuchsia-300 text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-white/70 hover:text-fuchsia-300 text-sm font-medium transition-colors" href="#">Guest List</a>
+<a class="text-white text-sm font-semibold transition-colors border-b-2 border-fuchsia-500 pb-0.5" href="#">Design Editor</a>
+<a class="text-white/70 hover:text-fuchsia-300 text-sm font-medium transition-colors" href="#">Registry</a>
+</nav>
+<div class="h-6 w-px bg-white/10"></div>
+<button class="flex min-w-[140px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 text-white text-sm font-bold tracking-wide gradient-glow-btn">
+                    Send to Guest List
+                </button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD4FV3dhHFN9epPkgSXDnArXLyt8IKgfezLNmsNMDH7g7HEQl34aD4PK37Ti6ya1sX81rNK5GZdtsqhHjKs5BAHH2BCj0PmNJ8c3r-Pzu2UHo9qu36Ti1Lh50ZJyractwaqJ2ifleAIjCT2or9mqkT2-6TsOJ4LBMeiwpMHEETx-VtcBn4oHeUC_l8X3tzenlJsPa6KrCLo4g-yR_ZlaHFCZVgsp0xSIi7pnAvYrpl5yD3W_iOptkry8iaOYpgZLWsXIbSNqMKESpM");'></div>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<aside class="w-80 flex flex-col glass-sidebar border-r border-white/10 shadow-[5px_0_30px_rgba(0,0,0,0.2)] overflow-y-auto">
+<div class="p-6 space-y-6">
+<div>
+<div class="flex flex-wrap gap-1 mb-4">
+<a class="text-fuchsia-400 text-xs font-medium uppercase tracking-widest hover:text-fuchsia-300 transition-colors" href="#">Home</a>
+<span class="text-white/20 text-xs font-medium">/</span>
+<span class="text-white/60 text-xs font-medium uppercase tracking-widest">Invitation Editor</span>
+</div>
+<h1 class="text-white text-xl font-bold font-display tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/70">Editor Controls</h1>
+<p class="text-white/50 text-xs font-ui mt-1">Real-time customization</p>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-white/70 text-xs font-bold uppercase tracking-wider font-ui">Invitation Title</label>
+<input class="w-full rounded-lg glass-input px-4 py-3 text-sm text-white placeholder:text-white/20 font-ui" placeholder="e.g. Baby Shower" value="A Sweet Little Adventure"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="flex flex-col gap-1.5">
+<label class="text-white/70 text-xs font-bold uppercase tracking-wider font-ui">Date</label>
+<input class="w-full rounded-lg glass-input px-4 py-3 text-sm text-white font-ui" type="date" value="2024-06-15"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-white/70 text-xs font-bold uppercase tracking-wider font-ui">Time</label>
+<input class="w-full rounded-lg glass-input px-4 py-3 text-sm text-white font-ui" type="time" value="14:00"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-white/70 text-xs font-bold uppercase tracking-wider font-ui">Location</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">location_on</span>
+<input class="w-full rounded-lg glass-input pl-10 pr-4 py-3 text-sm text-white font-ui" value="123 Willow Creek, San Francisco"/>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-white/10">
+<label class="text-white/70 text-xs font-bold uppercase tracking-wider font-ui mb-4 block">Typography Styles</label>
+<div class="grid grid-cols-1 gap-2">
+<button class="flex items-center gap-3 px-3 py-3 rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/30 group transition-all hover:bg-fuchsia-500/20">
+<span class="material-symbols-outlined text-fuchsia-400 group-hover:scale-110 transition-transform">text_fields</span>
+<p class="text-white text-sm font-medium font-ui">Edit Heading Font</p>
+</button>
+<button class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-all">
+<span class="material-symbols-outlined text-white/50">palette</span>
+<p class="text-white/80 text-sm font-medium font-ui">Color Palette</p>
+</button>
+<button class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-all">
+<span class="material-symbols-outlined text-white/50">auto_awesome</span>
+<p class="text-white/80 text-sm font-medium font-ui">AI Rewrite Suggestions</p>
+</button>
+</div>
+</div>
+</div>
+</aside>
+<section class="flex-1 flex items-center justify-center p-12 relative overflow-auto">
+<div class="absolute inset-0 z-0 bg-transparent pointer-events-none"></div>
+<div class="glass-card w-[450px] aspect-[4/5] rounded-xl p-0 overflow-hidden relative group transform transition-transform duration-500 hover:scale-[1.01]">
+<div class="absolute inset-0 z-0 scale-105 group-hover:scale-100 transition-transform duration-700 bg-cover bg-center" data-alt="Dreamy watercolor floral background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDUhZt3443UMdouUge6NWLu_aKa9Difz4U1fMIDFNi3qR8yXFHsrCLB70L8B3oHZ3SaqmvQf-r8Jqu0893wOOECZYsbuUiN7i0Nu7iwx7O2GDy9pJBkVXYpe2uaPljb2gDPLE4FExP3v0xIHpU53bReNUXePoRgmBb-4S17xtoE0qt-Tn-l65gKax59q1zoYOf6BSr5jijy6SLR0K9d9R4E2U46788zNXMo24ahOHNCQ7vce2hueXNtoPC6Ttm9G3HVMezfBAOzecg'); opacity: 0.85;">
+</div>
+<div class="absolute inset-0 bg-black/30 backdrop-blur-[2px] z-10 transition-colors group-hover:bg-black/25"></div>
+<div class="relative z-20 h-full flex flex-col items-center justify-center text-center p-10 space-y-6">
+<div class="space-y-2">
+<h4 class="text-fuchsia-300 font-bold tracking-[0.3em] text-[10px] uppercase drop-shadow-sm">Join us for a</h4>
+<h2 class="text-5xl font-serif text-white leading-tight drop-shadow-md">Baby Shower</h2>
+</div>
+<div class="w-12 h-px bg-white/40 shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+<div class="space-y-4">
+<p class="text-xl text-white font-serif italic drop-shadow-md">In honor of Sarah Jenkins</p>
+<h3 class="text-2xl font-serif font-bold text-white tracking-wide drop-shadow-md">A Sweet Little Adventure</h3>
+</div>
+<div class="pt-8 space-y-2">
+<p class="text-sm font-display font-medium text-white/95 drop-shadow-sm">SATURDAY, JUNE 15TH AT 2 PM</p>
+<p class="text-xs font-display text-white/70 tracking-widest uppercase drop-shadow-sm">123 Willow Creek, San Francisco</p>
+</div>
+<div class="pt-6">
+<div class="rounded-full bg-black/30 backdrop-blur-sm border border-white/20 px-6 py-2 shadow-lg">
+<span class="text-[10px] font-bold tracking-widest uppercase text-white">Registry: Amazon &amp; Target</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<aside class="w-72 flex flex-col glass-sidebar border-l border-white/10 shadow-[-5px_0_30px_rgba(0,0,0,0.2)] overflow-y-auto">
+<div class="p-6 space-y-6">
+<div>
+<h3 class="text-white text-base font-bold font-display">Theme Presets</h3>
+<p class="text-white/50 text-xs font-ui">Switch visual styles instantly</p>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<div class="group cursor-pointer">
+<div class="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-fuchsia-500 shadow-[0_0_15px_rgba(217,70,239,0.25)]">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Floral theme thumbnail" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDh9bgYzRwm1hB2KSt8C8Lr5oV886uhpOsZrkBuc0vIKDYYQ0sUjdFosGOpEU-9Ufy3tW519eSCrDOVi8N5ZQD-zepqd-Yrb4UFA072Mqtm2bpSiDnGJWNMwZTCZOuSUYd6RC-P5IOGwUXDTuJaD66fTvU9BGUkCeIIBjwWkBkolDybGMB6qz7AM9Xje9u3KiMaAHWg9_dGVA63OYflltyzXWKhFPtuhBlHrkZJKyLsp6XHV90HUo2MCu3RIj2EVIz6Zj_hR1QQ_0');"></div>
+<div class="absolute inset-0 bg-fuchsia-900/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-3xl drop-shadow-lg">check_circle</span>
+</div>
+</div>
+<p class="mt-2 text-fuchsia-400 text-xs font-bold uppercase tracking-wider group-hover:text-fuchsia-300 transition-colors">Floral Dream (Active)</p>
+</div>
+<div class="group cursor-pointer">
+<div class="relative w-full aspect-video rounded-lg overflow-hidden border border-white/10 hover:border-fuchsia-400/50 transition-colors">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Safari theme thumbnail" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCk82vZ63RVM2oHeBAEo1vdOOWaGS0uhOm4lC2xoaLdZ3Cqp-mrZtvgd5B8dWuQrGGiAPoLGzFWxmZIocfTQaaVJjzXmwQoadkjxCnMTyNFZbCwPymRbrgN55T-IIZy8mX45Zyn_xLqL6WO84OTZovqk9zVGWdOZDynm6d4SnAP6Q1G1-R9BQNKDz3u1MNVa9UtiK1fuE-cX27snfbtJsVR_nAsiNgE7UBUZHDNWDBUgmCmHBBpOcWtJNP6WhHkEJMclZlc2nf9PaI');"></div>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+</div>
+<p class="mt-2 text-white/70 text-xs font-medium uppercase tracking-wider group-hover:text-white transition-colors">Safari Adventure</p>
+</div>
+<div class="group cursor-pointer">
+<div class="relative w-full aspect-video rounded-lg overflow-hidden border border-white/10 hover:border-fuchsia-400/50 transition-colors">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Minimalist theme thumbnail" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDCIhluHSsP200AzvxVsgd8fG0x6exKa-sUtfWTwSVCyuFGr1Da23-DpNivqPsc6lScsNaM5MHgGsulypBbE-QCW5lfx6KBf0wNHcNXdSFuSJNKLzUVZu7cics92fzDDZRKED1gBxcSqOzU8ZV7Vj3W3c8fozEMFxFVdX1kIblZwPhuYADrwgrsRbAnjV9xrD3rYl8TlsLp1K-Wzbpmhjfu1NPulAe9ti0OsKL3EqLRwBR8BBxelAj-CRqUZMA8bFyOmHX1RHHWYdM');"></div>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+</div>
+<p class="mt-2 text-white/70 text-xs font-medium uppercase tracking-wider group-hover:text-white transition-colors">Boho Minimalist</p>
+</div>
+<div class="group cursor-pointer">
+<div class="relative w-full aspect-video rounded-lg overflow-hidden border border-white/10 hover:border-fuchsia-400/50 transition-colors">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Night sky theme thumbnail" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDeoHYv_kVksKeWIc-dKSlu9xGvumrBjtfp6pbDHUFGUpaQG--m2enwyG-yFsNp9XAJNoobXKNQQHcT7t8cLpqltKuCRpsGM4VmG9gru-PJYc9hKvLKxVCLWYhn_HCjw6Pgu1otpkZNJbgkseME-KqqBK10OAzfY_fTiEfxKveFdtPnFeA8b300PML6iMPdG-QNNBornUgYstj-u4xbtFhFHpwpsIjuAg4Jix3DjZgdPPi2Hjs7CkXk3IxEZi37HWn0cBNJBazY4uY');"></div>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+</div>
+<p class="mt-2 text-white/70 text-xs font-medium uppercase tracking-wider group-hover:text-white transition-colors">Stellar Night</p>
+</div>
+</div>
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-lg border border-dashed border-white/20 hover:border-fuchsia-500 hover:bg-fuchsia-500/10 transition-all text-white/40 hover:text-fuchsia-400 text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">add</span>
+                        Create Custom
+                    </button>
+</div>
+</aside>
+</main>
+<footer class="glass-surface border-t border-white/10 px-8 py-4 flex items-center justify-between z-20">
+<div class="flex items-center gap-4 text-white/40 text-xs font-ui">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-green-400 drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]">cloud_done</span> Autosaved at 2:45 PM</span>
+<span class="w-px h-3 bg-white/10"></span>
+<span>Version 2.4 (Draft)</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 text-white/70 hover:text-white text-sm font-bold font-ui transition-colors">Preview Web Page</button>
+<button class="px-6 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white text-sm font-bold font-ui transition-all">Save as PDF</button>
+<button class="px-8 py-2 rounded-lg text-white text-sm font-bold font-ui gradient-glow-btn">Send Invites</button>
+</div>
+</footer>
+</div>
+
+</body></html>

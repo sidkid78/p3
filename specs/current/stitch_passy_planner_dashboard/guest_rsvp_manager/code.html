@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Guest &amp; RSVP Manager - Passy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d1bae3",
+                        "background-dark": "#0a070b",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                        "glass-bg": "rgba(255, 255, 255, 0.03)",
+                        "neon-green": "#a3f7bf",
+                        "neon-amber": "#f7e3a3",
+                        "neon-red": "#f7a3a3",
+                    },
+                    fontFamily: {
+                        "sans": ["PT Sans", "sans-serif"],
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer components {
+            .glass-pane {
+                @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+            }
+            .glass-card-glowing {
+                @apply bg-white/5 backdrop-blur-md border border-white/20 shadow-[0_0_15px_rgba(209,186,227,0.1)];
+            }
+            .glass-table-row {
+                @apply hover:bg-white/10 backdrop-blur-sm transition-all duration-300;
+            }
+            .neon-badge-confirmed {
+                @apply bg-neon-green/10 text-neon-green border border-neon-green/30 shadow-[0_0_10px_rgba(163,247,191,0.2)];
+            }
+            .neon-badge-pending {
+                @apply bg-neon-amber/10 text-neon-amber border border-neon-amber/30 shadow-[0_0_10px_rgba(247,227,163,0.2)];
+            }
+            .neon-badge-declined {
+                @apply bg-neon-red/10 text-neon-red border border-neon-red/30 shadow-[0_0_10px_rgba(247,163,163,0.2)];
+            }
+        }
+        body {
+            font-family: 'PT Sans', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #1e1625 0%, #0a070b 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-white min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-white/10 px-10 py-3 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<h2 class="text-xl font-display font-bold leading-tight tracking-tight">Passy</h2>
+</div>
+<label class="flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-full h-full glass-pane">
+<div class="text-white/50 flex border-none items-center justify-center pl-4" data-icon="search">
+<span class="material-symbols-outlined text-sm">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-transparent text-white focus:ring-0 h-full placeholder:text-white/40 px-4 pl-2 text-sm font-normal" placeholder="Search guests..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-9">
+<a class="text-white/70 text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-bold border-b-2 border-primary pb-1" href="#">Guest Manager</a>
+<a class="text-white/70 text-sm font-medium hover:text-primary transition-colors" href="#">Registry</a>
+<a class="text-white/70 text-sm font-medium hover:text-primary transition-colors" href="#">Themes</a>
+</nav>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary text-black text-sm font-bold shadow-[0_0_20px_rgba(209,186,227,0.3)] hover:brightness-110 transition-all">
+<span class="truncate">Send Digital Invitation</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/50" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAkJ59OzO8bemhw813QmDd9uE2yrRE-Fq8lgTLlJWn_D0LO5lfzXKTJAJO7nmNjKs7uqdinclq7VEy-TXRMGed6qqRlKgcYheSQUDd_rkX6_lY5ouoYCS7N2KVVGaDIBjjRZjhx7JcEwkbTPI7G-aix2HdckZOsKzlHJJ9XJvCEfkIrFhX6bikn-QWwyGwLyJTeQEkM7pZtozGE1KXMkUtASCqfPZBYr0VeIUIomE-DKiQFQJm2mYkD2KP9bpOJf_RJXJLKjex3mC8");'></div>
+</div>
+</header>
+<main class="px-10 lg:px-40 flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<div class="flex flex-wrap gap-2 py-2">
+<a class="text-white/40 text-xs font-medium hover:text-white/70" href="#">Home</a>
+<span class="text-white/20 text-xs">/</span>
+<a class="text-white/40 text-xs font-medium hover:text-white/70" href="#">Planning</a>
+<span class="text-white/20 text-xs">/</span>
+<span class="text-primary text-xs font-bold">Guest Manager</span>
+</div>
+<div class="flex flex-wrap justify-between items-end gap-3 py-8">
+<div class="flex min-w-72 flex-col gap-2">
+<h1 class="text-white text-5xl font-display font-black leading-tight tracking-tight">Guest &amp; RSVP Manager</h1>
+<p class="text-white/60 text-base font-normal">Manage your guest list and special accommodations with ease.</p>
+</div>
+<div class="flex gap-4">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-11 px-5 glass-pane text-white text-sm font-bold hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined mr-2 text-base">download</span>
+<span class="truncate">Export</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-11 px-5 bg-white text-black text-sm font-bold hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined mr-2 text-base">person_add</span>
+<span class="truncate">Add Guest</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-4">
+<div class="flex flex-col gap-3 rounded-2xl p-7 glass-card-glowing">
+<p class="text-white/40 text-xs font-bold uppercase tracking-widest">Total Invited</p>
+<div class="flex items-baseline gap-3">
+<p class="text-white text-4xl font-display font-bold">45</p>
+<p class="text-neon-green text-xs font-bold px-2 py-0.5 rounded bg-neon-green/10">+5 this week</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 rounded-2xl p-7 glass-card-glowing">
+<p class="text-white/40 text-xs font-bold uppercase tracking-widest">Confirmed Guests</p>
+<div class="flex items-baseline gap-3">
+<p class="text-white text-4xl font-display font-bold">32</p>
+<p class="text-primary text-xs font-bold">71% response</p>
+</div>
+<div class="w-full bg-white/5 rounded-full h-1.5 mt-2">
+<div class="bg-primary h-1.5 rounded-full shadow-[0_0_10px_#d1bae3]" style="width: 71%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-3 rounded-2xl p-7 glass-card-glowing">
+<p class="text-white/40 text-xs font-bold uppercase tracking-widest">Remaining Budget</p>
+<div class="flex items-baseline gap-3">
+<p class="text-white text-4xl font-display font-bold">$1,240</p>
+<p class="text-neon-red text-xs font-bold px-2 py-0.5 rounded bg-neon-red/10">-$200 today</p>
+</div>
+</div>
+</div>
+<div class="mt-12">
+<div class="flex items-center justify-between border-b border-white/10">
+<div class="flex gap-10">
+<a class="flex flex-col items-center justify-center border-b-2 border-primary text-white pb-4" href="#">
+<p class="text-sm font-bold tracking-wide">All Guests</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-white/40 pb-4 hover:text-white transition-colors" href="#">
+<p class="text-sm font-bold tracking-wide">Confirmed (32)</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-white/40 pb-4 hover:text-white transition-colors" href="#">
+<p class="text-sm font-bold tracking-wide">Pending (8)</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-white/40 pb-4 hover:text-white transition-colors" href="#">
+<p class="text-sm font-bold tracking-wide">Declined (5)</p>
+</a>
+</div>
+<div class="flex items-center gap-3 pb-3">
+<button class="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">filter_list</span>
+</button>
+<button class="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">sort</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-8 overflow-hidden rounded-2xl glass-pane border border-white/5">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-white/[0.02] border-b border-white/10">
+<th class="px-8 py-5 text-xs font-bold text-white/40 uppercase tracking-widest">Name</th>
+<th class="px-8 py-5 text-xs font-bold text-white/40 uppercase tracking-widest">RSVP Status</th>
+<th class="px-8 py-5 text-xs font-bold text-white/40 uppercase tracking-widest">Dietary Requirements</th>
+<th class="px-8 py-5 text-xs font-bold text-white/40 uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="glass-table-row">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="size-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">SM</div>
+<div>
+<p class="text-sm font-bold text-white">Sarah Miller</p>
+<p class="text-xs text-white/40">sarah.m@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider neon-badge-confirmed">
+<span class="w-1.5 h-1.5 rounded-full bg-neon-green mr-2 shadow-[0_0_5px_#a3f7bf]"></span>
+                                        Confirmed
+                                    </span>
+</td>
+<td class="px-8 py-5 text-sm text-white/60">Gluten Free</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="glass-table-row">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="size-9 rounded-full bg-neon-amber/20 flex items-center justify-center text-neon-amber font-bold text-xs">JD</div>
+<div>
+<p class="text-sm font-bold text-white">James David</p>
+<p class="text-xs text-white/40">james@office.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider neon-badge-pending">
+<span class="w-1.5 h-1.5 rounded-full bg-neon-amber mr-2 shadow-[0_0_5px_#f7e3a3]"></span>
+                                        Pending
+                                    </span>
+</td>
+<td class="px-8 py-5 text-sm text-white/60">None</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="glass-table-row">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="size-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">EL</div>
+<div>
+<p class="text-sm font-bold text-white">Elena Lopez</p>
+<p class="text-xs text-white/40">elena.l@gmail.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider neon-badge-confirmed">
+<span class="w-1.5 h-1.5 rounded-full bg-neon-green mr-2 shadow-[0_0_5px_#a3f7bf]"></span>
+                                        Confirmed
+                                    </span>
+</td>
+<td class="px-8 py-5 text-sm text-white/60">Nut Allergy</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="glass-table-row">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="size-9 rounded-full bg-white/10 flex items-center justify-center text-white/70 font-bold text-xs">TK</div>
+<div>
+<p class="text-sm font-bold text-white">Tom King</p>
+<p class="text-xs text-white/40">tom.king@yahoo.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider neon-badge-declined">
+<span class="w-1.5 h-1.5 rounded-full bg-neon-red mr-2 shadow-[0_0_5px_#f7a3a3]"></span>
+                                        Declined
+                                    </span>
+</td>
+<td class="px-8 py-5 text-sm text-white/60">-</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="glass-table-row">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="size-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">MP</div>
+<div>
+<p class="text-sm font-bold text-white">Michael Porter</p>
+<p class="text-xs text-white/40">mike.p@work.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider neon-badge-confirmed">
+<span class="w-1.5 h-1.5 rounded-full bg-neon-green mr-2 shadow-[0_0_5px_#a3f7bf]"></span>
+                                        Confirmed
+                                    </span>
+</td>
+<td class="px-8 py-5 text-sm text-white/60">Vegan</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-8 py-5 border-t border-white/10 flex items-center justify-between bg-white/[0.01]">
+<p class="text-xs text-white/40">Showing <span class="text-white">1</span> to <span class="text-white">5</span> of <span class="text-white">45</span> guests</p>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 text-xs font-bold border border-white/10 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all">Prev</button>
+<button class="px-4 py-1.5 text-xs bg-primary text-black font-bold rounded-lg shadow-[0_0_10px_rgba(209,186,227,0.3)]">1</button>
+<button class="px-4 py-1.5 text-xs font-bold border border-white/10 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all">2</button>
+<button class="px-4 py-1.5 text-xs font-bold border border-white/10 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all">Next</button>
+</div>
+</div>
+</div>
+<div class="mt-16 mb-24 p-10 rounded-3xl glass-card-glowing border-2 border-dashed border-primary/30 flex flex-col items-center justify-center text-center gap-6">
+<div class="size-20 rounded-full glass-pane flex items-center justify-center text-primary shadow-[0_0_30px_rgba(209,186,227,0.2)]">
+<span class="material-symbols-outlined text-5xl">celebration</span>
+</div>
+<div>
+<h3 class="text-2xl font-display font-bold text-white">Launch Your Celebrations</h3>
+<p class="text-white/50 max-w-md mx-auto mt-3 text-sm leading-relaxed">Your guest list is looking great. Ready to announce the big day with our AI-personalized digital invitations?</p>
+</div>
+<button class="flex min-w-[240px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary text-black text-base font-bold shadow-[0_0_25px_rgba(209,186,227,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined mr-3">send</span>
+<span>Design My Invitation</span>
+</button>
+</div>
+</div>
+</main>
+<footer class="mt-auto py-12 text-center text-white/30 text-xs border-t border-white/5">
+            © 2023 Passy AI Baby Shower Planner. Sophistication in every detail.
+        </footer>
+</div>
+</div>
+
+</body></html>

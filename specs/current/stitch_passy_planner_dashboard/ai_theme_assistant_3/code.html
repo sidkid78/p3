@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Budget Tracker | Passy Premium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "lavender": "#D0B8E3",
+                        "rose": "#E3B8D0",
+                        "dark-charcoal": "#0F0C11",
+                        "glass-border": "rgba(208, 184, 227, 0.2)",
+                    },
+                    fontFamily: {
+                        "display": ["Playfair Display", "serif"],
+                        "data": ["PT Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-dark-charcoal text-[#f7f6f7] min-h-screen font-data;
+                background-image: 
+                    radial-gradient(circle at 15% 20%, rgba(208, 184, 227, 0.15) 0%, transparent 40%),
+                    radial-gradient(circle at 85% 80%, rgba(227, 184, 208, 0.15) 0%, transparent 40%);
+            }
+        }
+        .glass-card {
+            @apply bg-white/5 backdrop-blur-xl border border-glass-border rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+        }
+        .glass-pane {
+            @apply bg-lavender/5 backdrop-blur-md border border-lavender/10 rounded-xl p-4 transition-all hover:bg-lavender/10;
+        }
+        .neon-glow-lavender {
+            filter: drop-shadow(0 0 8px rgba(208, 184, 227, 0.6));
+        }
+        .btn-premium {
+            @apply bg-gradient-to-r from-lavender to-rose text-dark-charcoal font-bold transition-all hover:opacity-90 hover:scale-[1.02] shadow-[0_0_20px_rgba(208,184,227,0.3)];
+        }
+        .header-gradient {
+            @apply bg-gradient-to-r from-white to-lavender bg-clip-text text-transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            @apply bg-lavender/20 rounded-full;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+<div class="fixed top-[-10%] left-[-5%] w-[40vw] h-[40vw] rounded-full bg-lavender/10 blur-[120px] pointer-events-none z-0"></div>
+<div class="fixed bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] rounded-full bg-rose/10 blur-[120px] pointer-events-none z-0"></div>
+<header class="relative flex items-center justify-between border-b border-lavender/10 bg-dark-charcoal/50 backdrop-blur-md px-6 md:px-10 py-4 z-20">
+<div class="flex items-center gap-3">
+<div class="size-8 text-lavender neon-glow-lavender">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<h2 class="text-2xl font-display font-black tracking-tight header-gradient">Passy</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-sm font-medium text-white/70 hover:text-lavender transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium text-white/70 hover:text-lavender transition-colors" href="#">Themes</a>
+<a class="text-sm font-medium text-white/70 hover:text-lavender transition-colors" href="#">Guest List</a>
+<a class="text-sm font-medium text-lavender border-b-2 border-lavender/30 pb-1" href="#">Budget</a>
+</nav>
+<button class="btn-premium flex min-w-[140px] cursor-pointer items-center justify-center rounded-xl h-10 px-5 text-sm">
+<span class="material-symbols-outlined text-base mr-2">add</span>
+<span>Add Expense</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-lavender/30 ring-2 ring-lavender/10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD7N15Os9P028atykDrEUconKFlgbdMKypBkRh4exNQl6LAvp_cLH6BkEMEDU5jKz2oeyKZUTCtPZmISkPuOVCwg2-4uzbHzMrA4_yw4exHxBXXPgCxkonOJwGqb3Yv2OpXYnwrRqHSBgcXYEn-P6lU2YGMs0d_9DJkhx3CMsdG-20bzyMPOuV8-XgaUmNBnOZIK8jJd2rnrZ1_7n-qSB54HMgQ4YrmW7ViDkeRqk8UyEJQxFKqpe9BOVqx7kg_BbvBeiUfZXD0Ye8");'></div>
+</div>
+</header>
+<main class="relative z-10 flex-1 max-w-[1440px] mx-auto w-full px-6 md:px-10 py-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<div class="flex items-center gap-2 mb-3">
+<a class="text-lavender/60 text-xs font-bold tracking-widest uppercase" href="#">Planner</a>
+<span class="text-white/20 text-xs">/</span>
+<span class="text-white/90 text-xs font-bold tracking-widest uppercase">Budget Tracker</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-display font-bold header-gradient mb-2">Budget Tracker</h1>
+<p class="text-white/50 text-base max-w-xl">Curating your dream baby shower with intelligent expense management and premium insights.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-lavender/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-lg">download</span> Export PDF
+            </button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+<div class="lg:col-span-2 glass-card p-8 flex flex-col md:flex-row items-center gap-10">
+<div class="relative size-56 flex-shrink-0 neon-glow-lavender">
+<svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+<circle class="text-white/5" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-lavender" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-dasharray="189.4 263.8" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-4xl font-bold font-data text-white">72%</span>
+<span class="text-[10px] tracking-[0.2em] uppercase font-bold text-lavender/60">Spent</span>
+</div>
+</div>
+<div class="flex-1 w-full">
+<h3 class="text-xl font-display font-bold mb-6 text-white">Financial Health</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="p-5 rounded-xl bg-white/5 border border-white/5">
+<p class="text-[10px] text-white/40 uppercase font-bold tracking-wider mb-2">Allocated Budget</p>
+<p class="text-3xl font-bold font-data text-white">$5,000.00</p>
+</div>
+<div class="p-5 rounded-xl bg-white/5 border border-white/5">
+<p class="text-[10px] text-white/40 uppercase font-bold tracking-wider mb-2">Current Spending</p>
+<p class="text-3xl font-bold font-data text-white">$3,600.00</p>
+</div>
+<div class="p-5 rounded-xl bg-lavender/10 border border-lavender/20 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-1 bg-lavender/20 rounded-bl-lg">
+<span class="material-symbols-outlined text-xs text-lavender">trending_down</span>
+</div>
+<p class="text-[10px] text-lavender uppercase font-bold tracking-wider mb-2">Available Balance</p>
+<p class="text-3xl font-bold font-data text-lavender">$1,400.00</p>
+</div>
+<div class="p-5 rounded-xl bg-white/5 border border-white/5">
+<p class="text-[10px] text-white/40 uppercase font-bold tracking-wider mb-2">Transaction Count</p>
+<p class="text-3xl font-bold font-data text-white">12 <span class="text-sm font-normal text-white/40">Items</span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card p-8 flex flex-col border-lavender/30">
+<div class="flex items-center gap-3 mb-6">
+<div class="p-2 rounded-lg bg-lavender/20 text-lavender">
+<span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<h3 class="text-xl font-display font-bold text-white">AI Intel</h3>
+</div>
+<div class="flex-1 flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2">
+<div class="glass-pane">
+<p class="text-[10px] font-bold text-lavender uppercase tracking-widest mb-1.5">Venue Strategy</p>
+<p class="text-sm text-white/70 leading-relaxed font-data">Book a Sunday brunch session to reduce site fees by up to <span class="text-lavender font-bold">25%</span>.</p>
+</div>
+<div class="glass-pane">
+<p class="text-[10px] font-bold text-lavender uppercase tracking-widest mb-1.5">Catering Optimization</p>
+<p class="text-sm text-white/70 leading-relaxed font-data">Boutique apps paired with signature mains can save <span class="text-lavender font-bold">$300</span>.</p>
+</div>
+<div class="glass-pane">
+<p class="text-[10px] font-bold text-lavender uppercase tracking-widest mb-1.5">Paperless Luxury</p>
+<p class="text-sm text-white/70 leading-relaxed font-data">Our digital suite saves <span class="text-lavender font-bold">$120</span> in postage and high-end printing.</p>
+</div>
+</div>
+<button class="mt-6 w-full py-3 text-xs font-bold text-lavender uppercase tracking-widest border border-lavender/20 rounded-xl hover:bg-lavender/10 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">refresh</span>
+                Refresh Insights
+            </button>
+</div>
+</div>
+<div class="glass-card overflow-hidden">
+<div class="p-8 border-b border-white/5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+<div>
+<h3 class="text-xl font-display font-bold text-white mb-1">Expense Breakdown</h3>
+<p class="text-sm text-white/40">Detailed log of all planned and actual expenditures.</p>
+</div>
+<div class="flex items-center gap-4 w-full lg:w-auto">
+<div class="relative flex-1 lg:flex-none">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-lg">search</span>
+<input class="w-full lg:w-72 pl-12 pr-4 py-3 rounded-xl border-none bg-white/5 text-sm text-white placeholder-white/30 focus:ring-1 focus:ring-lavender/40 transition-all" placeholder="Search line items..." type="text"/>
+</div>
+<button class="p-3 bg-white/5 border border-white/5 rounded-xl text-white/50 hover:text-lavender transition-all">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-white/[0.02] border-b border-white/5">
+<th class="px-8 py-5 text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Expense Category</th>
+<th class="px-8 py-5 text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Estimate</th>
+<th class="px-8 py-5 text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Actual</th>
+<th class="px-8 py-5 text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Variance</th>
+<th class="px-8 py-5 text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] text-center">Status</th>
+<th class="px-8 py-5 text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] text-right">Options</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-lavender/[0.03] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="p-2.5 bg-lavender/10 rounded-xl group-hover:bg-lavender/20 transition-colors">
+<span class="material-symbols-outlined text-lavender text-xl">restaurant</span>
+</div>
+<span class="font-bold text-sm text-white/90">Catering &amp; Services</span>
+</div>
+</td>
+<td class="px-8 py-5 font-data text-sm text-white/70">$1,500.00</td>
+<td class="px-8 py-5 font-data text-sm text-white/90 font-bold">$1,650.00</td>
+<td class="px-8 py-5 font-data text-sm text-rose/80 font-bold">+ $150.00</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-green-500/10 text-green-400 border border-green-500/20">Settled</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/20 hover:text-lavender"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-lavender/[0.03] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="p-2.5 bg-lavender/10 rounded-xl group-hover:bg-lavender/20 transition-colors">
+<span class="material-symbols-outlined text-lavender text-xl">home_work</span>
+</div>
+<span class="font-bold text-sm text-white/90">Venue Rental</span>
+</div>
+</td>
+<td class="px-8 py-5 font-data text-sm text-white/70">$1,200.00</td>
+<td class="px-8 py-5 font-data text-sm text-white/90 font-bold">$1,200.00</td>
+<td class="px-8 py-5 font-data text-sm text-white/30">$0.00</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-green-500/10 text-green-400 border border-green-500/20">Settled</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/20 hover:text-lavender"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-lavender/[0.03] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="p-2.5 bg-lavender/10 rounded-xl group-hover:bg-lavender/20 transition-colors">
+<span class="material-symbols-outlined text-lavender text-xl">palette</span>
+</div>
+<span class="font-bold text-sm text-white/90">Floral &amp; Decor</span>
+</div>
+</td>
+<td class="px-8 py-5 font-data text-sm text-white/70">$800.00</td>
+<td class="px-8 py-5 font-data text-sm text-white/90 font-bold">$750.00</td>
+<td class="px-8 py-5 font-data text-sm text-green-400 font-bold">- $50.00</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20">Deposit</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/20 hover:text-lavender"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+<tr class="hover:bg-lavender/[0.03] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="p-2.5 bg-lavender/10 rounded-xl group-hover:bg-lavender/20 transition-colors">
+<span class="material-symbols-outlined text-lavender text-xl">mail</span>
+</div>
+<span class="font-bold text-sm text-white/90">Luxury Invites</span>
+</div>
+</td>
+<td class="px-8 py-5 font-data text-sm text-white/70">$300.00</td>
+<td class="px-8 py-5 font-data text-sm text-white/90 font-bold">$0.00</td>
+<td class="px-8 py-5 font-data text-sm text-white/30 italic">Not Booked</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-white/5 text-white/40 border border-white/10">Draft</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-white/20 hover:text-lavender"><span class="material-symbols-outlined">more_horiz</span></button>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr class="bg-lavender/5 font-bold border-t border-lavender/10">
+<td class="px-8 py-6 text-[11px] uppercase tracking-widest text-lavender">Total Committed Funds</td>
+<td class="px-8 py-6 font-data text-base text-white/70">$3,800.00</td>
+<td class="px-8 py-6 font-data text-lg text-white" colspan="4">
+<span class="text-lavender neon-glow-lavender">$3,600.00</span>
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</main>
+<footer class="relative z-10 mt-auto py-12 text-center overflow-hidden">
+<div class="max-w-[1440px] mx-auto px-10">
+<div class="w-24 h-px bg-gradient-to-r from-transparent via-lavender/30 to-transparent mx-auto mb-8"></div>
+<p class="text-lavender/50 text-[10px] tracking-[0.3em] uppercase font-bold mb-3">Powered by Gemini Luxury AI Engine</p>
+<p class="text-white/30 text-xs font-data">© 2024 Passy Planning Suite. Defined by Elegance.</p>
+</div>
+</footer>
+
+</body></html>

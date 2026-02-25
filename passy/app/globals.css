@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #a53df5;
+  --color-secondary-rose: #ec4899;
+
+  --color-bg-main: var(--bg-main);
+  --color-text-main: var(--text-main);
+  --color-panel-bg: var(--panel-bg);
+  --color-panel-border: var(--panel-border);
+
+  --font-display: var(--font-plus-jakarta), sans-serif;
+  --font-body: var(--font-plus-jakarta), sans-serif;
+}
+
+:root {
+  --bg-main: #fcfaff;
+  --text-main: #1a1523;
+  --panel-bg: rgba(255, 255, 255, 0.5);
+  --panel-border: rgba(165, 61, 245, 0.1);
+  --orb-opacity: 0.3;
+}
+
+.dark {
+  --bg-main: #0f0814;
+  --text-main: #ffffff;
+  --panel-bg: rgba(30, 20, 40, 0.4);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --orb-opacity: 0.6;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-main text-text-main font-body transition-colors duration-300 selection:bg-primary selection:text-white;
+  }
+}
+
+@utility glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+@utility glass-card {
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+@utility glass-button {
+  background: rgba(165, 61, 245, 0.1);
+  border: 1px solid rgba(165, 61, 245, 0.2);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(165, 61, 245, 0.15);
+    box-shadow: 0 0 15px rgba(165, 61, 245, 0.2);
+  }
+}
+
+@utility glow-text {
+  text-shadow: 0 0 20px rgba(165, 61, 245, 0.3);
+}
+
+@utility lavender-glow {
+  color: var(--color-primary);
+  text-shadow: 0 0 10px rgba(165, 61, 245, 0.3);
+}
+
+@utility orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+  opacity: var(--orb-opacity);
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}

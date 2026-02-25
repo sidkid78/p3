@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vendor Message Center | Passy</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Playfair+Display:wght@700&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "body": ["PT Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-bubble-vendor {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-bubble-user {
+            background: rgba(140, 43, 238, 0.25);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(140, 43, 238, 0.4);
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden relative min-h-screen">
+<!-- Background Orbs -->
+<div class="orb w-[500px] h-[500px] bg-primary/20 top-[-10%] left-[-5%]"></div>
+<div class="orb w-[400px] h-[400px] bg-rose-500/10 bottom-[-10%] right-[10%]"></div>
+<div class="orb w-[300px] h-[300px] bg-purple-600/15 top-[20%] right-[-5%]"></div>
+<div class="flex h-screen w-full flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-10 py-3 glass-panel z-10">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Passy</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-9">
+<a class="text-white/70 hover:text-white text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium border-b-2 border-primary pb-1" href="#">Messages</a>
+<a class="text-white/70 hover:text-white text-sm font-medium transition-colors" href="#">Vendors</a>
+<a class="text-white/70 hover:text-white text-sm font-medium transition-colors" href="#">Guest List</a>
+<a class="text-white/70 hover:text-white text-sm font-medium transition-colors" href="#">Registry</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full glass-panel">
+<div class="text-white/50 flex border-none items-center justify-center pl-4">
+<span class="material-symbols-outlined text-sm">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-0 focus:ring-0 text-white placeholder:text-white/40 px-4 pl-2 text-sm" placeholder="Search vendors..." value=""/>
+</div>
+</label>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg size-10 glass-panel hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg size-10 glass-panel hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-white/20" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDkCHJtcVMcYVr4Pa4Lw5KUjtciOP1lnrtXrpLr_dliNyeASab82Wx01pWSOu7K6uNw1I-Sl6kDjObSe8tkMk_HGjClMAUGKUn7-YYuJ5PaHMYuWjscqDC80kyqT4InjS5a33tDs-nsYnypzTqmhfbxTA5uDLrWUh7dOAUCk5emyFkMr3gt8s_z4d1V__LW7p-1AusQgZXcFIvm5vqIBtyf8sYgx7BwG8h3pdACqbnTiiYnnSVKK6mUFMZchC-uzARb79gZMLY3Wbw");'></div>
+</div>
+</header>
+<!-- Main Layout Content -->
+<main class="flex flex-1 overflow-hidden">
+<!-- SideNavBar (Conversations List) -->
+<aside class="w-80 glass-sidebar flex flex-col h-full hidden md:flex">
+<div class="p-6 flex flex-col gap-6">
+<div class="flex flex-col gap-1">
+<h1 class="font-serif text-3xl text-white">Messages</h1>
+<p class="text-white/50 text-xs font-medium tracking-wide">5 ACTIVE CONVERSATIONS</p>
+</div>
+<div class="flex flex-col gap-2 custom-scrollbar overflow-y-auto">
+<!-- Active Item -->
+<div class="flex items-start gap-3 p-3 rounded-xl bg-primary/20 border border-primary/30 cursor-pointer">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border-2 border-primary/50" data-alt="Wildflower and Ferns Vendor Logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvXpdhJS_b2Q06C4eyqtZPpsaIeBPUNrs-whVJIB8s8rjpT9qN-zShPvzNw5dHO8IdvxAa_Zrg8VlR7CPLI9SXeECem_DvTCPUGMRjwSauiSsyESlif4ehBqy1u4KKhG4ztZgfTiy1aWYC-SCCGLUIJQezCh6wtiAg480rx-ZgVAF9t2D5ojU-N4o8tcT7YJ6rVD0G6pE23KuYfM54NznqsQrQXIbSoJStm1ZyVw6mhP6NnAf95s-jjhCE20nZ1_Q9XLymsvMXn5o");'></div>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-background-dark"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-0.5">
+<p class="text-white text-sm font-bold truncate">Wildflower &amp; Ferns</p>
+<span class="text-[10px] text-primary font-bold">NOW</span>
+</div>
+<p class="text-white/60 text-xs truncate font-body">I've updated the floral mood board with...</p>
+</div>
+</div>
+<!-- Other Items -->
+<div class="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border border-white/10" data-alt="The Cake Atelier Vendor Logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7hthvkvfoXhxSEuxQHgiescvVKIojEYU1vxsKeJvbx-wN9gOiYLgAhUR6NMfJTekmhLrp3L3EoAwrLlU9_vC06UkhE4hpYMUvgEen74RuV7Iaj5lx1_QWT18yrc5hR-7sYUvr-8xbJ3naBFdOc4cZfUfz6B6HysU_JIMC2SyXE_RbHoyE4gPNCdbEaDsiVfKsPQFF4skg0Zu3XsAcGZFljUB5WiGwSZyjGk5uCBXSpI9C1CsaKmGt8_Pjfih9ngWYJVdjhCeVp-E");'></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-0.5">
+<p class="text-white/80 text-sm font-bold truncate group-hover:text-white transition-colors">The Cake Atelier</p>
+<span class="text-[10px] text-white/40">2H</span>
+</div>
+<p class="text-white/40 text-xs truncate font-body">The tasting is scheduled for Friday at 4PM.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border border-white/10" data-alt="Luxe Linens Vendor Logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCM7SREuTmpC85HB7_VU5R-iF1rZoxFlEIqtgp9VQeptgw7fqeCTyhX-4RQet70QdjknMyWIV5C4OVZmMNzI1BSVfVsHpJ6Qw_5QKtdk3U6YoVgDWhw4vidMl6d7ykLZoTQaAIYqtgxQBaClydOHkfdiMu7l-DccRai1V2YN2fymCsfTjHpf4TlOJ-r_URoB4rn6iBNXQugRWYdK9yWTE6ZFnRTuZii59GRk06YSKJKziTVFm7r6mfAjcccx9DcATpWnPWGCZAqM8I");'></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-0.5">
+<p class="text-white/80 text-sm font-bold truncate group-hover:text-white transition-colors">Luxe Linens</p>
+<span class="text-[10px] text-white/40">YEST</span>
+</div>
+<p class="text-white/40 text-xs truncate font-body">We have the silk ivory samples in stock.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border border-white/10" data-alt="Glow Photography Vendor Logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAl9e9TZIXt4zZdvYsJtb3pCzStlyOYVH-FgqgLBcQWCPo-g3gb4_jg583rOpWjUSI-Yb9noZAKrxydVLbPgotIcXIq0ID4vjdMm3ndKOgVdaQmFomx7MtDtmU6LhudBhfcPbVZbd7Ca2nzFN96KMIxB33aCbfwvyy0gawu92f0nc3Pmk1RkxDTZ018yPT92S3YZb4ZG21Ctuk-KlOHWtNtbLTYYnpThXiXoeU2BqWr3EN-5f8ea5qvBOAIL3n5p4LU_IgH9XGyGl4");'></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-0.5">
+<p class="text-white/80 text-sm font-bold truncate group-hover:text-white transition-colors">Glow Photography</p>
+<span class="text-[10px] text-white/40">3D</span>
+</div>
+<p class="text-white/40 text-xs truncate font-body">Sent you the engagement session link!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-6">
+<button class="w-full flex items-center justify-center gap-2 rounded-xl h-12 bg-primary hover:bg-primary/80 text-white text-sm font-bold transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">edit_square</span>
+<span>Start New Chat</span>
+</button>
+</div>
+</aside>
+<!-- Chat Window Container -->
+<section class="flex-1 flex flex-col relative h-full">
+<!-- Chat Header -->
+<div class="flex flex-wrap justify-between items-center gap-3 p-6 glass-panel border-l-0 border-t-0 border-r-0">
+<div class="flex items-center gap-4 min-w-72">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border-2 border-primary/30" data-alt="Wildflower and Ferns Vendor Detail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAH7Z4ygU-5sx22LH9axheqBSLa75Hcy4aOrJ5AqAns148Cfm8rC-7C6MGR-M_ModN6SyjQ74te-LrrBqHsTg5iLobjE83jBy1T_99wZt_B_x2-2j7nVJ3gliksIMlEeJHsH-6ZuRqtsuNmVV-s4MNZ4AdTDA_1GPUsM2Dn6nctqbMi5wDlcUsUz8OYj5acI8aKsej_9qXuW12UaMM6Qr7gvuM9pAWq7M94b1yRQoY1XNjaRPqk-7iuTHyb_WxatN_kwdvQtI7oCUI");'></div>
+<div class="flex flex-col">
+<p class="text-white text-2xl font-serif font-bold leading-tight">Wildflower &amp; Ferns</p>
+<p class="text-primary text-xs font-bold flex items-center gap-1.5">
+<span class="size-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                Online • Response time: 2 hours
+                            </p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center rounded-lg size-10 glass-panel hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white">call</span>
+</button>
+<button class="flex items-center justify-center rounded-lg size-10 glass-panel hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white">info</span>
+</button>
+<button class="flex min-w-[140px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 glass-panel border-primary/40 text-white text-xs font-bold tracking-wider uppercase transition-all hover:bg-primary/10">
+                            View Profile
+                        </button>
+</div>
+</div>
+<!-- Chat Body (Messages) -->
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6 custom-scrollbar">
+<div class="flex justify-center my-4">
+<span class="px-4 py-1 rounded-full glass-panel text-[10px] font-bold text-white/40 tracking-widest uppercase">Monday, Oct 24</span>
+</div>
+<!-- Vendor Message -->
+<div class="flex items-end gap-3 max-w-[80%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 h-8 shrink-0 glass-panel border border-white/20" data-alt="Vendor avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuABmQ6NjrMjRhO7XB2PRVazxGaafIJn0hwibksq0OxaFwrGU4QFJBoTKUplbj5Z02raQiq1vcwS2fBzoWI9tRCeTOC3Z1vXeEYtCUzt_sDZ9eyDXZNm80q0QTFZV5lMGV8P24n0hzoSq4i5TFpmY1iT1Sj-Nn6Ak9LxU658jqOjp54xExgZWwMv4mrhT6Z-AL3ZmfB1XceaQLzMtqjl7QrZAwT9XkH6JZxCE6uAOCxr2XEhJZdF4HK-6UUlyeHtXdFbuMqErnUVGYo");'></div>
+<div class="flex flex-col gap-1 items-start">
+<p class="text-white/40 text-[11px] font-bold ml-1 font-display">Wildflower &amp; Ferns</p>
+<div class="glass-bubble-vendor rounded-xl rounded-bl-none px-5 py-3 text-white font-body text-[15px] leading-relaxed">
+                                Hi Sarah! I've been working on the floral arrangements for the entrance. Would you like to stick with the peonies or explore the seasonal dahlia options?
+                            </div>
+<p class="text-[10px] text-white/30 ml-1 font-medium">10:42 AM</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex items-end gap-3 self-end max-w-[80%]">
+<div class="flex flex-col gap-1 items-end">
+<p class="text-white/40 text-[11px] font-bold mr-1 font-display">You</p>
+<div class="glass-bubble-user rounded-xl rounded-br-none px-5 py-3 text-white font-body text-[15px] leading-relaxed">
+                                Definitely the dahlias! I saw some in a deep plum color that would match the invitation perfectly. Do you think we could incorporate those?
+                            </div>
+<p class="text-[10px] text-white/30 mr-1 font-medium text-right">11:05 AM</p>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 h-8 shrink-0 glass-panel border border-primary/50" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCqRA9bY8ZHznlg8wWaiA42A3awJVf9hJAHSLql3AHkNc7vHEE36NMwyZ-PaDbft7MotQ5wdG5EB6FSQY5Nn_wTH1Rt_7J4Cm5CGAA-Sl_vNubHbeYVAf9m23ha7jdDoFMTAZpWSN_GFrg7UP6aIeQdAhzhdHqQvFnL2wcyAJScHxkaGw9hiNjdV_NgKx0DCOpSG5HT0ZVP_NqxixmXGWb4PAhbUyQ4nhg9yN9EngU0dbJPQmRn560oKfGdsstMK28h75BK_MFrRfQ");'></div>
+</div>
+<!-- Vendor Message (Recent) -->
+<div class="flex items-end gap-3 max-w-[80%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 h-8 shrink-0 glass-panel border border-white/20" data-alt="Vendor avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCOobpI7GAy20v7VCeCkWR27Ws5_EcPoFsNDi4PWaZLpycxX4NH_qjw_Xti99AWW9IuJdyK1z3QRUrjmVJsvWBCs1Jx9DeuZU8VQYxnCswxYEl5pCsuoavAatz-F9ZHT07gUFZdoMvo5OKS0fqCiG5euUTU5aCGoxsK3In7LsvdOKvBOAXk-n5h5ul3Kvu1wzhXMP9oKqoi0rUvyjabpvBg4wcI96ZgTGUg2_0F4uMZY4wYD6thRgDnmq9R0qYnPIqxsE4A9Ide8Oc");'></div>
+<div class="flex flex-col gap-1 items-start">
+<p class="text-white/40 text-[11px] font-bold ml-1 font-display">Wildflower &amp; Ferns</p>
+<div class="glass-bubble-vendor rounded-xl rounded-bl-none px-5 py-3 text-white font-body text-[15px] leading-relaxed">
+                                That's a fantastic idea! I've updated the floral mood board with the lavender and rose color palette you requested, plus those plum dahlias. Would you like to see the draft?
+                            </div>
+<div class="mt-2 glass-panel p-2 rounded-lg border-white/5 flex items-center gap-3 cursor-pointer hover:bg-white/5">
+<div class="w-12 h-12 rounded bg-cover" data-alt="Preview of floral board" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCefecRnG8yNCkQ4MQw2Xcu5tN80lZgfJmsdj9zrrbdaanG5eXnCspab0p4LyfbLRvPmF-EzpmN674GxoQl24RE4gycFR-95Q25enniWk2OifFptmJAOZ391UCPQSLl9vp8zkr2NI2ui-LIj-PmVkCQHRU56zYnVWhwgkGVwH7FFfcsN7PcDylOrgHJH8HyFA6sH-w-sZT1AJJsuU-0KnKIVjjB-vyn8qG95oVSLULZA5JhZocMfKccgpoZrsBnIitJiTrjCngdQPQ')"></div>
+<div>
+<p class="text-xs font-bold text-white">Floral_Moodboard_v2.pdf</p>
+<p class="text-[10px] text-white/40">4.2 MB • PDF</p>
+</div>
+<span class="material-symbols-outlined text-primary ml-auto">download</span>
+</div>
+<p class="text-[10px] text-white/30 ml-1 font-medium">Just now</p>
+</div>
+</div>
+</div>
+<!-- Message Input Bar -->
+<div class="p-6">
+<div class="glass-panel rounded-2xl p-2 flex items-center gap-2 border-white/20">
+<button class="flex items-center justify-center rounded-xl size-10 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<button class="flex items-center justify-center rounded-xl size-10 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder:text-white/30 font-body py-2" placeholder="Type your message to Wildflower &amp; Ferns..." type="text"/>
+<button class="flex items-center justify-center rounded-xl h-11 px-6 bg-primary text-white shadow-[0_0_15px_rgba(140,43,238,0.4)] hover:shadow-[0_0_25px_rgba(140,43,238,0.6)] transition-all">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

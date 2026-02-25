@@ -1,0 +1,276 @@
+{
+  "tasks": {
+    "foundation-theme-extraction": {
+      "task_id": "foundation-theme-extraction",
+      "description": "Extract colors, fonts, and custom glassmorphism CSS from specs/current/stitch_passy_planner_dashboard/passy_planner_dashboard_1/code.html.",
+      "assigned_agent": "researcher",
+      "status": "completed",
+      "depends_on": [],
+      "result_summary": "Extracted the following theme data:\nFonts: Body ('PT Sans'), Serif ('Playfair Display').\nColors: primary (#D0B8E3), secondary-rose (#E3B8D0), dark-bg (#0c0a0f).\nGlassmorphism CSS: .glass-card (bg-white/5, backdrop-blur-xl), .glass-sidebar (bg-black/40, backdrop-blur-2xl).\nUtility: .lavender-glow (drop-shadow).",
+      "created_at": "2026-02-25T07:56:58.728271",
+      "updated_at": "2026-02-25T08:00:32.415404"
+    },
+    "foundation-tailwind-setup": {
+      "task_id": "foundation-tailwind-setup",
+      "description": "Update passy/app/globals.css to include glassmorphism utility classes and define the custom color palette.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "foundation-theme-extraction"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:00.182654",
+      "updated_at": "2026-02-25T08:00:56.447983"
+    },
+    "foundation-asset-management": {
+      "task_id": "foundation-asset-management",
+      "description": "Set up Google Fonts and Material Symbols in the root layout.tsx.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:01.577298",
+      "updated_at": "2026-02-25T08:00:45.375125"
+    },
+    "components-layout-sidebar": {
+      "task_id": "components-layout-sidebar",
+      "description": "Implement a Sidebar with navigation links matching the specs.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "foundation-tailwind-setup"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:02.865486",
+      "updated_at": "2026-02-25T08:01:13.129701"
+    },
+    "components-layout-header": {
+      "task_id": "components-layout-header",
+      "description": "Implement a Header with search and user profile integration.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "foundation-tailwind-setup"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:04.428459",
+      "updated_at": "2026-02-25T08:01:20.456296"
+    },
+    "components-layout-dashboard": {
+      "task_id": "components-layout-dashboard",
+      "description": "Create a DashboardLayout component in passy/app/dashboard.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "components-layout-sidebar",
+        "components-layout-header"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:05.982162",
+      "updated_at": "2026-02-25T08:01:35.628156"
+    },
+    "components-atoms-glasscard": {
+      "task_id": "components-atoms-glasscard",
+      "description": "Create a GlassCard wrapper component.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "foundation-tailwind-setup"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:07.606956",
+      "updated_at": "2026-02-25T08:01:02.277123"
+    },
+    "components-atoms-statcard": {
+      "task_id": "components-atoms-statcard",
+      "description": "Create a StatCard for the guest/budget/countdown display.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "components-atoms-glasscard"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:09.326519",
+      "updated_at": "2026-02-25T08:01:25.920815"
+    },
+    "components-atoms-taskitem": {
+      "task_id": "components-atoms-taskitem",
+      "description": "Create a TaskItem component for the checklist section.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "components-atoms-glasscard"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:11.043517",
+      "updated_at": "2026-02-25T08:01:30.921328"
+    },
+    "dashboard-implementation": {
+      "task_id": "dashboard-implementation",
+      "description": "Assemble the passy/app/dashboard/page.tsx using the created components.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "components-layout-dashboard",
+        "components-atoms-statcard",
+        "components-atoms-taskitem"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:12.663232",
+      "updated_at": "2026-02-25T08:02:08.234958"
+    },
+    "dashboard-data-fetching": {
+      "task_id": "dashboard-data-fetching",
+      "description": "Use Supabase server components to fetch real user data (e.g., username, event date, guest count) to replace mockup placeholders.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "dashboard-implementation"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:14.546714",
+      "updated_at": "2026-02-25T08:02:56.362474"
+    },
+    "dashboard-progress-visualization": {
+      "task_id": "dashboard-progress-visualization",
+      "description": "Implement the \"Planning Progress\" bar and status badges using the dynamic data.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "dashboard-data-fetching"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:16.160679",
+      "updated_at": "2026-02-25T08:02:58.233180"
+    },
+    "validation-visual-audit": {
+      "task_id": "validation-visual-audit",
+      "description": "Visual Audit: Compare the rendered Next.js page against passy_planner_dashboard_1/screen.png.",
+      "assigned_agent": "validator",
+      "status": "completed",
+      "depends_on": [
+        "dashboard-progress-visualization"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:18.250232",
+      "updated_at": "2026-02-25T08:03:01.205060"
+    },
+    "validation-interactivity": {
+      "task_id": "validation-interactivity",
+      "description": "Add basic transitions and hover effects as defined in the prototypes.",
+      "assigned_agent": "builder",
+      "status": "completed",
+      "depends_on": [
+        "validation-visual-audit"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T07:57:20.036006",
+      "updated_at": "2026-02-25T08:03:04.108607"
+    },
+    "foundation-styling": {
+      "task_id": "foundation-styling",
+      "description": "Extract colors, fonts, and custom glassmorphism CSS from specs/current/stitch_passy_planner_dashboard/passy_planner_dashboard_1/code.html. Update passy/app/globals.css with Tailwind 4 theme and utility classes. Set up Google Fonts and Material Symbols in passy/app/layout.tsx.",
+      "assigned_agent": "frontend-agent",
+      "status": "completed",
+      "depends_on": [],
+      "result_summary": "Verified that foundations (globals.css, layout.tsx) are correctly set up.",
+      "created_at": "2026-02-25T08:05:35.432596",
+      "updated_at": "2026-02-25T08:05:56.289424"
+    },
+    "core-ui-components": {
+      "task_id": "core-ui-components",
+      "description": "Create layout components (DashboardLayout, Sidebar, Header) and atom components (GlassCard, StatCard, TaskItem) in passy/app/dashboard. Break down the specs mockups into granular React components.",
+      "assigned_agent": "frontend-agent",
+      "status": "completed",
+      "depends_on": [
+        "foundation-styling"
+      ],
+      "result_summary": "Verified that all layout and atom components have been created and correctly implemented.",
+      "created_at": "2026-02-25T08:05:37.220275",
+      "updated_at": "2026-02-25T08:05:57.852146"
+    },
+    "setup-design-system": {
+      "task_id": "setup-design-system",
+      "description": "Setup Next.js with TypeScript and Tailwind CSS. Implement the strict 'Passy' visual identity codex. \nThis includes:\n- Defining custom color palette (Charcoal #120c1c, Lavender, Neon-Green) in `tailwind.config.ts`.\n- Configuring backdrop-blur utilities and global styles in `src/app/globals.css`.\n- Creating base UI components: `src/components/ui/GlassCard.tsx`, `src/components/ui/GlowingButton.tsx`, `src/components/ui/StatusBadge.tsx`, and `src/components/layout/AtmosphericBackground.tsx`.\n\nOutput files:\n- `tailwind.config.ts`\n- `src/app/globals.css`\n- `src/components/ui/GlassCard.tsx`\n- `src/components/ui/GlowingButton.tsx`\n- `src/components/ui/StatusBadge.tsx`\n- `src/components/layout/AtmosphericBackground.tsx`",
+      "assigned_agent": "frontend-architect",
+      "status": "completed",
+      "depends_on": [],
+      "result_summary": "Implemented the 'Passy' visual identity system.\n- Created `tailwind.config.ts` with Charcoal, Lavender, Rose, and Neon-Green palette.\n- Configured `src/app/globals.css` with glassmorphism and text glow utilities.\n- Created base UI components: `GlassCard`, `GlowingButton`, `StatusBadge`.\n- Implemented `AtmosphericBackground` layout component with dynamic orbs.\nAll files located in `passy/src/`.",
+      "created_at": "2026-02-25T08:07:59.121093",
+      "updated_at": "2026-02-25T08:15:30.022512"
+    },
+    "setup-database": {
+      "task_id": "setup-database",
+      "description": "Design and apply the SQL schema in Supabase.\nTables required:\n- `profiles` (extends `auth.users`)\n- `events` (date, theme, budget_limit, mood_board_url JSONB)\n- `guests` (RSVP status, dietary needs)\n- `budget_items` (category, estimated, actual, status)\n- `tasks` (timeline, status)\n- `team_members` (RBAC)\n- `saved_vendors`\n\nSetup Row Level Security (RLS) policies for all tables.\nCreate a PostgreSQL trigger to automatically create a profile on user signup.\n\nOutput files:\n- `supabase/schema.sql` (or similar migration/seed script)\n- `src/lib/supabase.ts` (Supabase client configuration)",
+      "assigned_agent": "backend-builder",
+      "status": "completed",
+      "depends_on": [],
+      "result_summary": "Designed and implemented the Supabase SQL schema.\n- Created tables: `profiles`, `events`, `guests`, `budget_items`, `tasks`, `team_members`, `saved_vendors`.\n- Established Row Level Security (RLS) policies for secure data access.\n- Created a PostgreSQL trigger to automate profile creation upon user signup.\n- Configured the Supabase client in `src/lib/supabase.ts`.",
+      "created_at": "2026-02-25T08:08:02.474575",
+      "updated_at": "2026-02-25T08:15:50.767372"
+    },
+    "setup-orchestrator": {
+      "task_id": "setup-orchestrator",
+      "description": "Develop the client-side state management system for navigation.\n- Define `Page` Enum in `src/types/navigation.ts`.\n- Configure `NAV_ITEMS` in `src/constants/navigation.ts`.\n- Build the `Sidebar` component (`src/components/navigation/Sidebar.tsx`) with Glassmorphism styles.\n- Build the `Orchestrator` component (`src/components/navigation/Orchestrator.tsx`) with `AnimatePresence` and conditional rendering.\n\nOutput files:\n- `src/types/navigation.ts`\n- `src/constants/navigation.ts`\n- `src/components/navigation/Sidebar.tsx`\n- `src/components/navigation/Orchestrator.tsx`",
+      "assigned_agent": "frontend-architect",
+      "status": "in_progress",
+      "depends_on": [
+        "setup-design-system"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T08:08:07.543681",
+      "updated_at": "2026-02-25T08:15:55.019942"
+    },
+    "setup-ai-services": {
+      "task_id": "setup-ai-services",
+      "description": "Create server-side utilities (Next.js Server Actions) for Gemini AI:\n- `generateTheme` (returns structured JSON for theme and image prompts)\n- `analyzeBudget` (returns AI Intel cards based on variances)\n- `vendorSearch` (Google Search Grounding integration)\n\nEnsure proper environment variable usage for API keys.\n\nOutput files:\n- `src/lib/ai/gemini-client.ts`\n- `src/app/actions/ai/generate-theme.ts`\n- `src/app/actions/ai/analyze-budget.ts`\n- `src/app/actions/ai/vendor-search.ts`",
+      "assigned_agent": "ai-specialist",
+      "status": "completed",
+      "depends_on": [
+        "setup-design-system"
+      ],
+      "result_summary": "Implemented Gemini AI services:\n- Created `passy/lib/ai/gemini-client.ts` to initialize the SDK.\n- Created Server Actions: `generateTheme`, `analyzeBudget`, and `vendorSearch` in `passy/app/actions/ai/`.\n- Installed `@google/generative-ai` dependency.\nNote: Search grounding is simulated in `vendorSearch` for now.",
+      "created_at": "2026-02-25T08:08:10.683301",
+      "updated_at": "2026-02-25T08:25:27.068795"
+    },
+    "module-theme-assistant": {
+      "task_id": "module-theme-assistant",
+      "description": "Build the `ThemeAssistant` component:\n- Chat interface for theme discovery with Gemini-1.5-flash.\n- Mood Board with specified aspect ratios (4:3 for Venue, 1:1 for others).\n- 'Apply Theme' logic persisting aesthetic choice to `localStorage`.\n- High-fidelity visual styling using Glassmorphism components and Framer Motion.\n\nOutput files:\n- `src/components/planning/ThemeAssistant.tsx`\n- `src/types/theme.ts`\n- `src/components/views/ThemeAssistant.tsx` (to be registered in Orchestrator)",
+      "assigned_agent": "frontend-builder",
+      "status": "blocked",
+      "depends_on": [
+        "setup-orchestrator",
+        "setup-ai-services"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T08:08:14.147857",
+      "updated_at": "2026-02-25T08:08:14.147857"
+    },
+    "module-budget-guest": {
+      "task_id": "module-budget-guest",
+      "description": "Develop the `BudgetTracker` and `GuestManager` modules:\n- `BudgetTracker`: Financial health gauge, interactive expense table, and AI Intel cards.\n- `GuestManager`: RSVP tracking, dietary needs, plus-one logic with high-fidelity list view and sliding side-panel.\n- Both must read/write to Supabase using the configured schema.\n\nOutput files:\n- `src/components/budget/BudgetTracker.tsx`\n- `src/components/guests/GuestManager.tsx`\n- `src/components/views/Budget.tsx`\n- `src/components/views/GuestManager.tsx`",
+      "assigned_agent": "full-stack-builder",
+      "status": "blocked",
+      "depends_on": [
+        "setup-database",
+        "setup-orchestrator"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T08:08:17.102953",
+      "updated_at": "2026-02-25T08:08:17.102953"
+    },
+    "module-marketplace-messages": {
+      "task_id": "module-marketplace-messages",
+      "description": "Develop the `VendorMarketplace` and `MessageCenter`:\n- `VendorMarketplace`: Display grounded search results (Google Search Grounding) with \"Matches Theme\" badge logic based on active theme tags.\n- `MessageCenter`: Split-pane UI for vendor communications (mocked).\n\nOutput files:\n- `src/components/marketplace/VendorMarketplace.tsx`\n- `src/components/messages/MessageCenter.tsx`\n- `src/components/views/Vendors.tsx`\n- `src/components/views/Messages.tsx`\n- `src/types/vendor.ts`",
+      "assigned_agent": "frontend-builder",
+      "status": "blocked",
+      "depends_on": [
+        "module-theme-assistant"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T08:08:21.311109",
+      "updated_at": "2026-02-25T08:08:21.311109"
+    }
+  },
+  "updated_at": "2026-02-25T08:25:27.069013"
+}

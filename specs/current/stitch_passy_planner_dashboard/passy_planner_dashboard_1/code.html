@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy Planner Dashboard - Glassmorphism Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                font-family: 'PT Sans', sans-serif;
+                @apply bg-[#0c0a0f] text-gray-300;
+            }
+            .header-font {
+                font-family: 'Playfair Display', serif;
+            }
+        }
+        @layer components {
+            .glass-card {
+                @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+            }
+            .glass-sidebar {
+                @apply bg-black/40 backdrop-blur-2xl border-r border-white/5;
+            }
+            .lavender-glow {
+                @apply text-[#D0B8E3] drop-shadow-[0_0_8px_rgba(208,184,227,0.6)];
+            }
+            .accent-lavender {
+                @apply bg-[#D0B8E3] text-[#0c0a0f];
+            }
+        }
+        .bg-orb {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.15;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#D0B8E3",
+                        "secondary-rose": "#E3B8D0",
+                        "dark-bg": "#0c0a0f",
+                    },
+                    fontFamily: {
+                        "body": ["PT Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="min-h-screen relative overflow-hidden">
+<div class="bg-orb top-[-10%] left-[-10%] bg-primary"></div>
+<div class="bg-orb bottom-[-10%] right-[-10%] bg-secondary-rose"></div>
+<div class="bg-orb top-[40%] right-[20%] bg-purple-600"></div>
+<div class="flex h-screen overflow-hidden relative z-10">
+<aside class="w-72 flex flex-col glass-sidebar h-full p-6 overflow-y-auto">
+<div class="flex items-center gap-3 mb-12 px-2">
+<div class="bg-primary/20 rounded-xl p-2.5 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined lavender-glow text-2xl">child_care</span>
+</div>
+<div class="flex flex-col">
+<h1 class="header-font text-white text-xl font-bold leading-tight">Passy Planner</h1>
+<p class="text-primary/60 text-xs font-bold uppercase tracking-widest">AI Baby Shower Pro</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 flex-1">
+<div class="flex items-center gap-4 px-4 py-3 rounded-xl bg-white/10 text-white border border-white/10 cursor-pointer transition-all hover:bg-white/15">
+<span class="material-symbols-outlined lavender-glow">dashboard</span>
+<p class="text-sm font-bold">Dashboard</p>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-gray-400 hover:text-white group">
+<span class="material-symbols-outlined group-hover:lavender-glow">auto_awesome</span>
+<p class="text-sm font-medium">AI Theme Assistant</p>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-gray-400 hover:text-white group">
+<span class="material-symbols-outlined group-hover:lavender-glow">group</span>
+<p class="text-sm font-medium">Guest Manager</p>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-gray-400 hover:text-white group">
+<span class="material-symbols-outlined group-hover:lavender-glow">checklist</span>
+<p class="text-sm font-medium">Checklist</p>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-gray-400 hover:text-white group">
+<span class="material-symbols-outlined group-hover:lavender-glow">account_balance_wallet</span>
+<p class="text-sm font-medium">Budget Tracker</p>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-gray-400 hover:text-white group">
+<span class="material-symbols-outlined group-hover:lavender-glow">photo_library</span>
+<p class="text-sm font-medium">Photo Gallery</p>
+</div>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/10 flex flex-col gap-4">
+<button class="flex w-full items-center justify-center gap-2 rounded-xl h-12 px-4 accent-lavender text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>New Event</span>
+</button>
+<div class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-gray-400 hover:text-white group">
+<span class="material-symbols-outlined group-hover:lavender-glow">settings</span>
+<p class="text-sm font-medium">Settings</p>
+</div>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto">
+<header class="sticky top-0 z-20 flex items-center justify-between bg-black/20 backdrop-blur-xl border-b border-white/10 px-10 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-400 lg:hidden">menu</span>
+<h2 class="text-white text-lg font-bold tracking-tight header-font">Passy Dashboard</h2>
+</div>
+<div class="flex items-center gap-8">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xl">search</span>
+<input class="w-80 h-11 pl-12 pr-4 rounded-xl border border-white/10 bg-white/5 text-sm text-white focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-gray-500" placeholder="Search ideas or guests..." type="text"/>
+</div>
+<div class="flex gap-4 items-center">
+<button class="relative size-11 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-gray-300">notifications</span>
+<span class="absolute top-3 right-3.5 size-2 bg-primary rounded-full ring-4 ring-[#0c0a0f]"></span>
+</button>
+<div class="h-11 w-11 rounded-xl border border-primary/50 overflow-hidden shadow-[0_0_15px_rgba(208,184,227,0.3)]">
+<img alt="Profile" class="object-cover size-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMmY7cavXOzK46DErJTcoV2yosQ_7S7KWdjYM98J3bovGR231_9zaptxPfVTEQKq4t4bI7Pvj32h9lXm-IuGmsYfiqe2kkicpbAfguuSOC6W_lTanvKna6un-prDsBNfm_ojF1_wnUP18rtX-EnbYG090VBTZoyG1SALmVDYX5mYrsiGHWKb8VbTpGgGNMui_PrEokzdhRVgDvesCLhZ7k4tJCVDI6FDDQ_n2g5zLENXBBHQcD5hpE-WcVPEzIkWJq9qhC9W9YgPs"/>
+</div>
+</div>
+</div>
+</header>
+<div class="max-w-7xl mx-auto p-10 flex flex-col gap-10">
+<div class="flex flex-wrap justify-between items-end gap-6">
+<div class="flex flex-col gap-3">
+<h1 class="header-font text-5xl lg:text-6xl font-black text-white drop-shadow-sm">Welcome back, Sarah!</h1>
+<p class="text-gray-400 text-xl">You're 65% ready for your big day. <span class="text-primary font-bold lavender-glow">45 days to go.</span></p>
+</div>
+<button class="flex items-center justify-center gap-3 rounded-xl h-14 px-8 glass-card text-white text-sm font-bold hover:bg-white/10 transition-all border-white/20">
+<span class="material-symbols-outlined lavender-glow">auto_awesome</span>
+<span>Ask AI for Help</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="glass-card flex flex-col gap-4 rounded-2xl p-8 hover:border-primary/40 transition-all group">
+<div class="flex justify-between items-start">
+<p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Guest Count</p>
+<span class="material-symbols-outlined lavender-glow">groups</span>
+</div>
+<p class="text-white tracking-tight text-4xl font-bold">42 <span class="text-xl text-gray-500">/ 50</span></p>
+<div class="flex items-center gap-1 text-emerald-400 text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+2 today</span>
+</div>
+</div>
+<div class="glass-card flex flex-col gap-4 rounded-2xl p-8 hover:border-primary/40 transition-all group">
+<div class="flex justify-between items-start">
+<p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Budget Spent</p>
+<span class="material-symbols-outlined lavender-glow">payments</span>
+</div>
+<p class="text-white tracking-tight text-4xl font-bold">$1,200 <span class="text-xl text-gray-500">/ 2,000</span></p>
+<div class="flex items-center gap-1 text-secondary-rose text-sm font-bold">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span>-5% budget alert</span>
+</div>
+</div>
+<div class="glass-card flex flex-col gap-4 rounded-2xl p-8 hover:border-primary/40 transition-all group">
+<div class="flex justify-between items-start">
+<p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Days to Event</p>
+<span class="material-symbols-outlined lavender-glow">calendar_today</span>
+</div>
+<p class="text-white tracking-tight text-4xl font-bold">45</p>
+<p class="text-gray-500 text-sm font-medium">October 15, 2024</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+<div class="lg:col-span-8 flex flex-col gap-10">
+<div class="glass-card rounded-2xl p-8">
+<h2 class="header-font text-2xl font-bold text-white mb-8 flex items-center gap-3">
+<span class="size-2 rounded-full bg-primary lavender-glow"></span>
+                                Planning Progress
+                            </h2>
+<div class="flex flex-col gap-6">
+<div class="w-full bg-white/5 rounded-full h-5 p-1 border border-white/5 overflow-hidden">
+<div class="bg-gradient-to-r from-primary via-secondary-rose to-purple-500 h-full rounded-full shadow-[0_0_15px_rgba(208,184,227,0.5)]" style="width: 65%"></div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-2">
+<div class="bg-white/5 p-4 rounded-xl border border-white/5 text-center">
+<p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Venue</p>
+<p class="font-bold text-emerald-400">Confirmed</p>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border border-white/5 text-center">
+<p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Catering</p>
+<p class="font-bold text-amber-400">Pending</p>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border border-white/5 text-center">
+<p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Guests</p>
+<p class="font-bold text-emerald-400">80%</p>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border border-white/5 text-center">
+<p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Theme</p>
+<p class="font-bold text-primary">AI Guided</p>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-2xl p-8">
+<div class="flex justify-between items-center mb-8">
+<h2 class="header-font text-2xl font-bold text-white">Upcoming Tasks</h2>
+<button class="text-primary text-sm font-bold hover:lavender-glow transition-all">View All</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between p-5 bg-white/5 border border-white/5 rounded-2xl group hover:border-primary/40 transition-all cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="size-7 rounded-lg border-2 border-primary/30 flex items-center justify-center transition-all group-hover:bg-primary/20">
+<span class="material-symbols-outlined text-primary text-sm opacity-0 group-hover:opacity-100">check</span>
+</div>
+<div>
+<p class="text-base font-bold text-white">Send digital invitations</p>
+<p class="text-xs text-gray-500 font-medium">Due in 2 days</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</div>
+<div class="flex items-center justify-between p-5 bg-white/5 border border-white/5 rounded-2xl group hover:border-primary/40 transition-all cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="size-7 rounded-lg border-2 border-primary/30 flex items-center justify-center transition-all group-hover:bg-primary/20">
+<span class="material-symbols-outlined text-primary text-sm opacity-0 group-hover:opacity-100">check</span>
+</div>
+<div>
+<p class="text-base font-bold text-white">Finalize catering menu</p>
+<p class="text-xs text-gray-500 font-medium">Due in 5 days</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</div>
+<div class="flex items-center justify-between p-5 bg-white/5 border border-white/5 rounded-2xl group hover:border-primary/40 transition-all cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="size-7 rounded-lg border-2 border-primary/30 flex items-center justify-center transition-all group-hover:bg-primary/20">
+<span class="material-symbols-outlined text-primary text-sm opacity-0 group-hover:opacity-100">check</span>
+</div>
+<div>
+<p class="text-base font-bold text-white">Order custom decorations</p>
+<p class="text-xs text-gray-500 font-medium">Due in 1 week</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-600 group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 flex flex-col gap-10">
+<div class="glass-card rounded-2xl p-8 h-full">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined lavender-glow">auto_awesome</span>
+<h2 class="header-font text-2xl font-bold text-white">Recent AI Ideas</h2>
+</div>
+<div class="flex flex-col gap-8">
+<div class="group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 border border-white/10">
+<img alt="Floral arrangement" class="object-cover size-full group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhaXMft4siuYvGTp315UF6_4V0vGf7szNh6ACDH27Ra8Vges7XHKkgEZryt_fjYFFxtHKTsQXp06zZ6gu7ZBKu_TAMMnrM6hZqlu0YwoDQcR2KECkSRR-ba4zAN0c0d3EJ0EKOamFfl3pdkFItx6Dq8zz1P4VEu4_wue5d_3loP4CayHy9dkjQdAPmFHy5eLIGuf_FdxEASVx-4xV_LX1eRZRbshmRCYgi8OnAyUdv6BjErAHZwHtHwrH7ug26Nw0X5pfaGRzt8HU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-5">
+<span class="text-black text-[10px] font-black bg-primary/90 px-3 py-1.5 rounded-full uppercase tracking-widest">Theme Inspiration</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-white group-hover:text-primary transition-colors">Floral Dreams Palette</h3>
+<p class="text-sm text-gray-400 mt-2 leading-relaxed">Soft lavender and cream accents with watercolor textures for the stationery.</p>
+</div>
+<div class="group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 border border-white/10">
+<img alt="Cakes" class="object-cover size-full group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABl6F3nAbxom72jp0mFNAJvNJrUpB8ficer68VA2vfcMOXeUSZKeYz1txBEs0rwOcJyUw-8Ywq6_HKX9iVQ5RSuq_WV2roOe7AlRt8eDGvE2G4Fj7yDvjwfbo0rEemcYAx_x4aRBar3G2hPbpK0N8j8tyrJ-_roZoQGpu8V7Ej0_CiDQurmY-1lishA1wLsvKXWbyZCue7FZMCfTirhZnvt8eOA-hFEGNBNuDlONINGKBHWFSCEIN9SZnacXbk7-ShdAfQseI8WIw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-5">
+<span class="text-black text-[10px] font-black bg-secondary-rose/90 px-3 py-1.5 rounded-full uppercase tracking-widest">Menu Concept</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-white group-hover:text-primary transition-colors">Pastel Brunch Menu</h3>
+<p class="text-sm text-gray-400 mt-2 leading-relaxed">Miniature quiches, rose-water macarons, and a tiered cupcake tower.</p>
+</div>
+<div class="group cursor-pointer border-2 border-dashed border-white/10 rounded-2xl p-8 flex flex-col items-center justify-center hover:bg-white/5 hover:border-primary/40 transition-all">
+<span class="material-symbols-outlined lavender-glow text-4xl mb-3">add_circle</span>
+<p class="text-sm font-bold text-white uppercase tracking-widest">Generate More</p>
+<p class="text-xs text-gray-500 mt-2 text-center">Let AI create a custom moodboard for you.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

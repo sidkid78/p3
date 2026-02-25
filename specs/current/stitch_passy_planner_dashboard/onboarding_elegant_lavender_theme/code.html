@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#930df2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#1b1022",
+                        "lavender-glow": "#b290cb",
+                        "muted-rose": "#e2a8c4",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Newsreader', serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+        .lavender-gradient-btn {
+            background: linear-gradient(135deg, #930df2 0%, #e2a8c4 100%);
+            transition: all 0.3s ease;
+        }
+        .lavender-gradient-btn:hover {
+            box-shadow: 0 0 20px rgba(147, 13, 242, 0.4);
+            transform: translateY(-1px);
+        }
+        .input-glass {
+            background: rgba(27, 16, 34, 0.6);
+            border: 1px solid rgba(178, 144, 203, 0.2);
+            transition: all 0.2s ease;
+        }
+        .input-glass:focus {
+            border-color: #930df2;
+            box-shadow: 0 0 10px rgba(147, 13, 242, 0.2);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen relative overflow-hidden flex flex-col font-display">
+<!-- Background Decorative Orbs -->
+<div class="glow-orb bg-primary w-[500px] h-[500px] -top-20 -left-20"></div>
+<div class="glow-orb bg-muted-rose w-[400px] h-[400px] bottom-0 -right-20"></div>
+<div class="glow-orb bg-lavender-glow w-[300px] h-[300px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+<!-- Top Navigation -->
+<header class="w-full px-6 py-4 flex items-center justify-between z-10">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<h2 class="text-white text-2xl font-bold tracking-tight">Passy</h2>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-white/70 hover:text-white text-sm font-medium transition-colors">Support</button>
+<div class="size-10 rounded-full border border-white/10 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzlBDqD-StvH2wZWdM7Cp4ppdj1dtcb3jbZ4YKVWJ_I4mq9grrJVXHKmLkAywfSXtN_13cwNLiZVHabgNzvfxJM9F3VSiKvgCiv08MqDZVfkCItxix_VHrgs7UHPJa-oKGwPXe4COiW_aE4WlgFSKTrwoy6al_8XEi1otsd_ucJTqHPCQtsTNEI3ArdlJMu2CeltvsBYun7-NKf0OVO0xUfisHB2OqLvAGMnGweQm90z5p-bpZfGp8aZmv9iciWrB_dpXrwOETC7A"/>
+</div>
+</div>
+</header>
+<main class="flex-1 flex items-center justify-center p-6 z-10">
+<!-- Main Glass Container -->
+<div class="glass-card max-w-5xl w-full rounded-xl overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+<!-- Left Side: Visual/Branding -->
+<div class="hidden md:flex flex-1 flex-col items-center justify-center p-12 bg-white/5 relative border-r border-white/5">
+<div class="relative w-full aspect-square max-w-[320px]">
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-3xl"></div>
+<!-- 3D Illustration Representation -->
+<div class="relative z-10 w-full h-full flex items-center justify-center">
+<img class="w-full h-full object-contain" data-alt="3D illustration of a soft aesthetic baby cloud and rattle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhyyBH8xmN1otl1jTdrfbMHZtMc-UAxGutHZJjJh6AaCyPMwvf3ZNSuZ64V2TTfMivblhBdChV91loxMT8EJa28gTN7-yn6l7CiT_aObSWsBIulS4snemZ5X_B_8EvOCstdL-Fnj1Ixy_XG5ErKy_k-VglWeGbHNNvE6KtvW2Vek8nIbgRse59_S9IAYCaDkpcvuenJKl10jgxFxkBwmSEiejVrM4xnJnT5eU3gPqVshhhxAjBCkM02buYRYRhUvyxrTxSY7-TKFk"/>
+</div>
+</div>
+<div class="mt-8 text-center">
+<h3 class="text-white text-2xl font-semibold mb-2">Plan the Perfect Arrival</h3>
+<p class="text-lavender-glow/80 text-sm max-w-[280px]">AI-powered tools to create an unforgettable celebration for your little one.</p>
+</div>
+</div>
+<!-- Right Side: Onboarding Form -->
+<div class="flex-1 p-8 md:p-12 flex flex-col justify-between">
+<div>
+<!-- Progress Bar Component -->
+<div class="mb-10">
+<div class="flex justify-between items-end mb-2">
+<span class="text-white/90 text-sm font-medium">Step 1 of 3: Event Basics</span>
+<span class="text-primary font-bold text-xs uppercase tracking-widest">33% Complete</span>
+</div>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full shadow-[0_0_10px_rgba(147,13,242,0.5)]" style="width: 33%;"></div>
+</div>
+</div>
+<!-- Header Text -->
+<div class="mb-8">
+<h1 class="text-white text-4xl font-bold mb-3 tracking-tight">Welcome to Passy</h1>
+<p class="text-white/60 text-lg">Let's start by naming your special celebration.</p>
+</div>
+<!-- Form Fields -->
+<div class="space-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-white/80 text-sm font-medium px-1">Event Name</label>
+<input class="input-glass w-full px-4 py-3.5 rounded-lg text-white placeholder:text-white/20" placeholder="e.g. Sarah's Enchanted Baby Shower" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-white/80 text-sm font-medium px-1">Expected Date</label>
+<div class="relative">
+<input class="input-glass w-full px-4 py-3.5 rounded-lg text-white appearance-none" type="date"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">calendar_month</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-white/80 text-sm font-medium px-1">Event Location (Optional)</label>
+<div class="relative">
+<input class="input-glass w-full px-4 py-3.5 rounded-lg text-white placeholder:text-white/20" placeholder="Enter a city or venue" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-white/40">location_on</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Navigation -->
+<div class="mt-12 flex items-center justify-between">
+<button class="text-white/40 hover:text-white flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                        Back
+                    </button>
+<button class="lavender-gradient-btn px-10 py-3.5 rounded-lg text-white font-bold flex items-center gap-2">
+                        Next Step
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Copyright -->
+<footer class="w-full p-6 text-center z-10">
+<p class="text-white/20 text-xs tracking-widest uppercase">© 2024 Passy AI Technologies. All rights reserved.</p>
+</footer>
+</body></html>

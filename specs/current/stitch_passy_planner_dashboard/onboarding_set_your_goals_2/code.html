@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vendor Review &amp; Rating | Passy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&amp;family=Playfair+Display:wght@700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#9d2bee",
+                        "secondary": "#ff71ce",
+                        "background-dark": "#0f0814",
+                    },
+                    fontFamily: {
+                        "sans": ["PT Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.35;
+        }
+        .btn-gradient {
+            background: linear-gradient(to right, #9d2bee, #ff71ce);
+            box-shadow: 0 0 25px rgba(157, 43, 238, 0.5);
+        }
+        .star-active {
+            color: #c084fc;
+            text-shadow: 0 0 15px rgba(192, 132, 252, 0.8);
+        }
+        .tag-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .tag-chip.active {
+            background: rgba(157, 43, 238, 0.2);
+            border-color: rgba(157, 43, 238, 0.5);
+            color: white;
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            border-color: rgba(157, 43, 238, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            outline: none;
+            box-shadow: 0 0 20px rgba(157, 43, 238, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-sans text-white min-h-screen relative overflow-hidden">
+<div class="fixed inset-0 z-0 opacity-20 pointer-events-none grayscale blur-sm">
+<div class="p-10 grid grid-cols-12 gap-6 h-full">
+<div class="col-span-3 space-y-4">
+<div class="h-10 w-full bg-white/10 rounded"></div>
+<div class="h-64 w-full bg-white/10 rounded-xl"></div>
+<div class="h-40 w-full bg-white/10 rounded-xl"></div>
+</div>
+<div class="col-span-9 space-y-6">
+<div class="h-20 w-full bg-white/10 rounded-xl"></div>
+<div class="grid grid-cols-3 gap-6">
+<div class="h-48 bg-white/10 rounded-xl"></div>
+<div class="h-48 bg-white/10 rounded-xl"></div>
+<div class="h-48 bg-white/10 rounded-xl"></div>
+</div>
+<div class="h-80 w-full bg-white/10 rounded-xl"></div>
+</div>
+</div>
+</div>
+<div class="neon-orb w-[500px] h-[500px] bg-primary top-[-150px] left-[-150px]"></div>
+<div class="neon-orb w-[450px] h-[450px] bg-secondary bottom-[-100px] right-[-100px]"></div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[2px]">
+<div class="glass-card w-full max-w-[580px] rounded-3xl p-8 lg:p-10 relative overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.6)]">
+<div class="flex flex-col items-center text-center mb-8">
+<div class="size-16 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 border border-white/20 p-1 mb-4">
+<div class="w-full h-full rounded-full bg-background-dark flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-3xl text-primary/80">potted_plant</span>
+</div>
+</div>
+<h1 class="font-serif text-3xl lg:text-4xl text-white mb-1">Wildflower &amp; Ferns</h1>
+<p class="text-gray-400 text-sm font-medium tracking-wide">FLORAL DESIGN &amp; DECOR</p>
+</div>
+<div class="mb-8">
+<label class="block text-center text-xs font-bold uppercase tracking-widest text-primary mb-4">Select Rating</label>
+<div class="flex justify-center gap-2">
+<button class="material-symbols-outlined !text-4xl star-active transition-transform hover:scale-110" style="font-variation-settings: 'FILL' 1">star</button>
+<button class="material-symbols-outlined !text-4xl star-active transition-transform hover:scale-110" style="font-variation-settings: 'FILL' 1">star</button>
+<button class="material-symbols-outlined !text-4xl star-active transition-transform hover:scale-110" style="font-variation-settings: 'FILL' 1">star</button>
+<button class="material-symbols-outlined !text-4xl star-active transition-transform hover:scale-110" style="font-variation-settings: 'FILL' 1">star</button>
+<button class="material-symbols-outlined !text-4xl text-white/20 transition-transform hover:scale-110" style="font-variation-settings: 'FILL' 0">star</button>
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 px-1">Write your review</label>
+<textarea class="glass-input w-full h-40 rounded-2xl p-4 text-white placeholder:text-gray-600 resize-none font-sans" placeholder="Share your experience... What made their service special?"></textarea>
+</div>
+<div class="mb-10">
+<label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">Highlights</label>
+<div class="flex flex-wrap gap-2">
+<button class="tag-chip active px-5 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined !text-lg">schedule</span>
+                        Punctual
+                    </button>
+<button class="tag-chip px-5 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white flex items-center gap-2">
+<span class="material-symbols-outlined !text-lg">palette</span>
+                        Creative
+                    </button>
+<button class="tag-chip px-5 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white flex items-center gap-2">
+<span class="material-symbols-outlined !text-lg">payments</span>
+                        Great Value
+                    </button>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<button class="btn-gradient w-full h-14 rounded-full text-white font-bold text-lg flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.98] transition-all">
+                    Submit Review
+                    <span class="material-symbols-outlined">send</span>
+</button>
+<button class="w-full py-2 text-gray-500 hover:text-white transition-colors text-sm font-medium">
+                    Cancel
+                </button>
+</div>
+<button class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<div class="fixed bottom-6 left-0 right-0 z-10 text-center opacity-40">
+<p class="text-[10px] text-gray-500 uppercase tracking-[0.3em]">Passy Premium Experiences • © 2024</p>
+</div>
+
+</body></html>

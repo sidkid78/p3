@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Passy - AI Baby Shower Planner</title>
+    <!-- Tailwind CSS with Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=PT+Sans:wght@400;700&family=Inter:wght@100..900&family=Dancing+Script:wght@400;700&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8d19e6",
+                        "secondary-rose": "#E3B8D0",
+                        "dark-bg": "#0c0a0f",
+                        "lavender": "#D0B8E3",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "body": ["PT Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.375rem",
+                        "md": "0.375rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-[#0c0a0f] text-gray-300;
+                font-family: 'Inter', sans-serif;
+            }
+        }
+        @layer components {
+            .glass-card {
+                @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+            }
+            .glass-sidebar {
+                @apply bg-black/40 backdrop-blur-2xl border-r border-white/5;
+            }
+            .lavender-glow {
+                @apply text-[#D0B8E3] drop-shadow-[0_0_8px_rgba(208,184,227,0.6)];
+            }
+            .accent-lavender {
+                @apply bg-[#D0B8E3] text-[#0c0a0f];
+            }
+        }
+        .bg-orb {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.15;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden dark">
+    <div id="root"></div>
+
+    <!-- React/Router Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Common Components ---
+        const Sidebar = () => {
+            const navigate = useNavigate();
+            const location = useLocation();
+
+            const navItems = [
+                { path: "/dashboard", icon: "dashboard", label: "Dashboard" },
+                { path: "/theme-assistant", icon: "auto_awesome", label: "AI Theme Assistant" },
+                { path: "/guests", icon: "group", label: "Guest Manager" },
+                { path: "/checklist", icon: "checklist", label: "Checklist" },
+                { path: "/budget", icon: "account_balance_wallet", label: "Budget Tracker" },
+                { path: "/gallery", icon: "photo_library", label: "Photo Gallery" },
+            ];
+
+            return (
+                <aside class="w-72 flex flex-col glass-sidebar h-full p-6 overflow-y-auto shrink-0">
+                    <Link to="/" class="flex items-center gap-3 mb-12 px-2">
+                        <div class="bg-primary/20 rounded-xl p-2.5 flex items-center justify-center border border-primary/30">
+                            <span class="material-symbols-outlined lavender-glow text-2xl">child_care</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h1 class="font-serif text-white text-xl font-bold leading-tight">Passy</h1>
+                            <p class="text-primary/60 text-[10px] font-bold uppercase tracking-widest">AI Baby Shower Pro</p>
+                        </div>
+                    </Link>
+                    <nav class="flex flex-col gap-2 flex-1">
+                        {navItems.map(item => (
+                            <Link 
+                                to={item.path} 
+                                key={item.path}
+                                class={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all hover:bg-white/10 ${location.pathname === item.path ? 'bg-white/10 text-white border border-white/10' : 'text-gray-400 group'}`}
+                            >
+                                <span class={`material-symbols-outlined ${location.pathname === item.path ? 'lavender-glow' : 'group-hover:lavender-glow'}`}>{item.icon}</span>
+                                <p class={`text-sm ${location.pathname === item.path ? 'font-bold' : 'font-medium'}`}>{item.label}</p>
+                            </Link>
+                        ))}
+                    </nav>
+                    <div class="mt-auto pt-6 border-t border-white/10 flex flex-col gap-4">
+                        <Link to="/onboarding" class="flex w-full items-center justify-center gap-2 rounded-xl h-12 px-4 accent-lavender text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+                            <span class="material-symbols-outlined text-sm">add</span>
+                            <span>New Event</span>
+                        </Link>
+                        <Link to="/settings" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer text-gray-400 hover:text-white group">
+                            <span class="material-symbols-outlined group-hover:lavender-glow">settings</span>
+                            <p class="text-sm font-medium">Settings</p>
+                        </Link>
+                    </div>
+                </aside>
+            );
+        };
+
+        const TopHeader = ({ title }) => {
+            const navigate = useNavigate();
+            return (
+                <header class="sticky top-0 z-20 flex items-center justify-between bg-black/20 backdrop-blur-xl border-b border-white/10 px-10 py-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-400 lg:hidden">menu</span>
+                        <h2 class="text-white text-lg font-bold tracking-tight font-serif">{title || "Passy Dashboard"}</h2>
+                    </div>
+                    <div class="flex items-center gap-8">
+                        <div class="relative hidden md:block">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xl">search</span>
+                            <input class="w-80 h-11 pl-12 pr-4 rounded-xl border border-white/10 bg-white/5 text-sm text-white focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-gray-500" placeholder="Search ideas or guests..." type="text"/>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                            <button onClick={() => navigate('/activity')} class="relative size-11 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-gray-300">notifications</span>
+                                <span class="absolute top-3 right-3.5 size-2 bg-primary rounded-full ring-4 ring-[#0c0a0f]"></span>
+                            </button>
+                            <div onClick={() => navigate('/settings')} class="h-11 w-11 rounded-xl border border-primary/50 overflow-hidden shadow-[0_0_15px_rgba(208,184,227,0.3)] cursor-pointer">
+                                <img alt="Profile" class="object-cover size-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMmY7cavXOzK46DErJTcoV2yosQ_7S7KWdjYM98J3bovGR231_9zaptxPfVTEQKq4t4bI7Pvj32h9lXm-IuGmsYfiqe2kkicpbAfguuSOC6W_lTanvKna6un-prDsBNfm_ojF1_wnUP18rtX-EnbYG090VBTZoyG1SALmVDYX5mYrsiGHWKb8VbTpGgGNMui_PrEokzdhRVgDvesCLhZ7k4tJCVDI6FDDQ_n2g5zLENXBBHQcD5hpE-WcVPEzIkWJq9qhC9W9YgPs"/>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        // --- Pages ---
+
+        const LandingPage = () => (
+            <div className="min-h-screen bg-[#0f0814] relative overflow-hidden flex flex-col">
+                <div className="bg-orb top-[-10%] left-[-10%] bg-primary/20"></div>
+                <nav className="p-6 flex justify-between items-center z-10 max-w-7xl mx-auto w-full">
+                    <div className="flex items-center gap-3">
+                        <div className="size-8 rounded-full bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center shadow-lg shadow-primary/30">
+                            <span className="material-symbols-outlined text-white text-[20px]">child_care</span>
+                        </div>
+                        <h2 className="text-xl font-bold tracking-tight text-white">Passy</h2>
+                    </div>
+                    <div className="flex gap-4">
+                        <Link to="/onboarding" className="bg-primary hover:bg-primary/90 text-white text-sm font-bold py-2 px-5 rounded-full transition-all transform hover:scale-105">Get Started</Link>
+                    </div>
+                </nav>
+                <main className="flex-1 flex flex-col items-center justify-center text-center p-6 z-10">
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
+                        Plan the Perfect <br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-primary">Baby Shower</span> with AI
+                    </h1>
+                    <p className="text-lg md:text-xl text-gray-300 max-w-2xl mb-10">The smartest way to celebrate. From themes to games, let AI handle the details.</p>
+                    <Link to="/onboarding" className="bg-primary text-white h-14 px-8 rounded-full font-bold text-lg flex items-center gap-2 shadow-xl hover:scale-105 transition-transform">
+                        Start Planning for Free
+                        <span className="material-symbols-outlined">arrow_forward</span>
+                    </Link>
+                </main>
+            </div>
+        );
+
+        const OnboardingPage = () => {
+            const navigate = useNavigate();
+            const [step, setStep] = useState(1);
+
+            return (
+                <div className="min-h-screen bg-background-dark flex flex-col p-6 items-center justify-center relative overflow-hidden">
+                    <div className="bg-orb top-[-20%] left-[-20%] bg-primary/20"></div>
+                    <div className="glass-card max-w-xl w-full p-10 rounded-3xl z-10 animate-fade-in">
+                        <div className="mb-8">
+                            <p className="text-xs text-primary font-bold uppercase mb-2">Step {step} of 3</p>
+                            <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full bg-primary" style={{width: `${(step/3)*100}%`}}></div>
+                            </div>
+                        </div>
+                        {step === 1 && (
+                            <div>
+                                <h1 className="text-3xl font-serif font-bold text-white mb-6">Let's name your celebration</h1>
+                                <input className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white mb-8" placeholder="e.g. Sarah's Enchanted Baby Shower" />
+                                <button onClick={() => setStep(2)} className="w-full h-14 bg-primary rounded-xl font-bold text-white flex items-center justify-center gap-2">Next Step <span className="material-symbols-outlined">arrow_forward</span></button>
+                            </div>
+                        )}
+                        {step === 2 && (
+                            <div>
+                                <h1 className="text-3xl font-serif font-bold text-white mb-6">Choose your vibe</h1>
+                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                    {['Classic', 'Modern', 'Bohemian', 'Whimsical'].map(v => (
+                                        <button key={v} className="p-6 border border-white/10 rounded-2xl bg-white/5 hover:border-primary/50 text-white font-bold">{v}</button>
+                                    ))}
+                                </div>
+                                <button onClick={() => setStep(3)} className="w-full h-14 bg-primary rounded-xl font-bold text-white flex items-center justify-center gap-2">Almost There <span className="material-symbols-outlined">arrow_forward</span></button>
+                            </div>
+                        )}
+                        {step === 3 && (
+                            <div className="text-center">
+                                <span className="material-symbols-outlined text-6xl text-primary mb-4">auto_awesome</span>
+                                <h1 className="text-3xl font-serif font-bold text-white mb-4">AI Blueprint Ready!</h1>
+                                <p className="text-gray-400 mb-8">We've generated a personalized planning guide for your event.</p>
+                                <button onClick={() => navigate('/dashboard')} className="w-full h-14 bg-primary rounded-xl font-bold text-white">Go to Dashboard</button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        const Dashboard = () => {
+            const navigate = useNavigate();
+            return (
+                <div class="flex h-screen overflow-hidden">
+                    <Sidebar />
+                    <main class="flex-1 overflow-y-auto">
+                        <TopHeader />
+                        <div class="max-w-7xl mx-auto p-10 flex flex-col gap-10">
+                            <div class="flex flex-wrap justify-between items-end gap-6">
+                                <div class="flex flex-col gap-3">
+                                    <h1 class="font-serif text-5xl lg:text-6xl font-black text-white">Welcome back, Sarah!</h1>
+                                    <p class="text-gray-400 text-xl">You're 65% ready for your big day. <span class="text-primary font-bold lavender-glow">45 days to go.</span></p>
+                                </div>
+                                <button onClick={() => navigate('/theme-assistant')} class="flex items-center justify-center gap-3 rounded-xl h-14 px-8 glass-card text-white text-sm font-bold hover:bg-white/10 transition-all">
+                                    <span class="material-symbols-outlined lavender-glow">auto_awesome</span>
+                                    <span>Ask AI for Help</span>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div class="glass-card rounded-2xl p-8 hover:border-primary/40 transition-all cursor-pointer" onClick={() => navigate('/guests')}>
+                                    <div class="flex justify-between mb-4">
+                                        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Guest Count</p>
+                                        <span class="material-symbols-outlined lavender-glow">groups</span>
+                                    </div>
+                                    <p class="text-white text-4xl font-bold">42 <span class="text-xl text-gray-500">/ 50</span></p>
+                                    <div class="flex items-center gap-1 text-emerald-400 text-sm font-bold mt-2">
+                                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                                        <span>+2 today</span>
+                                    </div>
+                                </div>
+                                <div class="glass-card rounded-2xl p-8 hover:border-primary/40 transition-all cursor-pointer" onClick={() => navigate('/budget')}>
+                                    <div class="flex justify-between mb-4">
+                                        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Budget Spent</p>
+                                        <span class="material-symbols-outlined lavender-glow">payments</span>
+                                    </div>
+                                    <p class="text-white text-4xl font-bold">$1,200 <span class="text-xl text-gray-500">/ 2,000</span></p>
+                                    <div class="flex items-center gap-1 text-secondary-rose text-sm font-bold mt-2">
+                                        <span class="material-symbols-outlined text-sm">warning</span>
+                                        <span>-5% budget alert</span>
+                                    </div>
+                                </div>
+                                <div class="glass-card rounded-2xl p-8 border-primary/20">
+                                    <div class="flex justify-between mb-4">
+                                        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Days to Event</p>
+                                        <span class="material-symbols-outlined lavender-glow">calendar_today</span>
+                                    </div>
+                                    <p class="text-white text-4xl font-bold">45</p>
+                                    <p class="text-gray-500 text-sm font-medium">October 15, 2024</p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                                <div className="lg:col-span-8 flex flex-col gap-10">
+                                    <div className="glass-card rounded-2xl p-8">
+                                        <h2 className="font-serif text-2xl font-bold text-white mb-8">Planning Progress</h2>
+                                        <div className="w-full bg-white/5 rounded-full h-5 p-1 mb-6">
+                                            <div className="bg-gradient-to-r from-primary to-purple-500 h-full rounded-full" style={{width: '65%'}}></div>
+                                        </div>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            {['Venue', 'Catering', 'Guests', 'Theme'].map((item, i) => (
+                                                <div key={item} className="bg-white/5 p-4 rounded-xl text-center">
+                                                    <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">{item}</p>
+                                                    <p className="font-bold text-primary">{i%2===0 ? 'Confirmed' : 'Pending'}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="lg:col-span-4">
+                                    <div className="glass-card rounded-2xl p-8 h-full">
+                                        <h2 className="font-serif text-2xl font-bold text-white mb-8 flex items-center gap-2">
+                                            <span className="material-symbols-outlined lavender-glow">auto_awesome</span> Recent AI Ideas
+                                        </h2>
+                                        <div className="flex flex-col gap-6">
+                                            <div className="group cursor-pointer" onClick={() => navigate('/theme-assistant')}>
+                                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhaXMft4siuYvGTp315UF6_4V0vGf7szNh6ACDH27Ra8Vges7XHKkgEZryt_fjYFFxtHKTsQXp06zZ6gu7ZBKu_TAMMnrM6hZqlu0YwoDQcR2KECkSRR-ba4zAN0c0d3EJ0EKOamFfl3pdkFItx6Dq8zz1P4VEu4_wue5d_3loP4CayHy9dkjQdAPmFHy5eLIGuf_FdxEASVx-4xV_LX1eRZRbshmRCYgi8OnAyUdv6BjErAHZwHtHwrH7ug26Nw0X5pfaGRzt8HU" className="rounded-xl mb-3 h-32 w-full object-cover" />
+                                                <h3 className="text-white font-bold group-hover:text-primary">Floral Palette</h3>
+                                            </div>
+                                            <div className="group cursor-pointer" onClick={() => navigate('/game-planner')}>
+                                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuABl6F3nAbxom72jp0mFNAJvNJrUpB8ficer68VA2vfcMOXeUSZKeYz1txBEs0rwOcJyUw-8Ywq6_HKX9iVQ5RSuq_WV2roOe7AlRt8eDGvE2G4Fj7yDvjwfbo0rEemcYAx_x4aRBar3G2hPbpK0N8j8tyrJ-_roZoQGpu8V7Ej0_CiDQurmY-1lishA1wLsvKXWbyZCue7FZMCfTirhZnvt8eOA-hFEGNBNuDlONINGKBHWFSCEIN9SZnacXbk7-ShdAfQseI8WIw" className="rounded-xl mb-3 h-32 w-full object-cover" />
+                                                <h3 className="text-white font-bold group-hover:text-primary">Interactive Games</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const ThemeAssistant = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="AI Theme Assistant" />
+                    <div className="flex flex-col md:flex-row gap-8 mt-8">
+                        <div className="md:w-1/3 flex flex-col gap-6">
+                            <div className="glass-card rounded-3xl p-6 flex flex-col gap-6 min-h-[500px]">
+                                <div className="flex items-center gap-3">
+                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA26utPMIejWKTVm5rKMR-YTkeyCGRldcRyd4zd2p-z5LzvU9kFfAfclN7algFqUMoP0db0p1jaBEVlDcf6EYua3LjMugzRD51VsdMZvyw2WEtfyuD9MSYjc8QeQ3yXZ6A2A6n6xTlBljokkeCUWjByc5BFo5XYoAnPf93vfTgtllwnknf5pElGHi8ufAp2xgCNeQd1XKBrl7Jgp4U0UUoB6I9KgYDKXrqgq9Zn1VSI-lcmiJncnxf9ZmP7XZ15pvl8yLFNWga-Nm8" className="size-10 rounded-full" />
+                                    <div><h3 className="text-white font-bold">Gemini AI</h3><p className="text-xs text-primary">Expert Assistant</p></div>
+                                </div>
+                                <div className="flex-1 bg-black/20 rounded-xl p-4 text-sm text-gray-300">
+                                    "I've updated the mood board for your 'Boho Forest' theme. Should we add more gold accents?"
+                                </div>
+                                <div className="relative">
+                                    <input className="w-full bg-white/5 border border-white/10 rounded-xl p-4 pr-12 text-sm" placeholder="Ask AI anything..." />
+                                    <button className="absolute right-2 top-2 p-2 bg-primary rounded-lg"><span className="material-symbols-outlined text-white">send</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-1">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                {[
+                                    'https://lh3.googleusercontent.com/aida-public/AB6AXuBIq5dvq_cfWprVpDlNeZab-c5xnGEcqEZpvG7dvQ-46H3b5UHEi6hztCNfkIjGUoplReE5hhzKnXOMonOgL4TdSIumCxzb1ebwt54ksk9gwFyKotw6x63TCckoz69cw2T-5N1oA4mpeVi9wHYWcwPFmrwyVt2cWjpO3x9Sbx2XuMlIISA0MUuC2w5qRRww_tSfqqnr6JMqLWfDvLYY7Gq4IgM-vbwP8yyH7E0E5tHIkjwm-6ypilzBN7GELUlKrR5e004Ngh1YvEs',
+                                    'https://lh3.googleusercontent.com/aida-public/AB6AXuBPHWY2mje3RfXr0QFnOrH7qQOZnvmmqqPX1JBQy9ij3S72-Kt3gGYFYdv-pg4ohgiT_OwJkfX9AyVzs1p0NsSAL-VaLtcJ9RBrPS86Z5k-JD3ATmokunBbJRmy_uQT0pB0vSjjdVoioWo64EYjj-IXe_7DjHiSoqhwM5SxRQJ_2SjEpEnmDDb6jdvWzRs6A1NhsxkZJZnVFcqKrfvMdFV6_uIhS1wAi4ZXVtz00jvJy4_AvEA2PuKaBxepJ9AVe8o2E9C8lqepmTY',
+                                    'https://lh3.googleusercontent.com/aida-public/AB6AXuAnAw_xJ2AJzjwLHbEVnW-Pn7vRTbb7XFaygtLHw2EjAREA2oIK9bTP7Zkzbmos6BPEGkrUfniyAzLf4KJnsLyZ2aJYct9PIEmTF-_gW1xyvgt9n-kU4elvhUTFoTnpeuvWwKqJJqD3zW-AFe5i9mzM7fss7TecqAn62Xg6iBnWJGsAt22FRMhQj5rd4RCZRRZK6ziqXEqv5h3HbscanHe_Hi96vbM-bs_b4wJt5Gs-X2Xqy9vNFhY4156HIpVgvisXGqi1jVHojU8',
+                                    'https://lh3.googleusercontent.com/aida-public/AB6AXuA4-FSFX3egoeb3RCbBuiwlPCGxXn_XlVJOCwxGVg-5e30shEL4ROQHPvrO5iqB6XzKab_8ID69QwZXtKrputDBq3csFWWsDPWq2wc3awbPc3bsHwS_mJQCuhS2Kgk7Sa0s8-_uZCEtf6bZfjQD9qjAqOL5Qcf7LX8shuORURm8et7_wdZeYb_7zJ8VO-5zQXG3sHN4hJUTHN9VNI0ajmyyg4Ug6UiwIcOU9EFXPp79zZuyG454paSI7hRkQYMd9MTC35f0D1pPusc'
+                                ].map((img, i) => (
+                                    <div key={i} className="glass-card rounded-2xl overflow-hidden group">
+                                        <img src={img} className="w-full h-48 object-cover group-hover:scale-110 transition-transform" />
+                                        <div className="p-4"><p className="text-white font-bold">Concept {i+1}</p></div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+
+        const GuestManager = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="Guest Manager" />
+                    <div className="flex justify-between items-center mb-8 mt-6">
+                        <h1 className="text-4xl font-serif font-bold text-white">Manage Guests</h1>
+                        <button className="bg-primary text-white px-6 py-3 rounded-xl font-bold">+ Add Guest</button>
+                    </div>
+                    <div className="glass-card rounded-3xl overflow-hidden">
+                        <table className="w-full text-left">
+                            <thead className="bg-white/5">
+                                <tr>
+                                    <th className="p-6 text-xs font-bold uppercase tracking-widest text-gray-500">Name</th>
+                                    <th className="p-6 text-xs font-bold uppercase tracking-widest text-gray-500">Status</th>
+                                    <th className="p-6 text-xs font-bold uppercase tracking-widest text-gray-500">Dietary</th>
+                                    <th className="p-6 text-xs font-bold uppercase tracking-widest text-gray-500 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/10">
+                                {[
+                                    { name: "Sarah Miller", status: "Confirmed", dietary: "Gluten Free" },
+                                    { name: "James David", status: "Pending", dietary: "None" },
+                                    { name: "Elena Lopez", status: "Confirmed", dietary: "Nut Allergy" },
+                                ].map((g, i) => (
+                                    <tr key={i} className="hover:bg-white/5 transition-colors">
+                                        <td className="p-6 text-white font-medium">{g.name}</td>
+                                        <td className="p-6">
+                                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${g.status === 'Confirmed' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                                                {g.status}
+                                            </span>
+                                        </td>
+                                        <td className="p-6 text-gray-400">{g.dietary}</td>
+                                        <td className="p-6 text-right"><span className="material-symbols-outlined text-gray-500 cursor-pointer">more_horiz</span></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </div>
+        );
+
+        const Checklist = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="Checklist" />
+                    <div className="max-w-4xl mx-auto mt-8">
+                        <div className="glass-card rounded-3xl p-8 mb-8">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-xl font-bold text-white">Overall Completion</h3>
+                                <span className="text-primary font-bold">75%</span>
+                            </div>
+                            <div className="w-full bg-white/5 rounded-full h-3">
+                                <div className="bg-primary h-3 rounded-full" style={{width: '75%'}}></div>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            {[
+                                { task: "Book the Venue", date: "3 months ago", done: true },
+                                { task: "Send Digital Invitations", date: "2 weeks ago", done: true },
+                                { task: "Order Specialized Cake", date: "Due in 5 days", done: false },
+                                { task: "Finalize Game Selections", date: "Due in 1 week", done: false },
+                            ].map((t, i) => (
+                                <div key={i} className="glass-card p-6 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-white/10">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`size-6 rounded-md border-2 flex items-center justify-center ${t.done ? 'bg-primary border-primary' : 'border-white/20'}`}>
+                                            {t.done && <span className="material-symbols-outlined text-sm text-white font-bold">check</span>}
+                                        </div>
+                                        <div><p className={`text-lg font-medium ${t.done ? 'text-gray-500 line-through' : 'text-white'}`}>{t.task}</p><p className="text-xs text-gray-500">{t.date}</p></div>
+                                    </div>
+                                    <span className="material-symbols-outlined text-gray-500">chevron_right</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+
+        const BudgetTracker = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="Budget Tracker" />
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+                        <div className="lg:col-span-2 glass-card p-8 flex items-center gap-10">
+                            <div className="size-48 shrink-0">
+                                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                    <circle className="text-white/5" cx="50" cy="50" r="42" fill="transparent" stroke="currentColor" strokeWidth="8" />
+                                    <circle className="text-primary" cx="50" cy="50" r="42" fill="transparent" stroke="currentColor" strokeWidth="8" strokeDasharray="189.4 263.8" strokeLinecap="round" />
+                                </svg>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-2xl font-serif font-bold text-white mb-6">Financial Health</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="p-4 bg-white/5 rounded-xl"><p className="text-xs text-gray-500 uppercase font-bold mb-1">Allocated</p><p className="text-2xl font-bold text-white">$5,000</p></div>
+                                    <div className="p-4 bg-white/5 rounded-xl"><p className="text-xs text-gray-500 uppercase font-bold mb-1">Spent</p><p className="text-2xl font-bold text-white">$3,600</p></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="glass-card p-8 border-primary/20">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2"><span className="material-symbols-outlined text-primary">auto_awesome</span> AI Tip</h3>
+                            <p className="text-gray-400 text-sm leading-relaxed mb-4">"Book a Sunday brunch session to reduce site fees by up to 25% ($300 savings)."</p>
+                            <button className="w-full py-3 bg-primary/10 text-primary font-bold rounded-xl border border-primary/20">Get More Insights</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+
+        const Gallery = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="Photo Gallery" />
+                    <div className="flex justify-between items-end mb-10 mt-6 border-b border-white/10 pb-6">
+                        <h1 className="text-5xl font-serif font-bold text-white">Event Gallery</h1>
+                        <button className="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+                            <span className="material-symbols-outlined">cloud_upload</span> Upload
+                        </button>
+                    </div>
+                    <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                        {[
+                            'https://lh3.googleusercontent.com/aida-public/AB6AXuDV9dLmLMKDFV6Mx2_FMGjkjSAmP1UsrJ0rldkaeWRYcJOkac-5OHv0A-m3K0BJSiyfLRqFh61C8Q6l4-1-bkiOoEvO5LtIDqSWdFGq3a80B3qPrGOszbEpCAoCSQtDyrOfRvIlSxYhqDGSCdfsZ6UO0DF76_htfs5Kj-9XeTshEmVAUhty6UIujfDr-EW_WK9ajoGbWi6_9iR3mLgj4DRV4xeJIAUOh7lyjRM2JRkhm7JzK74C8ThG8jvs9YsEsMwaxXyhgXzyoCc',
+                            'https://lh3.googleusercontent.com/aida-public/AB6AXuCtnvSBMsWnIxcO9bvdVGdqbVWnJlNG8tEpdc_x3gU51gR6LM-D2fliOx7KK1UfVDKtKWFkrYfBG8YnlcAAOeNa4FYrsEyTWPJOI75rJUyjcLI3Jgx_YPI_ZFSe7bKQlk2sqc2RtvYaipRzp4N0H79zWIaLELnHH5U79DZvDe0XJLsvlCMhcfQtv-DzNcm84I5jihCknA61noUv06ZfC6Y--X6aHnct7AnP_moa9fjQ22oFkZleP1JrBLoKvFm9ry26NPDylIkPjdI',
+                            'https://lh3.googleusercontent.com/aida-public/AB6AXuAz6KRkkUq1Ma2DkBkH_ZT5mD8gVmqPNvXoHUES5fHJdMi2-yligolQMxxKrqHwpM7d4FDlpfJz-MnI66PGw3ka1T2JSh-Njyo_7qeFQH06HsAQ8B-juWKo33OYT6t8ry928Jk0t-FPf7pvoFhRSPkW-HjGZSOldzim_GlCnn_b9Zr5NVgH9z_EQRDIy9-L-P-DR_cQ-LhwJCevG5rZBID2zE7TAete0XltFyBUjZPrSBScBwep2Unmu2ICxUEeXCE1gMlshYb4-Bk',
+                            'https://lh3.googleusercontent.com/aida-public/AB6AXuB2zdn4OehzlQF2eqp4jcvMWMZOYLcD_tSvtOYWkVN4vtNw6BqlEXAStIITTxbyjp8JAd2DkGm5CAcxCxzaYs098eczRp_tvl9oczdoyKiDWUuH4E1U_KqRZRuZCJoHdhAK-utq91Ub0hFQInxUM9r6MNUNDkFjcZqf9YxqEBqlE9C1LtofLdFSOpbfrxxSiIX2fGtS-igc82rVDMilA7Oh1xr0key6CMj6qgeaXkmbB71n3kL_ptp-qkm4mLrZspTeYElt4Qd7ozw',
+                            'https://lh3.googleusercontent.com/aida-public/AB6AXuADhqGBDwvCPpThr28AS2ocHuVr-Yq6DTATQ5FcW1Jr833EmvWfzgtUFD3FrZgu0WlSBC2MNfbNqgo0V7XW2NZFaVWZ8Qfsad1bP15C1n42J9MqNtoPVQv77hXqwNqvAJnm_ABjYvVElPGOzNp94bh3V3ZXV7dz9XGdZEpnRYws1clpvjHa9XzUnpxohbC-xCM6cMgU-0eZsrg7iz5ZXGx_AWkoe6_j8imCR0dejr1nZ-H1mAiYwBmZ2LtBuj1Egcdtyejvhz2e8mo'
+                        ].map((src, i) => (
+                            <div key={i} className="glass-card rounded-2xl p-2 group cursor-pointer hover:scale-[1.02] transition-transform">
+                                <img src={src} className="rounded-xl w-full" />
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            </div>
+        );
+
+        const Settings = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="Account Settings" />
+                    <div className="max-w-4xl mx-auto mt-10">
+                        <div className="glass-card rounded-3xl p-8 mb-10">
+                            <h3 className="text-2xl font-serif font-bold text-white mb-8">Profile Information</h3>
+                            <div className="flex items-center gap-8 mb-8">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMmY7cavXOzK46DErJTcoV2yosQ_7S7KWdjYM98J3bovGR231_9zaptxPfVTEQKq4t4bI7Pvj32h9lXm-IuGmsYfiqe2kkicpbAfguuSOC6W_lTanvKna6un-prDsBNfm_ojF1_wnUP18rtX-EnbYG090VBTZoyG1SALmVDYX5mYrsiGHWKb8VbTpGgGNMui_PrEokzdhRVgDvesCLhZ7k4tJCVDI6FDDQ_n2g5zLENXBBHQcD5hpE-WcVPEzIkWJq9qhC9W9YgPs" className="size-24 rounded-full border-2 border-primary" />
+                                <button className="px-6 py-2 border border-white/10 rounded-xl text-white font-bold hover:bg-white/5">Change Photo</button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-2"><label className="text-sm text-gray-500">First Name</label><input className="w-full bg-white/5 border border-white/10 rounded-xl p-3" value="Sarah" /></div>
+                                <div className="space-y-2"><label className="text-sm text-gray-500">Last Name</label><input className="w-full bg-white/5 border border-white/10 rounded-xl p-3" value="Jenkins" /></div>
+                            </div>
+                        </div>
+                        <div className="glass-card rounded-3xl p-8 border-red-500/20 bg-red-500/5">
+                            <h3 className="text-xl font-bold text-red-400 mb-2">Delete Account</h3>
+                            <p className="text-gray-500 text-sm mb-6">This action cannot be undone. All event data will be permanently lost.</p>
+                            <button className="bg-red-500 text-white px-6 py-3 rounded-xl font-bold">Delete Account</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+
+        const ActivityLog = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="Activity Feed" />
+                    <div className="max-w-4xl mx-auto mt-10">
+                        <h1 className="text-4xl font-serif font-bold text-white mb-10">Recent Activity</h1>
+                        <div className="space-y-8 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-primary/20">
+                            {[
+                                { title: "AI generated a new Bohemian theme", desc: "Passy AI analyzed your preferences and created a concept.", time: "2 minutes ago", icon: "auto_awesome" },
+                                { title: "You added 5 new guests", desc: "Michael Ross and 4 others were added to the list.", time: "1 hour ago", icon: "group_add" },
+                                { title: "Budget Revised", desc: "Catering budget increased by $250.", time: "3 hours ago", icon: "payments" },
+                            ].map((a, i) => (
+                                <div key={i} className="flex gap-8 relative z-10">
+                                    <div className="size-12 rounded-full bg-dark-bg border-2 border-primary flex items-center justify-center text-primary shadow-[0_0_10px_rgba(141,25,230,0.4)]">
+                                        <span className="material-symbols-outlined">{a.icon}</span>
+                                    </div>
+                                    <div className="flex-1 glass-card p-6 rounded-2xl">
+                                        <div className="flex justify-between mb-2"><h3 className="text-white font-bold">{a.title}</h3><span className="text-xs text-gray-500">{a.time}</span></div>
+                                        <p className="text-gray-400 text-sm">{a.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+
+        const GamePlanner = () => (
+            <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-10">
+                    <TopHeader title="AI Game Planner" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                        {[
+                            { title: "The Diaper Challenge", desc: "A fast-paced game where guests diaper a doll blindfolded.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBIq5dvq_cfWprVpDlNeZab-c5xnGEcqEZpvG7dvQ-46H3b5UHEi6hztCNfkIjGUoplReE5hhzKnXOMonOgL4TdSIumCxzb1ebwt54ksk9gwFyKotw6x63TCckoz69cw2T-5N1oA4mpeVi9wHYWcwPFmrwyVt2cWjpO3x9Sbx2XuMlIISA0MUuC2w5qRRww_tSfqqnr6JMqLWfDvLYY7Gq4IgM-vbwP8yyH7E0E5tHIkjwm-6ypilzBN7GELUlKrR5e004Ngh1YvEs" },
+                            { title: "Woodland Trivia", desc: "Test guests' knowledge of baby animals and forest facts.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBPHWY2mje3RfXr0QFnOrH7qQOZnvmmqqPX1JBQy9ij3S72-Kt3gGYFYdv-pg4ohgiT_OwJkfX9AyVzs1p0NsSAL-VaLtcJ9RBrPS86Z5k-JD3ATmokunBbJRmy_uQT0pB0vSjjdVoioWo64EYjj-IXe_7DjHiSoqhwM5SxRQJ_2SjEpEnmDDb6jdvWzRs6A1NhsxkZJZnVFcqKrfvMdFV6_uIhS1wAi4ZXVtz00jvJy4_AvEA2PuKaBxepJ9AVe8o2E9C8lqepmTY" }
+                        ].map((game, i) => (
+                            <div key={i} className="glass-card rounded-3xl overflow-hidden group">
+                                <img src={game.img} className="w-full h-48 object-cover group-hover:scale-105 transition-transform" />
+                                <div className="p-8">
+                                    <h3 className="text-2xl font-bold text-white mb-2">{game.title}</h3>
+                                    <p className="text-gray-400 mb-6">{game.desc}</p>
+                                    <button className="w-full py-4 bg-primary text-white font-bold rounded-xl">View Rules</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            </div>
+        );
+
+        // --- App Wrapper ---
+        const App = () => {
+            return (
+                <MemoryRouter>
+                    <div className="relative">
+                        <div className="bg-orb top-[-10%] left-[-10%] bg-primary"></div>
+                        <div className="bg-orb bottom-[-10%] right-[-10%] bg-secondary-rose"></div>
+                        <div className="bg-orb top-[40%] right-[20%] bg-purple-600"></div>
+                        
+                        <Routes>
+                            <Route path="/" element={<LandingPage />} />
+                            <Route path="/onboarding" element={<OnboardingPage />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/theme-assistant" element={<ThemeAssistant />} />
+                            <Route path="/guests" element={<GuestManager />} />
+                            <Route path="/checklist" element={<Checklist />} />
+                            <Route path="/budget" element={<BudgetTracker />} />
+                            <Route path="/gallery" element={<Gallery />} />
+                            <Route path="/settings" element={<Settings />} />
+                            <Route path="/activity" element={<ActivityLog />} />
+                            <Route path="/game-planner" element={<GamePlanner />} />
+                        </Routes>
+                    </div>
+                </MemoryRouter>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

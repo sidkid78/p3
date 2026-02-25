@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy - Premium Upgrade</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a53df5",
+                        "primary-glow": "#bd69fa",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#1b1023",
+                        "glass-surface": "rgba(40, 25, 60, 0.4)",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Glassmorphism Utilities */
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(40, 25, 60, 0.6), rgba(20, 10, 30, 0.8));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .glow-badge {
+            box-shadow: 0 0 15px rgba(165, 61, 245, 0.4);
+        }
+        
+        .glow-button {
+            box-shadow: 0 0 25px rgba(165, 61, 245, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .glow-button:hover {
+            box-shadow: 0 0 35px rgba(165, 61, 245, 0.7);
+            transform: translateY(-2px);
+        }
+
+        /* Background Pattern for 'Main App' look */
+        .bg-grid-pattern {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-white font-display overflow-hidden">
+<!-- Main Background (Simulating the App Behind the Modal) -->
+<div class="relative min-h-screen w-full flex flex-col bg-background-dark">
+<!-- Navigation Bar (Blurred Background Content) -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/5 px-10 py-3 blur-[2px] opacity-40">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined !text-[32px]">redeem</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Passy</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<span class="text-white text-sm font-medium leading-normal">Dashboard</span>
+<span class="text-white text-sm font-medium leading-normal">Planning</span>
+<span class="text-white text-sm font-medium leading-normal">Budget</span>
+</div>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 bg-white/10" data-alt="User Avatar Placeholder"></div>
+</div>
+</header>
+<!-- Main Dashboard Content (Blurred Background Content) -->
+<div class="flex-1 p-10 grid grid-cols-12 gap-6 bg-grid-pattern blur-[2px] opacity-40 pointer-events-none select-none">
+<!-- Sidebar placeholder -->
+<div class="col-span-2 space-y-4">
+<div class="h-10 w-full bg-white/5 rounded-lg"></div>
+<div class="h-10 w-full bg-white/5 rounded-lg"></div>
+<div class="h-10 w-full bg-white/5 rounded-lg"></div>
+</div>
+<!-- Main content placeholder -->
+<div class="col-span-10 grid grid-cols-3 gap-6">
+<div class="col-span-3 h-48 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 rounded-xl border border-white/5"></div>
+<div class="col-span-1 h-64 bg-white/5 rounded-xl"></div>
+<div class="col-span-1 h-64 bg-white/5 rounded-xl"></div>
+<div class="col-span-1 h-64 bg-white/5 rounded-xl"></div>
+</div>
+</div>
+<!-- MODAL OVERLAY -->
+<div class="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+<!-- MODAL CONTAINER -->
+<div class="relative w-full max-w-[480px] glass-panel rounded-2xl p-8 flex flex-col items-center">
+<!-- Close Button -->
+<button class="absolute top-4 right-4 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+<!-- Glowing Badge -->
+<div class="mb-6">
+<div class="px-4 py-1.5 rounded-full bg-primary/20 border border-primary/40 text-primary-glow text-xs font-bold tracking-wider uppercase glow-badge inline-flex items-center gap-2">
+<span class="material-symbols-outlined !text-[16px]">stars</span>
+                        Passy Plus
+                    </div>
+</div>
+<!-- Headline -->
+<div class="text-center mb-8">
+<h1 class="font-serif text-3xl md:text-4xl font-bold text-white mb-3 tracking-wide drop-shadow-lg">
+                        Unlock Your Dream Shower
+                    </h1>
+<p class="text-white/60 text-sm md:text-base font-light">
+                        Supercharge your planning with premium features designed for perfection.
+                    </p>
+</div>
+<!-- Feature List -->
+<div class="w-full space-y-4 mb-8">
+<!-- Feature 1 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
+<div class="flex-shrink-0 size-10 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30 group-hover:border-purple-500/60 transition-colors">
+<span class="material-symbols-outlined text-primary-glow">image</span>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold text-sm">Unlimited AI Images</h3>
+<p class="text-white/40 text-xs">Generate endless theme concepts</p>
+</div>
+<div class="text-primary-glow">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
+<div class="flex-shrink-0 size-10 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30 group-hover:border-purple-500/60 transition-colors">
+<span class="material-symbols-outlined text-primary-glow">analytics</span>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold text-sm">Advanced Budget Analytics</h3>
+<p class="text-white/40 text-xs">Track every penny with ease</p>
+</div>
+<div class="text-primary-glow">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
+<div class="flex-shrink-0 size-10 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30 group-hover:border-purple-500/60 transition-colors">
+<span class="material-symbols-outlined text-primary-glow">card_giftcard</span>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold text-sm">Custom Branded Invitations</h3>
+<p class="text-white/40 text-xs">Remove watermarks from invites</p>
+</div>
+<div class="text-primary-glow">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<!-- Feature 4 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
+<div class="flex-shrink-0 size-10 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30 group-hover:border-purple-500/60 transition-colors">
+<span class="material-symbols-outlined text-primary-glow">support_agent</span>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold text-sm">Priority Support</h3>
+<p class="text-white/40 text-xs">Get help whenever you need it</p>
+</div>
+<div class="text-primary-glow">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Pricing & CTA -->
+<div class="w-full flex flex-col items-center gap-3">
+<p class="text-white/50 text-sm font-medium">Just <span class="text-white font-bold">$9.99</span> / month</p>
+<button class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-[#a53df5] to-[#f53d88] text-white font-bold text-lg tracking-wide glow-button relative overflow-hidden group">
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+<span class="relative z-10 flex items-center justify-center gap-2">
+                            Upgrade to Plus
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</span>
+</button>
+<button class="mt-2 text-xs text-white/30 hover:text-white/60 font-medium transition-colors">
+                        No thanks, I'll continue with the free plan
+                    </button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

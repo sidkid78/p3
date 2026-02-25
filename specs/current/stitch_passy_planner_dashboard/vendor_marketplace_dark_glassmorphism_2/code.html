@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Passy | Wildflower &amp; Ferns Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Manrope:wght@400;500;700;800&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c2bee",
+                        "background-dark": "#0a060e",
+                        "charcoal-purple": "#120d1a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "pt-sans": ["PT Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-dark {
+            background: rgba(10, 6, 14, 0.6);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(140, 43, 238, 0.2);
+        }
+        .neon-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.35;
+        }
+        .glow-button {
+            box-shadow: 0 0 20px rgba(140, 43, 238, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 30px rgba(140, 43, 238, 0.7);
+            transform: translateY(-2px);
+        }
+        .badge-glow {
+            box-shadow: 0 0 15px rgba(140, 43, 238, 0.3);
+            border: 1px solid rgba(140, 43, 238, 0.5);
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, transparent 0%, rgba(10, 6, 14, 0.8) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-white overflow-x-hidden min-h-screen">
+<div class="neon-orb bg-primary w-[600px] h-[600px] -top-48 -left-48"></div>
+<div class="neon-orb bg-indigo-600 w-[500px] h-[500px] top-1/4 -right-24"></div>
+<div class="neon-orb bg-purple-500 w-[400px] h-[400px] -bottom-24 left-1/3"></div>
+<div class="relative flex min-h-screen w-full flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-10 py-3 glass sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-2xl font-black leading-tight tracking-tight">Passy</h2>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-8 text-sm font-medium">
+<a class="text-white/80 hover:text-white transition-colors" href="#">Dashboard</a>
+<a class="text-white/80 hover:text-white transition-colors" href="#">Themes</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Vendors</a>
+<a class="text-white/80 hover:text-white transition-colors" href="#">Invitations</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 glass text-white hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-10 w-10 border border-white/20" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpbAgWZWiHrF76E2YfuRv8T--umA8ZRwBR45PXn01fjJ1slhjeSusiTKq6MzIFQU-XnDMZQh38xFV7qu3eTmRB6A5lWVlgvuA8mISt3M90dWZ6L6KCAGn0Xt_4PWIwlFyz0FN1iL_cq2_NyiDXO0xIr4nE3LJshS9lvl-ejeJhArktCLVFLOJ2F7bXKBN-MaGOcEZXazt8i8Ny4h-VrOP4VdZau2NWE1FIRGZypQoyy50gTwoDE7Zvr1hJ3F87eeCJGDkzX_z7m5c");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="max-w-7xl mx-auto px-10 pt-8 pb-4">
+<a class="inline-flex items-center gap-2 text-white/60 hover:text-primary transition-colors text-sm font-bold group" href="#">
+<span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                    Back to Marketplace
+                </a>
+</div>
+<div class="relative w-full h-[500px] px-10 mb-24">
+<div class="w-full h-full rounded-2xl overflow-hidden relative shadow-2xl">
+<img alt="Wildflower &amp; Ferns cover image" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkDB0AvypszsFVYv7Q5k9nLs1dCEmXNxYQLClHCWucuL9fiDkdAK77AwtYmM4hzK2IpGUl-Q2ozQB7H1laF5xqpt2xXpP3IMTBgJumOfuwWlxi75cJuG1iopQgFUfyPEihWOJrtP1BoL7aO1szXToWjSilIRYk-lwAQ-fXDLuDBKyrobId03c86ie_kX6aMQyY8c5w8S_E2pKSfgjf3UtKEQunITW_xvYOaFwRARm8jBnJjRBkgmHOPk94soDXI09PyF5JSd_vwvc"/>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="absolute -bottom-12 left-12 right-12 md:right-auto md:w-[600px] glass-dark rounded-2xl p-8 flex flex-col md:flex-row items-center md:items-end justify-between gap-6">
+<div class="flex flex-col gap-2">
+<div class="badge-glow bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full inline-flex items-center gap-1 w-fit mb-2">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                Matches Theme
+                            </div>
+<h1 class="font-serif text-5xl text-white">Wildflower &amp; Ferns</h1>
+<div class="flex items-center gap-4 mt-2">
+<div class="flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full text-sm">
+<span class="material-symbols-outlined text-sm text-yellow-400 fill-1">star</span>
+<span class="font-bold">4.9</span>
+<span class="text-white/40 font-normal ml-1">(128 reviews)</span>
+</div>
+<span class="text-white/40">•</span>
+<span class="text-white/60 text-sm font-medium">Los Angeles, CA</span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="h-12 w-12 glass rounded-xl flex items-center justify-center text-white hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="h-12 w-12 glass rounded-xl flex items-center justify-center text-white hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-3 gap-12 pb-24">
+<div class="lg:col-span-2 space-y-12">
+<section>
+<h2 class="font-serif text-3xl mb-6">Past Work</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<img class="rounded-xl aspect-square object-cover glass hover:opacity-80 transition-opacity cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkDB0AvypszsFVYv7Q5k9nLs1dCEmXNxYQLClHCWucuL9fiDkdAK77AwtYmM4hzK2IpGUl-Q2ozQB7H1laF5xqpt2xXpP3IMTBgJumOfuwWlxi75cJuG1iopQgFUfyPEihWOJrtP1BoL7aO1szXToWjSilIRYk-lwAQ-fXDLuDBKyrobId03c86ie_kX6aMQyY8c5w8S_E2pKSfgjf3UtKEQunITW_xvYOaFwRARm8jBnJjRBkgmHOPk94soDXI09PyF5JSd_vwvc"/>
+<img class="rounded-xl aspect-square object-cover glass hover:opacity-80 transition-opacity cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC79qBjFQs0J3Z3W7gKcB-5LlhNhTKd8Hr2QwCVpdGvK5ylUVJ_Fq8XnzlSgKeg1HK7cHMB2wMgZXsjkPUBtiFfdNJa6zmwTFf96pWuAAWLJ4OGGeU5m7QBJl-K9EWhMzEpXL2JvivZy8_wVMavrOqaOTThsSOUV5SHCpHMGYqrINwTh47yjzr6ZNmAXl-szuX6wmlJ9uB9WvX8yxRQPQDoAs5RkmmqTk9q_cgWp2lVrd81D7hVJ4jHvGL3q6ZeooC63eQQhFqQr0w"/>
+<img class="rounded-xl aspect-square object-cover glass hover:opacity-80 transition-opacity cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdSdUIJFZPWLJaWA8JUTnytFVM-1DeOKbH4a0fP6BewwKQVibrWARnH5GGPJowM0PLBkNphEGGimplDxpeDRhNuNSOek5qxX3toIdRohZsBKIZEn1H5_0htPZQy4COkCeWUi4bHh-mjclPbwSoKH3mBvR174tfJn0q4PFdpXCo1tOjBuzX2VQRPF41tipU45k5CzowC2TJrr3NkDlIKl0lC9yBe_8IVX4svLABEU5r7OJ4CGQIaCRLoAAZQh1609GxMPMlxYGWdp8"/>
+<img class="rounded-xl aspect-square object-cover glass hover:opacity-80 transition-opacity cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMO72Ht8UffyE0UnnJwyL-Gyp2vKjd1UY6KehMWDf2EzbT5EMcLlKh8h5YbEX9VCnQylL8QHqJUgZ0pYHpHJxhXzHm8gtZPSel0RIOem0TxG3xxMtoRngC0UrEFxV-JQeZANGcIIYM_QBX3Q3n3_pUuf-9ba9UHVcVx_cWPDQJORXikx0jl82wQEx9qLhxrdBxrEjJDgQoiLsSg3mgCrH_vZoCj3vkGDOK5N1kuTDN35sNWUq4eAgXof-7_UK3c6plteGiouH5HUA"/>
+<img class="rounded-xl aspect-square object-cover glass hover:opacity-80 transition-opacity cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIjK7vipxn4Iw6K9EO8CrajLed605I09afk7OXt9eVj0ZJ9onH2N5OSpaJ8DbNiMkOxF8Yy6zaA8hdWl5KewEMRlS0lEBedELE80xP-0d0d8ioUW2ZlvU59fOvM67cyMC9JKavrtQpC6wqGfO6ZOX0fS6Lmtcp7mmD4MPFlgonrXrnB1RQQgx28SGf1h54wgTLpTgKBlOpZrODldeX7WX0HEoX3gr6L7VBaJC7sV-SpCIcLGpdyv0uzVPic8RI1bCKbgoZJXZjX2E"/>
+<div class="rounded-xl aspect-square glass flex items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
+<span class="text-white/40 font-bold">+14 more</span>
+</div>
+</div>
+</section>
+<section class="font-pt-sans leading-relaxed text-lg text-white/80 space-y-4">
+<h2 class="font-serif text-3xl text-white mb-6">About the Artist</h2>
+<p>
+                            Wildflower &amp; Ferns was born out of a passion for bringing the wild, untamed beauty of nature into the most precious moments of your life. Specializing in organic, whimsical floral designs, we believe that every baby shower should feel like stepping into a fairytale forest.
+                        </p>
+<p>
+                            Founded by Elena Vance in 2018, our studio focuses on sustainable sourcing and season-specific blooms. For your <span class="text-primary font-bold">Whimsical Woodland</span> theme, we curate a palette of deep mossy greens, delicate cream hellebores, and wild lavender sprigs, accented by natural textures like bark and river stones.
+                        </p>
+<div class="grid grid-cols-2 gap-6 pt-6">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">eco</span>
+<div>
+<h4 class="font-bold text-white">Eco-Conscious</h4>
+<p class="text-sm text-white/60">Foam-free mechanics &amp; locally grown flora.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">draw</span>
+<div>
+<h4 class="font-bold text-white">Custom Sketches</h4>
+<p class="text-sm text-white/60">Complimentary design mockups for every event.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="lg:col-span-1">
+<div class="glass-dark rounded-2xl p-8 sticky top-28 space-y-8">
+<div>
+<h3 class="text-2xl font-bold mb-2">Service Packages</h3>
+<p class="text-white/50 text-sm">Select a package to view availability</p>
+</div>
+<div class="space-y-4">
+<label class="block cursor-pointer group">
+<input checked="" class="hidden peer" name="package" type="radio"/>
+<div class="glass p-4 rounded-xl border-white/5 peer-checked:border-primary/60 peer-checked:bg-primary/10 transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-bold">The Meadow Suite</span>
+<span class="text-primary font-bold text-lg">$450</span>
+</div>
+<p class="text-xs text-white/60">1 Bridal centerpiece, 4 guest table clusters, and petite greenery accents.</p>
+</div>
+</label>
+<label class="block cursor-pointer group">
+<input class="hidden peer" name="package" type="radio"/>
+<div class="glass p-4 rounded-xl border-white/5 peer-checked:border-primary/60 peer-checked:bg-primary/10 transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-bold">The Enchanted Forest</span>
+<span class="text-primary font-bold text-lg">$850</span>
+</div>
+<p class="text-xs text-white/60">Full tablescapes for up to 80 guests, floral archway, and woodland props.</p>
+</div>
+</label>
+</div>
+<div class="pt-4 border-t border-white/10 space-y-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-white/60">Estimated Total</span>
+<span class="text-xl font-black">$450.00</span>
+</div>
+<button class="w-full h-14 bg-primary glow-button text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">mail</span>
+                                Contact Vendor
+                            </button>
+<p class="text-[10px] text-center text-white/30 uppercase tracking-widest font-bold">Responds within 24 hours</p>
+</div>
+<div class="bg-white/5 rounded-xl p-4 flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+<span class="material-symbols-outlined text-lg">event_available</span>
+</div>
+<div>
+<h4 class="text-xs font-bold text-white">Next Available Date</h4>
+<p class="text-sm text-green-400">August 14, 2024</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-auto px-10 py-8 border-t border-white/10 text-center text-white/20 text-xs">
+            © 2024 Passy AI Event Planning. All rights reserved.
+        </footer>
+</div>
+
+</body></html>

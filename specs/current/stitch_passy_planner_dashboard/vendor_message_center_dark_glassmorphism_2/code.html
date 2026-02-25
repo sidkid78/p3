@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Confirmation | Passy</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Playfair+Display:wght@700&amp;family=PT+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#120a1a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                        "body": ["PT Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .glass-subcard {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-bubble-vendor {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-bubble-user {
+            background: rgba(140, 43, 238, 0.25);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(140, 43, 238, 0.4);
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-white overflow-hidden relative min-h-screen">
+<div class="orb w-[600px] h-[600px] bg-primary/30 top-[-10%] left-[-5%]"></div>
+<div class="orb w-[500px] h-[500px] bg-rose-500/20 bottom-[-10%] right-[10%]"></div>
+<div class="orb w-[400px] h-[400px] bg-purple-600/20 top-[20%] right-[-5%]"></div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background-dark/60 backdrop-blur-sm">
+<div class="max-w-2xl w-full glass-modal rounded-[2.5rem] p-10 flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-24 bg-primary/20 blur-[60px]"></div>
+<div class="relative mb-8 mt-4">
+<div class="absolute inset-0 bg-primary/40 rounded-full blur-2xl"></div>
+<div class="relative size-32 flex items-center justify-center bg-gradient-to-br from-primary to-rose-400 rounded-3xl shadow-2xl transform rotate-3">
+<span class="material-symbols-outlined text-[72px] text-white/90 drop-shadow-lg">celebration</span>
+</div>
+</div>
+<h1 class="font-serif text-5xl mb-4 text-white">Booking Confirmed!</h1>
+<p class="font-body text-xl text-white/80 max-w-lg mb-10 leading-relaxed">
+                You have successfully booked <span class="text-white font-bold">Wildflower &amp; Ferns</span> for your event on <span class="text-primary font-bold">October 24th</span>.
+            </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-md mb-12">
+<div class="glass-subcard rounded-2xl p-4 flex flex-col items-center">
+<span class="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Service</span>
+<span class="text-white font-bold">Floral Design</span>
+</div>
+<div class="glass-subcard rounded-2xl p-4 flex flex-col items-center">
+<span class="text-[10px] font-bold text-white/40 tracking-widest uppercase mb-1">Status</span>
+<div class="flex items-center gap-2">
+<span class="size-2 bg-green-400 rounded-full shadow-[0_0_8px_rgba(74,222,128,0.6)]"></span>
+<span class="text-white font-bold">Deposit Paid</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+<button class="flex-1 bg-primary hover:bg-primary/80 text-white font-bold h-14 rounded-2xl transition-all shadow-[0_0_20px_rgba(140,43,238,0.4)] hover:shadow-[0_0_30px_rgba(140,43,238,0.6)]">
+                    Go to Dashboard
+                </button>
+<button class="flex-1 glass-panel hover:bg-white/10 text-white font-bold h-14 rounded-2xl transition-all">
+                    View Booking Details
+                </button>
+</div>
+</div>
+</div>
+<div class="flex h-screen w-full flex-col opacity-30 grayscale-[0.2] pointer-events-none">
+<header class="flex items-center justify-between px-10 py-3 glass-panel z-10">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-primary">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path></svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight">Passy</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-9">
+<a class="text-white/70 text-sm font-medium" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium border-b-2 border-primary pb-1" href="#">Messages</a>
+<a class="text-white/70 text-sm font-medium" href="#">Vendors</a>
+<a class="text-white/70 text-sm font-medium" href="#">Guest List</a>
+</nav>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-white/20" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDkCHJtcVMcYVr4Pa4Lw5KUjtciOP1lnrtXrpLr_dliNyeASab82Wx01pWSOu7K6uNw1I-Sl6kDjObSe8tkMk_HGjClMAUGKUn7-YYuJ5PaHMYuWjscqDC80kyqT4InjS5a33tDs-nsYnypzTqmhfbxTA5uDLrWUh7dOAUCk5emyFkMr3gt8s_z4d1V__LW7p-1AusQgZXcFIvm5vqIBtyf8sYgx7BwG8h3pdACqbnTiiYnnSVKK6mUFMZchC-uzARb79gZMLY3Wbw");'></div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<aside class="w-80 glass-sidebar flex flex-col h-full hidden md:flex">
+<div class="p-6 flex flex-col gap-6">
+<h1 class="font-serif text-3xl text-white">Messages</h1>
+<div class="flex flex-col gap-2">
+<div class="flex items-start gap-3 p-3 rounded-xl bg-primary/20 border border-primary/30">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border-2 border-primary/50" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvXpdhJS_b2Q06C4eyqtZPpsaIeBPUNrs-whVJIB8s8rjpT9qN-zShPvzNw5dHO8IdvxAa_Zrg8VlR7CPLI9SXeECem_DvTCPUGMRjwSauiSsyESlif4ehBqy1u4KKhG4ztZgfTiy1aWYC-SCCGLUIJQezCh6wtiAg480rx-ZgVAF9t2D5ojU-N4o8tcT7YJ6rVD0G6pE23KuYfM54NznqsQrQXIbSoJStm1ZyVw6mhP6NnAf95s-jjhCE20nZ1_Q9XLymsvMXn5o");'></div>
+<div class="flex-1 min-w-0">
+<p class="text-white text-sm font-bold">Wildflower &amp; Ferns</p>
+<p class="text-white/60 text-xs truncate">I've updated the floral mood...</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<section class="flex-1 flex flex-col relative h-full">
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6 custom-scrollbar">
+<div class="flex items-end gap-3 max-w-[80%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 h-8 shrink-0 glass-panel border border-white/20" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuABmQ6NjrMjRhO7XB2PRVazxGaafIJn0hwibksq0OxaFwrGU4QFJBoTKUplbj5Z02raQiq1vcwS2fBzoWI9tRCeTOC3Z1vXeEYtCUzt_sDZ9eyDXZNm80q0QTFZV5lMGV8P24n0hzoSq4i5TFpmY1iT1Sj-Nn6Ak9LxU658jqOjp54xExgZWwMv4mrhT6Z-AL3ZmfB1XceaQLzMtqjl7QrZAwT9XkH6JZxCE6uAOCxr2XEhJZdF4HK-6UUlyeHtXdFbuMqErnUVGYo");'></div>
+<div class="glass-bubble-vendor rounded-xl rounded-bl-none px-5 py-3 text-white font-body text-[15px]">
+                            Hi Sarah! I've been working on the floral arrangements for the entrance...
+                        </div>
+</div>
+</div>
+<div class="p-6">
+<div class="glass-panel rounded-2xl p-2 flex items-center gap-2 border-white/20 h-14"></div>
+</div>
+</section>
+</main>
+</div>
+
+</body></html>

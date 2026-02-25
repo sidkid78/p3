@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding: Set Your Goals | Passy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#9d2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+        .selection-glow {
+            box-shadow: 0 0 20px rgba(157, 43, 238, 0.3);
+            border-color: rgba(157, 43, 238, 0.6) !important;
+            background: rgba(157, 43, 238, 0.1) !important;
+        }
+        .btn-gradient {
+            background: linear-gradient(to right, #9d2bee, #ff71ce);
+            box-shadow: 0 4px 15px rgba(157, 43, 238, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white min-h-screen relative overflow-hidden">
+<!-- Background Orbs -->
+<div class="neon-orb w-[400px] h-[400px] bg-primary top-[-100px] left-[-100px]"></div>
+<div class="neon-orb w-[350px] h-[350px] bg-[#ff71ce] bottom-[-50px] right-[-50px]"></div>
+<div class="neon-orb w-[300px] h-[300px] bg-indigo-600 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
+<div class="relative z-10 flex flex-col min-h-screen">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between px-6 lg:px-20 py-6">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+<svg class="text-white size-5" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold tracking-tight">Passy</h2>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-sm text-gray-400 hidden sm:inline">Need help?</span>
+<button class="text-sm font-medium hover:text-primary transition-colors">Support</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex items-center justify-center p-4">
+<div class="glass-card max-w-[800px] w-full rounded-xl p-8 lg:p-12 shadow-2xl">
+<!-- Progress Bar Section -->
+<div class="max-w-md mx-auto mb-10">
+<div class="flex justify-between items-end mb-2">
+<span class="text-xs font-semibold uppercase tracking-widest text-primary">Step 2 of 4</span>
+<span class="text-xs text-gray-400">Planning Goals</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full shadow-[0_0_10px_#9d2bee]" style="width: 40%;"></div>
+</div>
+</div>
+<!-- Headline & Subtext -->
+<div class="text-center mb-10">
+<h1 class="font-serif text-3xl lg:text-5xl text-white mb-4">What can we help you with today?</h1>
+<p class="text-gray-400 text-lg">Select the goals that matter most to your celebration.</p>
+</div>
+<!-- Goal Selection Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mb-10">
+<!-- Goal Card 1 -->
+<div class="glass-card selection-glow rounded-xl p-6 cursor-pointer hover:border-primary/50 transition-all group relative overflow-hidden">
+<div class="flex flex-col gap-4">
+<div class="size-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary border border-primary/30 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined !text-3xl">magic_button</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-white">Find a Beautiful Theme</h3>
+<p class="text-sm text-gray-400 leading-relaxed mt-1">AI-powered visuals and color palettes for your event.</p>
+</div>
+</div>
+<div class="absolute top-4 right-4">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+</div>
+</div>
+<!-- Goal Card 2 -->
+<div class="glass-card rounded-xl p-6 cursor-pointer hover:border-primary/50 transition-all group border-white/5">
+<div class="flex flex-col gap-4">
+<div class="size-12 rounded-lg bg-white/5 flex items-center justify-center text-white/60 border border-white/10 group-hover:text-primary group-hover:bg-primary/20 group-hover:border-primary/30 transition-all">
+<span class="material-symbols-outlined !text-3xl">group</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-white">Manage my Guest List</h3>
+<p class="text-sm text-gray-400 leading-relaxed mt-1">RSVP tracking, seating charts, and digital invites.</p>
+</div>
+</div>
+</div>
+<!-- Goal Card 3 -->
+<div class="glass-card rounded-xl p-6 cursor-pointer hover:border-primary/50 transition-all group border-white/5">
+<div class="flex flex-col gap-4">
+<div class="size-12 rounded-lg bg-white/5 flex items-center justify-center text-white/60 border border-white/10 group-hover:text-primary group-hover:bg-primary/20 group-hover:border-primary/30 transition-all">
+<span class="material-symbols-outlined !text-3xl">savings</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-white">Stay on Budget</h3>
+<p class="text-sm text-gray-400 leading-relaxed mt-1">Smart expense tracking and cost-saving suggestions.</p>
+</div>
+</div>
+</div>
+<!-- Goal Card 4 -->
+<div class="glass-card rounded-xl p-6 cursor-pointer hover:border-primary/50 transition-all group border-white/5">
+<div class="flex flex-col gap-4">
+<div class="size-12 rounded-lg bg-white/5 flex items-center justify-center text-white/60 border border-white/10 group-hover:text-primary group-hover:bg-primary/20 group-hover:border-primary/30 transition-all">
+<span class="material-symbols-outlined !text-3xl">sports_esports</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-white">Plan Fun Games</h3>
+<p class="text-sm text-gray-400 leading-relaxed mt-1">Interactive activities and printables for your guests.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex flex-col items-center gap-6">
+<button class="btn-gradient w-full sm:w-[320px] h-14 rounded-full text-white font-bold text-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        Continue
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="text-gray-500 hover:text-white transition-colors text-sm font-medium">
+                        Skip for now
+                    </button>
+</div>
+</div>
+</main>
+<!-- Footer Attribution -->
+<footer class="py-8 text-center">
+<p class="text-xs text-gray-600 uppercase tracking-widest">© 2024 Passy AI Technologies. All rights reserved.</p>
+</footer>
+</div>
+</body></html>
