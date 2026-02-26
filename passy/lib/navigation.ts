@@ -24,7 +24,8 @@ export function useNavigation() {
     const [page, setPage] = useState<Page>(currentPage);
 
     useEffect(() => {
-        return navigation.subscribe(setPage);
+        const unsubscribe = navigation.subscribe(setPage);
+        return () => { unsubscribe(); };
     }, []);
 
     return {

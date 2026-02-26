@@ -4,11 +4,16 @@ import React from 'react';
 
 import ThemeToggle from '@/components/atoms/ThemeToggle';
 
-const Header = () => {
+const Header = ({ onMenuClick }: { onMenuClick?: () => void }) => {
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between bg-panel-bg backdrop-blur-xl border-b border-panel-border px-10 py-4 transition-colors duration-300">
       <div className="flex items-center gap-2">
-        <span className="material-symbols-outlined opacity-40 lg:hidden">menu</span>
+        <button
+          onClick={onMenuClick}
+          className="material-symbols-outlined opacity-60 lg:hidden hover:text-primary transition-colors p-2 -ml-2 rounded-lg hover:bg-primary/5 active:scale-95"
+        >
+          menu
+        </button>
         <h2 className="text-text-main text-lg font-bold tracking-tight font-display">Passy Dashboard</h2>
       </div>
       <div className="flex items-center gap-8">

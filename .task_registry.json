@@ -270,7 +270,114 @@
       "result_summary": null,
       "created_at": "2026-02-25T08:08:21.311109",
       "updated_at": "2026-02-25T08:08:21.311109"
+    },
+    "supabase-backend": {
+      "task_id": "supabase-backend",
+      "description": "Update and apply the SQL schema in Supabase as defined in info.md. Create tables for Profiles, Events, TeamMembers, Guests, BudgetItems, Tasks, and SavedVendors. Implement RLS policies for team-based access and the handle_new_user trigger. Expected files: passy/supabase/schema.sql (new file to track schema).",
+      "assigned_agent": "backend-engineer",
+      "status": "pending",
+      "depends_on": [],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:16:12.293391",
+      "updated_at": "2026-02-25T13:16:12.293391"
+    },
+    "spa-orchestrator": {
+      "task_id": "spa-orchestrator",
+      "description": "Enhance the Orchestrator component to handle state-based navigation using the Page enum. Implement fluid transitions between modules using Framer Motion. Add logic to toggle between Workspace (with Sidebar) and Standalone views (Landing, Invitations). Expected files: passy/types/navigation.ts, passy/components/navigation/Orchestrator.tsx, passy/components/navigation/Sidebar.tsx.",
+      "assigned_agent": "react-architect",
+      "status": "pending",
+      "depends_on": [
+        "setup-design-system"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:16:12.297574",
+      "updated_at": "2026-02-25T13:16:12.297574"
+    },
+    "ai-service-layer": {
+      "task_id": "ai-service-layer",
+      "description": "Setup Gemini 1.5 Flash integration in passy/lib/ai/gemini-client.ts. Implement Next.js Server Actions: generateTheme (returning 5 image prompts: Venue, Table, Invite, Cake, Decor), analyzeBudget (returning AI Intel cards), and vendorSearch (using Google Search Grounding). Expected files: passy/lib/ai/gemini-client.ts, passy/app/actions/ai/generate-theme.ts, passy/app/actions/ai/analyze-budget.ts, passy/app/actions/ai/vendor-search.ts.",
+      "assigned_agent": "ai-specialist",
+      "status": "pending",
+      "depends_on": [
+        "setup-design-system"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:16:12.300189",
+      "updated_at": "2026-02-25T13:16:12.300189"
+    },
+    "theme-assistant": {
+      "task_id": "theme-assistant",
+      "description": "Refine the Theme Assistant module. Update the chat interface and MoodBoard component to support 5 Imagen 4.0 images with specific aspect ratios (4:3 for Venue, 1:1 for others). Implement persistence to localStorage. Expected files: passy/components/planning/ThemeAssistant.tsx, passy/components/planning/MoodBoard.tsx.",
+      "assigned_agent": "frontend-specialist",
+      "status": "blocked",
+      "depends_on": [
+        "spa-orchestrator",
+        "ai-service-layer"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:16:12.302291",
+      "updated_at": "2026-02-25T13:16:12.302291"
+    },
+    "budget-guest-modules": {
+      "task_id": "budget-guest-modules",
+      "description": "Update BudgetTracker to include the 'Financial Health' gauge and 'AI Intel' cards. Update GuestManager to include the sliding side-panel for guest details and RSVP management. Ensure data persistence with Supabase. Expected files: passy/components/views/BudgetTracker.tsx, passy/components/views/GuestManager.tsx.",
+      "assigned_agent": "fullstack-developer",
+      "status": "blocked",
+      "depends_on": [
+        "supabase-backend",
+        "spa-orchestrator",
+        "ai-service-layer"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:16:12.304181",
+      "updated_at": "2026-02-25T13:16:12.304181"
+    },
+    "vendor-marketplace": {
+      "task_id": "vendor-marketplace",
+      "description": "Build the Vendor Marketplace view with grounded search results and 'Matches Theme' logic. Build the Message Center with a split-pane UI for vendor communications. Expected files: passy/components/views/VendorMarketplace.tsx, passy/components/views/MessageCenter.tsx.",
+      "assigned_agent": "frontend-specialist",
+      "status": "blocked",
+      "depends_on": [
+        "theme-assistant"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:16:12.306122",
+      "updated_at": "2026-02-25T13:16:12.306122"
+    },
+    "refine-design-system": {
+      "task_id": "refine-design-system",
+      "description": "Refine the visual identity of Passy. Update globals.css to use charcoal (#120c1c) background and strict glassmorphism spec (backdrop-blur-2xl, bg-white/5, border-white/10) as defined in info.md. Update atomic components in passy/components/atoms (GlassCard, GlowingButton, StatusBadge) to match these standards. Expected files: passy/app/globals.css, passy/components/atoms/GlassCard.tsx, passy/components/atoms/GlowingButton.tsx, passy/components/atoms/StatusBadge.tsx.",
+      "assigned_agent": "frontend-architect",
+      "status": "pending",
+      "depends_on": [],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:16:45.859179",
+      "updated_at": "2026-02-25T13:16:45.859179"
+    },
+    "spa-orchestrator-v2": {
+      "task_id": "spa-orchestrator-v2",
+      "description": "Enhance the Orchestrator component to handle state-based navigation using the Page enum. Implement fluid transitions between modules using Framer Motion. Add logic to toggle between Workspace (with Sidebar) and Standalone views (Landing, Invitations). Expected files: passy/types/navigation.ts, passy/components/navigation/Orchestrator.tsx, passy/components/navigation/Sidebar.tsx.",
+      "assigned_agent": "react-architect",
+      "status": "blocked",
+      "depends_on": [
+        "refine-design-system"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:17:23.190116",
+      "updated_at": "2026-02-25T13:17:23.190116"
+    },
+    "ai-service-layer-v2": {
+      "task_id": "ai-service-layer-v2",
+      "description": "Setup Gemini 1.5 Flash integration in passy/lib/ai/gemini-client.ts. Implement Next.js Server Actions: generateTheme (returning 5 image prompts: Venue, Table, Invite, Cake, Decor), analyzeBudget (returning AI Intel cards), and vendorSearch (using Google Search Grounding). Expected files: passy/lib/ai/gemini-client.ts, passy/app/actions/ai/generate-theme.ts, passy/app/actions/ai/analyze-budget.ts, passy/app/actions/ai/vendor-search.ts.",
+      "assigned_agent": "ai-specialist",
+      "status": "blocked",
+      "depends_on": [
+        "refine-design-system"
+      ],
+      "result_summary": null,
+      "created_at": "2026-02-25T13:17:23.192264",
+      "updated_at": "2026-02-25T13:17:23.192264"
     }
   },
-  "updated_at": "2026-02-25T08:25:27.069013"
+  "updated_at": "2026-02-25T13:17:23.192489"
 }

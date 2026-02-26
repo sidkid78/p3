@@ -3,52 +3,20 @@
 import React from 'react';
 import { Page } from '@/types/navigation';
 import { useNavigation } from '@/lib/navigation';
+import type { DashboardData } from '@/types/dashboard';
 
 import DashboardView from '@/components/views/DashboardView';
 import ThemeAssistant from '@/components/planning/ThemeAssistant';
 import GuestManager from '@/components/views/GuestManager';
-import BudgetTracker from '@/components/views/BudgetTracker';
+import BudgetView from '@/components/views/BudgetView';
 import TaskManager from '@/components/views/TaskManager';
-
-interface Guest {
-    id: string;
-    name: string;
-    rsvp: 'confirmed' | 'pending' | 'declined';
-    email: string;
-    diet: string;
-}
-
-interface BudgetItem {
-    id: string;
-    category: string;
-    amount: number;
-    spent: number;
-    status: 'paid' | 'partial' | 'pending';
-}
-
-interface Task {
-    title: string;
-    dueDate: string;
-    category: string;
-    status: 'pending' | 'completed';
-}
-
-interface DashboardData {
-    user: { name: string };
-    event: {
-        daysToGo: number;
-        date: string;
-        progress: number;
-        guestCount: number;
-        guestLimit: number;
-        budgetSpent: number;
-        budgetLimit: number;
-        status: Record<string, string>;
-    };
-    tasks: Task[];
-    guests: Guest[];
-    budgetItems: BudgetItem[];
-}
+import VendorMarketplace from '@/components/views/VendorMarketplace';
+import GamePlannerView from '@/components/views/GamePlannerView';
+import DigitalInvitation from '@/components/views/DigitalInvitation';
+import GiftRegistryManager from '@/components/views/GiftRegistryManager';
+import InvitationEditor from '@/components/views/InvitationEditor';
+import InvitationPasswordGate from '@/components/views/InvitationPasswordGate';
+import AIThankYouHelper from '@/components/views/AIThankYouHelper';
 
 const Orchestrator = ({ dashboardData }: { dashboardData: DashboardData }) => {
     const { page } = useNavigation();
@@ -63,7 +31,7 @@ const Orchestrator = ({ dashboardData }: { dashboardData: DashboardData }) => {
                 return <GuestManager data={dashboardData.guests} />;
             case Page.Budget:
                 return (
-                    <BudgetTracker
+                    <BudgetView
                         data={dashboardData.budgetItems}
                         limit={dashboardData.event.budgetLimit}
                         spent={dashboardData.event.budgetSpent}
@@ -71,6 +39,21 @@ const Orchestrator = ({ dashboardData }: { dashboardData: DashboardData }) => {
                 );
             case Page.Tasks:
                 return <TaskManager initialTasks={dashboardData.tasks} />;
+            case Page.Vendors:
+                return <VendorMarketplace />;
+            case Page.GamePlanner:
+                return <GamePlannerView />;
+            case Page.Invitation:
+                return <DigitalInvitation />;
+            case Page.GiftRegistry:
+                return <GiftRegistryManager />;
+            case Page.InvitationEditor:
+                return <InvitationEditor />;
+            case Page.InvitationPasswordGate:
+                return <InvitationPasswordGate />;
+            case Page.AIThankYouHelper:
+                return <AIThankYouHelper />;
+
             default:
                 return (
                     <div className="text-white text-center py-20">

@@ -24,10 +24,26 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  try {
-    await supabase.auth.getUser()
-  } catch (err) {
-    console.error("Middleware Supabase connection failed, skipping session update.");
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Protect internal routes (dashboard, profile, etc.)
+  const isInternalRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
+    request.nextUrl.pathname.startsWith('/profile')
+
+  if (!user && isInternalRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  // Redirect logged-in users away from auth pages
+  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
+    request.nextUrl.pathname.startsWith('/register')
+
+  if (user && isAuthRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse

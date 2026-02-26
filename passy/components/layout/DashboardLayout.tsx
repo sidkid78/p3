@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
@@ -7,6 +9,8 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden relative z-10 bg-bg-main text-text-main font-display transition-colors duration-300">
       {/* Ambient Orbs */}
@@ -15,9 +19,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="orb bottom-[-10%] right-[-5%] w-[400px] h-[400px] animate-pulse bg-secondary-rose" />
       </div>
 
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <main className="flex-1 overflow-y-auto relative">
-        <Header />
+        <Header onMenuClick={() => setIsSidebarOpen(true)} />
         <div className="max-w-7xl mx-auto p-6 lg:p-12 animate-in fade-in duration-700">
           {children}
         </div>

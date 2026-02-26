@@ -7,4 +7,10 @@ export enum Page {
   Tasks = "TASKS",
   Messages = "MESSAGES",
   Settings = "SETTINGS",
+  GamePlanner = "GAME_PLANNER",
+  Invitation = "INVITATION",
+  GiftRegistry = "GIFT_REGISTRY",
+  InvitationEditor = "INVITATION_EDITOR",
+  InvitationPasswordGate = "INVITATION_PASSWORD_GATE",
+  AIThankYouHelper = "AI_THANK_YOU_HELPER",
 }

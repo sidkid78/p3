@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Manifesto: BabyBloom AI</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+    :root {
+      --c-panic: #1a1a1a;
+      --c-stress: #ff4d4d;
+      --c-sanctuary: #e0d4fc;
+      --c-glass: rgba(255, 255, 255, 0.25);
+      --c-text-dark: #121212;
+      --c-text-light: #f5f5f5;
+      --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+      --ease-fluid: cubic-bezier(0.45, 0, 0.55, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #000;
+      overflow: hidden;
+      color: var(--c-text-dark);
+    }
+
+    /* CAROUSEL CONTAINER */
+    .carousel {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* PANELS */
+    section {
+      flex: 0 0 100vw;
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* TYPOGRAPHY SYSTEM */
+    h1,
+    h2,
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      line-height: 1.1;
+    }
+
+    .hero-text {
+      font-size: clamp(3rem, 8vw, 6rem);
+      letter-spacing: -0.02em;
+    }
+
+    .sub-hero {
+      font-size: clamp(1.5rem, 4vw, 3rem);
+      font-style: italic;
+    }
+
+    .body-text {
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      line-height: 1.5;
+      font-weight: 300;
+      max-width: 60ch;
+    }
+
+    .label {
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    /* --- PANEL 1: THE PANIC (Brutalist / Noisy) --- */
+    #panel-1 {
+      background-color: var(--c-panic);
+      color: var(--c-text-light);
+    }
+
+    .panic-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.4;
+      filter: contrast(120%) grayscale(100%);
+      background-image: url('./images/scene-1 (34).jpg');
+      background-size: cover;
+      background-position: center;
+      mix-blend-mode: hard-light;
+    }
+
+    .noise-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.15;
+      pointer-events: none;
+      filter: url(#noiseFilter);
+    }
+
+    .panic-content {
+      position: relative;
+      z-index: 2;
+      padding: 4rem;
+      max-width: 800px;
+    }
+
+    .panic-highlight {
+      color: var(--c-stress);
+      font-style: italic;
+    }
+
+    .stress-list {
+      margin-top: 2rem;
+      border-left: 1px solid var(--c-stress);
+      padding-left: 2rem;
+    }
+
+    /* --- PANEL 2: THE VISION (Glassmorphism / Serene) --- */
+    #panel-2 {
+      background: radial-gradient(circle at 50% 50%, #f3e7ff 0%, #dcd6f7 100%);
+      color: #4a4a6a;
+    }
+
+    .vision-bg-img {
+      position: absolute;
+      right: -10%;
+      top: 10%;
+      width: 70vh;
+      opacity: 0.8;
+      transform: rotate(-10deg);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.3);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+      max-width: 600px;
+      margin-left: 10vw;
+      z-index: 2;
+      transform-origin: center;
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    /* --- PANEL 3: THE EXECUTION (Grid / Technical) --- */
+    #panel-3 {
+      background: #fcfcfc;
+      color: #121212;
+      padding: 4rem;
+      align-items: flex-start;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      width: 100%;
+      height: 100%;
+      align-content: center;
+    }
+
+    .grid-item {
+      padding: 2rem;
+      border-top: 1px solid #121212;
+      transition: all 0.4s var(--ease-out);
+    }
+
+    .grid-item:hover {
+      background: #f4f4f4;
+      transform: translateY(-5px);
+    }
+
+    .role-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    /* --- PANEL 4: THE CLOSING (Warm / Emotional) --- */
+    #panel-4 {
+      color: #fff;
+    }
+
+    .closing-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('./images/scene-5 (10).jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .closing-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    }
+
+    .closing-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      align-self: center;
+      max-width: 800px;
+      padding: 2rem;
+    }
+
+    .manifesto-tag {
+      border: 1px solid white;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ANIMATIONS */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(-10deg);
+      }
+
+      50% {
+        transform: translateY(-20px) rotate(-8deg);
+      }
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+    }
+
+    /* UTILITIES */
+    .hidden-mobile {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+        overflow-y: scroll;
+        padding-bottom: 4rem;
+      }
+
+      .hero-text {
+        font-size: 2.5rem;
+      }
+
+      .glass-card {
+        margin: 1rem;
+        width: auto;
+      }
+
+      .panic-content {
+        padding: 2rem;
+      }
+
+      #panel-3 {
+        padding: 1rem;
+      }
+    }
+
+    /* SVG FILTERS */
+    .svg-filters {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <svg class="svg-filters">
+    <filter id="noiseFilter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch">
+        <animate attributeName="baseFrequency" values="0.85;0.9;0.85" dur="0.5s" repeatCount="indefinite" />
+      </feTurbulence>
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.6" />
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
+  <div class="carousel">
+
+    <!-- PANEL 1: THE HOOK -->
+    <section id="panel-1">
+      <div class="panic-bg"></div>
+      <div class="noise-overlay"></div>
+      <div class="panic-content">
+        <span class="label" style="color: var(--c-stress);">The Manifesto</span>
+        <h1 class="hero-text">The End of the <br><span class="panic-highlight">"Planning Panic"</span></h1>
+        <div class="stress-list">
+          <p class="body-text" style="margin-bottom: 1rem;">
+            Most baby showers are born in a cloud of stress. Between the swollen ankles, the endless Pinterest scrolling
+            that leads nowhere, and the crushing "mental load" of coordinating 30 people's dietary habits, the joy is
+            often suffocated by logistics.
+          </p>
+          <p class="body-text" style="font-weight: 600;">
+            We believe that the celebration of new life shouldn't start with the host’s burnout.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: THE VISION -->
+    <section id="panel-2">
+      <img src="./images/scene-1 (36).jpg" class="vision-bg-img" alt="Glassmorphism UI">
+      <div class="glass-card">
+        <span class="label">The Vision</span>
+        <h2 class="sub-hero" style="margin-bottom: 1.5rem; color: #6a5acd;">Not an app. A sanctuary.</h2>
+        <p class="body-text">
+          We’ve built a "Glassmorphism" dreamscape—a calm, glowing digital ecosystem designed to lower your cortisol
+          levels the moment you log in. While the world feels chaotic, Passy is a serene, lavender-hued space where your
+          "Boho Forest" or "Celestial Dreams" vision is instantly manifested into reality.
+        </p>
+      </div>
+    </section>
+
+    <!-- PANEL 3: THE EXECUTION -->
+    <section id="panel-3">
+      <div style="width: 100%; margin-bottom: 2rem;">
+        <span class="label" style="color: #666;">The Execution</span>
+        <h2 class="sub-hero">Advanced Neural Networks.<br>Protecting the human touch.</h2>
+      </div>
+      <div class="grid-container">
+        <div class="grid-item">
+          <div class="role-title">The Visionary</div>
+          <p class="body-text" style="font-size: 0.95rem;">
+            Don't struggle to describe your vibe. Talk to Passy. Watch as your half-formed thoughts instantly
+            crystallize into photorealistic mood boards.
+          </p>
+        </div>
+        <div class="grid-item">
+          <div class="role-title">The Guardian</div>
+          <p class="body-text" style="font-size: 0.95rem;">
+            Our AI doesn't just "track" your budget; it protects your savings, finding "Sunday Brunch" loopholes that
+            save you $1,000 without sacrificing a single peony.
+          </p>
+        </div>
+        <div class="grid-item">
+          <div class="role-title">The Secretary of Grace</div>
+          <p class="body-text" style="font-size: 0.95rem;">
+            Forget the guilt of unwritten notes. Our Gratitude Assistant remembers every gift and every guest, drafting
+            words so personal and warm, they'll think you spent hours at your desk.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 4: THE MISSION -->
+    <section id="panel-4">
+      <div class="closing-bg"></div>
+      <div class="closing-overlay"></div>
+      <div class="closing-content">
+        <span class="label" style="opacity: 0.8;">The Mission</span>
+        <h1 class="hero-text" style="margin-bottom: 1.5rem;">Reclaim the Joy.</h1>
+        <p class="body-text" style="margin: 0 auto; opacity: 0.9;">
+          We aren't optimizing "event lifecycles." We are reclaiming the "Baby Shower" from the clutches of logistics
+          and giving it back to the people who matter: the mother, the child, and the community that will raise them.
+        </p>
+        <div class="manifesto-tag">
+          Passy: Plan with your heart. Let the AI handle the rest.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Simple intersection observer to trigger animations on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.3 });
+
+    // Target elements
+    document.querySelectorAll('.glass-card, .grid-item, .closing-content').forEach((el) => {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'all 0.8s ease-out';
+      observer.observe(el);
+    });
+
+    // Cursor Interaction
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      const root = document.documentElement;
+
+      // Subtle parallax effect on variables
+      root.style.setProperty('--mouse-x', x);
+      root.style.setProperty('--mouse-y', y);
+    });
+  </script>
+
+</body>
+
+</html>

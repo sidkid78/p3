@@ -45,7 +45,7 @@ export default function LandingPage() {
             </nav>
 
             {/* Main Content Wrapper */}
-            <main className="relative z-10 flex-grow flex flex-col">
+            <main className="relative z-10 grow flex flex-col">
                 {/* Hero Section */}
                 <section className="relative pt-20 pb-16 px-6 sm:px-12 lg:px-24 flex flex-col items-center justify-center min-h-[80vh]">
                     <div className="max-w-4xl w-full text-center flex flex-col gap-8 items-center">
@@ -81,7 +81,7 @@ export default function LandingPage() {
                             <div className="relative w-full aspect-16/7 bg-black/5 rounded-2xl overflow-hidden group">
                                 <div
                                     className="absolute inset-0 bg-cover bg-center opacity-70 mix-blend-multiply dark:mix-blend-screen transition-transform duration-1000 group-hover:scale-105"
-                                    style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAiynCDoSB0tTlrltqr7_nRepOgwYJ4dWZdBSUI9_PlvQVFJhM7sY7tu7iVj-I6UBTxLxI6y6719CTFeEx4s5ZBwKUbMCbJiSewxF3sLusT3ZehUV-PmGfq1w4wvdtvLRpZUPnemahHetvyJ11P16DsiLbC43HhRDEhPRYdlq6zaz2-caBnVEnG8YqZJugvnOe4Du-enopA_3IeahlBA1folXO9VkrsJyzqa6e3NEhIQyyZQu7F_7nfc9JNvGthrycexjm2e4rhYrw')" }}
+                                    style={{ backgroundImage: "url('./images/scene-5 (10).jpg')" }}
                                 ></div>
                                 <div className="absolute inset-0 bg-linear-to-t from-bg-main via-transparent to-transparent"></div>
                                 <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col items-center justify-end h-full">
@@ -120,7 +120,7 @@ export default function LandingPage() {
                                 </div>
                                 <h3 className="text-xl font-bold mb-3 tracking-tight">AI Theme Assistant</h3>
                                 <p className="opacity-60 leading-relaxed font-light text-sm">
-                                    Generate unique themes instantly tailored to your taste. From "Cosmic Jungle" to "Vintage Tea Party", get mood boards in seconds.
+                                    Generate unique themes instantly tailored to your taste. From &quot;Cosmic Jungle&quot; to &quot;Vintage Tea Party&quot;, get mood boards in seconds.
                                 </p>
                             </div>
                             <div className="glass-panel p-8 rounded-3xl hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl hover:shadow-secondary-rose/5">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Dancing_Script } from "next/font/google";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -8,12 +8,19 @@ const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
 });
 
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dancing-script",
+});
+
 export const metadata: Metadata = {
   title: "Passy - AI Baby Shower Planner",
   description: "The simplest and smartest way to celebrate. Plan the perfect baby shower with AI.",
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { AIThemeProvider } from "@/context/AIThemeContext";
 
 export default function RootLayout({
   children,
@@ -29,10 +36,12 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${plusJakarta.variable} font-display antialiased`}
+        className={`${plusJakarta.variable} ${dancingScript.variable} font-display antialiased`}
       >
         <ThemeProvider>
-          {children}
+          <AIThemeProvider>
+            {children}
+          </AIThemeProvider>
         </ThemeProvider>
       </body>
     </html>

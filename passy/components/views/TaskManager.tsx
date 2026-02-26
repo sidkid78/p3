@@ -37,10 +37,20 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks }) => {
 
     return (
         <div className="flex flex-col gap-10 transition-colors duration-300">
-            <div className="flex flex-wrap justify-between items-end gap-6">
-                <div className="flex flex-col gap-4">
-                    <h1 className="font-display text-4xl lg:text-5xl font-extrabold text-text-main tracking-tight">Event Checklist</h1>
-                    <p className="opacity-60 text-lg sm:text-xl font-light">Stay organized and track your progress step by step.</p>
+            {/* Standardized Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="text-primary/60 text-xs font-bold tracking-widest uppercase">Planner</span>
+                        <span className="text-white/20 text-xs">/</span>
+                        <span className="text-white/90 text-xs font-bold tracking-widest uppercase">Milestone Tracker</span>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-display font-bold bg-linear-to-r from-white to-primary bg-clip-text text-transparent mb-2">
+                        Checklist
+                    </h1>
+                    <p className="text-white/50 text-base max-w-xl">
+                        Stay organized and track your progress step by step.
+                    </p>
                 </div>
                 <button className="h-14 px-10 rounded-2xl bg-primary text-white font-bold flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/10">
                     <span className="material-symbols-outlined text-xl">add_task</span>

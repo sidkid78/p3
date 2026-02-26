@@ -4,9 +4,10 @@ import React from 'react';
 import StatCard from "@/components/atoms/StatCard"
 import GlassCard from "@/components/atoms/GlassCard"
 import TaskItem from "@/components/atoms/TaskItem"
+import type { DashboardData, Task } from "@/types/dashboard"
 
 interface DashboardViewProps {
-    data: any;
+    data: DashboardData;
 }
 
 const DashboardView: React.FC<DashboardViewProps> = ({ data }) => {
@@ -75,7 +76,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ data }) => {
                             <button className="text-primary text-sm font-bold hover:opacity-80 transition-all tracking-widest uppercase">View All</button>
                         </div>
                         <div className="flex flex-col gap-4">
-                            {tasks.map((task: any, idx: number) => (
+                            {tasks.map((task: Task, idx: number) => (
                                 <TaskItem key={idx} {...task} />
                             ))}
                         </div>

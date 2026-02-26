@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import GlassCard from "@/components/atoms/GlassCard"
 import ThemeToggle from "@/components/atoms/ThemeToggle"
+import Link from "next/link"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -61,7 +62,7 @@ export default function LoginPage() {
         </div>
 
         <GlassCard className="p-10 border border-white/10 shadow-2xl relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-50 pointer-events-none" />
 
           <form onSubmit={handleLogin} className="space-y-6 relative z-10">
             <div className="space-y-1.5">
@@ -72,7 +73,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 transition-all font-medium"
+                  className="w-full h-14 bg-white/3 border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 transition-all font-medium"
                   placeholder="name@example.com"
                   required
                 />
@@ -87,7 +88,7 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-14 bg-white/[0.03] border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 transition-all font-medium"
+                  className="w-full h-14 bg-white/3 border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/50 transition-all font-medium"
                   placeholder="••••••••"
                   required
                 />
@@ -110,25 +111,27 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="relative my-8 h-px bg-white/5">
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0c0a0f] px-4 text-[10px] text-gray-600 font-bold uppercase tracking-widest">
-              or explore first
-            </span>
+          <div className="relative z-10">
+            <div className="relative my-8 h-px bg-white/5">
+              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0c0a0f] px-4 text-[10px] text-gray-600 font-bold uppercase tracking-widest">
+                or explore first
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleDemoAccess}
+              disabled={loading}
+              className="w-full h-14 bg-primary text-white font-black rounded-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 shadow-lg shadow-primary/20 active:scale-95 font-serif italic"
+            >
+              <span className="material-symbols-outlined">auto_awesome</span>
+              <span>Jump in with Demo Access</span>
+            </button>
+
+            <p className="text-center mt-8 text-xs text-gray-600 font-medium">
+              Don&apos;t have an account? <Link href="/register" className="text-white hover:text-primary cursor-pointer transition-colors font-bold">Create an account</Link>
+            </p>
           </div>
-
-          <button
-            type="button"
-            onClick={handleDemoAccess}
-            disabled={loading}
-            className="w-full h-14 bg-primary text-white font-black rounded-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 shadow-lg shadow-primary/20 active:scale-95 font-serif italic"
-          >
-            <span className="material-symbols-outlined">auto_awesome</span>
-            <span>Jump in with Demo Access</span>
-          </button>
-
-          <p className="text-center mt-8 text-xs text-gray-600 font-medium">
-            Don&apos;t have an account? <span className="text-white hover:text-primary cursor-pointer transition-colors font-bold">Request an invite</span>
-          </p>
         </GlassCard>
 
         <p className="text-center mt-8 text-[10px] text-gray-700 font-bold uppercase tracking-[0.3em]">

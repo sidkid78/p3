@@ -1,0 +1,23 @@
+[
+    {
+        "id": "1",
+        "name": "Jane Doe",
+        "email": "jane@example.com",
+        "rsvp": "confirmed",
+        "diet": "Vegan",
+        "phone": "+1 234 567 890",
+        "plusOne": true,
+        "plusOneName": "John Doe",
+        "notes": "Looking forward to seeing everyone!"
+    },
+    {
+        "id": "2",
+        "name": "Sarah Smith",
+        "email": "sarah@example.com",
+        "rsvp": "pending",
+        "diet": "No Nuts",
+        "phone": "+1 987 654 321",
+        "plusOne": false,
+        "notes": ""
+    }
+]
