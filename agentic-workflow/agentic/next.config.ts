@@ -17,11 +17,7 @@ const nextConfig: NextConfig = {
     // Set to true to ignore TypeScript errors during build (not recommended for production)
     ignoreBuildErrors: false,
   },
-  
-  eslint: {
-    // Set to true to ignore ESLint errors during build (not recommended for production)
-    ignoreDuringBuilds: false,
-  },
+  // Note: the `eslint` option was removed in Next.js 16; run `npm run lint` separately.
 };
 
 export default nextConfig;

@@ -25,15 +25,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
 import { StatusBadge } from '@/components/client/StatusBadge';
 import { EventChip } from '@/components/client/EventChip';
 import { Agent, EventLog, MODEL_OPTIONS } from '@/types';
 import { formatTimestamp } from '@/lib/utils';
-import { 
-  X, 
-  Bot, 
-  FileText, 
-  MessageSquare, 
+import {
+  X,
+  Bot,
+  FileText,
+  MessageSquare,
   Activity,
   Clock,
   Settings,
@@ -47,44 +49,66 @@ interface AgentInspectorProps {
   onClose: () => void;
 }
 
+/** Render any payload value as a string (objects become JSON) so React never receives an object child. */
+function toText(value: unknown): string {
+  if (value == null || value === '') return '';
+  return typeof value === 'string' ? value : JSON.stringify(value);
+}
+
+/** File path a TOOL_CALL targeted: legacy `file_path`, or `args.path` as logged by the agent tool loop. */
+function toolCallPath(event: EventLog): string {
+  const payload = (event.payload ?? {}) as Record<string, unknown>;
+  const args = (payload.args ?? {}) as Record<string, unknown>;
+  const path = payload.file_path ?? args.path ?? args.file_path;
+  return typeof path === 'string' ? path : '';
+}
+
 export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) {
   const [selectedEvent, setSelectedEvent] = useState<EventLog | null>(null);
-  const modelInfo = MODEL_OPTIONS[agent.model_preference!];
-  
-  const sortedEvents = [...events].sort((a, b) => 
+  const modelInfo = MODEL_OPTIONS[agent.model_preference!] ?? { icon: '🤖', label: agent.model_preference || 'Unknown model' };
+
+  const sortedEvents = [...events].sort((a, b) =>
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
-  // Mock workspace files for demonstration
-  const mockWorkspaceFiles = [
-    'src/auth/controller.ts',
-    'src/auth/middleware.ts',
-    'src/auth/service.ts',
-    'tests/auth.test.ts',
-    'temp/analysis.md'
-  ];
+  // Derive workspace files from file-related TOOL_CALL events
+  const workspaceFiles = Array.from(
+    new Set(events.filter(e => e.event_type === 'TOOL_CALL').map(toolCallPath).filter(Boolean))
+  );
 
-  // Mock terminal commands for demonstration
-  const mockTerminalCommands = [
-    { command: 'npm test auth', output: '✓ All auth tests passing', timestamp: new Date(Date.now() - 300000) },
-    { command: 'git status', output: 'On branch feature/jwt-auth\nModified: src/auth/controller.ts', timestamp: new Date(Date.now() - 600000) },
-    { command: 'npm run lint', output: 'No linting errors found', timestamp: new Date(Date.now() - 900000) },
-  ];
+  // Derive terminal commands from TOOL_CALL events with command/output
+  const terminalCommands = events
+    .filter(e => e.event_type === 'TOOL_CALL' && (e.payload as Record<string, string>).command)
+    .map(e => ({
+      command: (e.payload as Record<string, string>).command,
+      output: (e.payload as Record<string, string>).output || '',
+      timestamp: e.timestamp,
+    }));
 
-  // Mock timeline events for demonstration
-  const mockTimelineEvents = [
-    { time: '2 min ago', event: 'Started analyzing auth controller', type: 'info' },
-    { time: '5 min ago', event: 'Identified session dependencies', type: 'success' },
-    { time: '8 min ago', event: 'Created workspace files', type: 'info' },
-    { time: '12 min ago', event: 'Agent initialized', type: 'success' },
-  ];
+  // Build timeline from all events (oldest first)
+  const timelineEvents = [...events]
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+    .map(e => ({
+      time: formatTimestamp(e.timestamp),
+      event: e.event_type.replace(/_/g, ' '),
+      detail: (e.payload as Record<string, string>).tool_name || (e.payload as Record<string, string>).message || '',
+      type: e.event_type === 'ERROR' ? 'error' : e.event_type === 'AGENT_SPAWN' ? 'success' : 'info',
+    }));
+
+  // Last TASK_UPDATE or STATUS_CHANGE payload for "current instructions"
+  const lastInstruction = [...events]
+    .reverse()
+    .find(e => e.event_type === 'STATUS_CHANGE' || e.event_type === 'PLAN_UPDATE');
+  const instructionText = lastInstruction
+    ? (lastInstruction.payload as Record<string, string>).instruction || (lastInstruction.payload as Record<string, string>).reason || 'Running…'
+    : 'No instruction recorded yet.';
 
   const getEventDetails = (event: EventLog) => {
     switch (event.event_type) {
       case 'TOOL_CALL':
         return {
           title: `Tool: ${event.payload.tool_name}`,
-          description: event.payload.file_path || event.payload.args || 'No details',
+          description: toolCallPath(event) || toText(event.payload.args) || 'No details',
           content: JSON.stringify(event.payload, null, 2)
         };
       case 'MODEL_CALL':
@@ -102,8 +126,8 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
       case 'ERROR':
         return {
           title: 'Error',
-          description: event.payload.message || 'An error occurred',
-          content: event.payload.stack || event.payload.details || 'No error details available'
+          description: toText(event.payload.message ?? event.payload.error) || 'An error occurred',
+          content: toText(event.payload.stack ?? event.payload.details) || 'No error details available'
         };
       default:
         return {
@@ -175,11 +199,10 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
               {sortedEvents.slice(-10).map((event, idx) => (
                 <div
                   key={`${event.event_id}-${idx}`}
-                  className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                    selectedEvent?.event_id === event.event_id
-                      ? 'bg-primary/10 border-primary'
-                      : 'hover:bg-accent/50'
-                  }`}
+                  className={`p-3 rounded-lg border cursor-pointer transition-colors ${selectedEvent?.event_id === event.event_id
+                    ? 'bg-primary/10 border-primary'
+                    : 'hover:bg-accent/50'
+                    }`}
                   onClick={() => setSelectedEvent(event)}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -188,7 +211,7 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
                       {formatTimestamp(event.timestamp)}
                     </span>
                   </div>
-                  
+
                   {selectedEvent?.event_id === event.event_id && selectedEvent && (
                     <div className="mt-3 pt-3 border-t">
                       <div className="space-y-2">
@@ -198,8 +221,10 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
                         <div className="text-xs text-muted-foreground">
                           {getEventDetails(event).description as React.ReactNode}
                         </div>
-                        <div className="text-xs bg-muted/50 rounded p-2 font-mono">
-                          {getEventDetails(event).content as React.ReactNode}
+                        <div className="mt-2 text-xs prose prose-invert prose-sm max-w-none">
+                          <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                            {String(getEventDetails(event).content)}
+                          </ReactMarkdown>
                         </div>
                       </div>
                     </div>
@@ -220,12 +245,12 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-medium">Agent Workspace</h3>
               <Badge variant="outline" className="text-xs">
-                {mockWorkspaceFiles.length} files
+                {workspaceFiles.length} files
               </Badge>
             </div>
 
             <div className="space-y-2 h-full overflow-y-auto">
-              {mockWorkspaceFiles.map((filePath, index) => (
+              {workspaceFiles.map((filePath, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-2 p-2 rounded hover:bg-accent/50 cursor-pointer"
@@ -233,17 +258,15 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
                   <Code className="w-4 h-4 text-blue-500" />
                   <span className="text-sm font-mono">{filePath}</span>
                   <div className="ml-auto flex items-center gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      Modified
-                    </Badge>
+                    <Badge variant="secondary" className="text-xs">Modified</Badge>
                   </div>
                 </div>
               ))}
 
-              {mockWorkspaceFiles.length === 0 && (
+              {workspaceFiles.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
                   <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No files in workspace</p>
+                  <p className="text-sm">No file operations recorded yet</p>
                 </div>
               )}
             </div>
@@ -280,20 +303,27 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
               {/* Current Instructions */}
               <div className="space-y-2">
                 <h4 className="text-sm font-medium">Current Instructions</h4>
-                <div className="bg-muted/50 rounded p-3 text-xs font-mono">
-                  Analyze the existing authentication controller and identify all session-related logic that needs to be refactored for JWT implementation.
+                <div className="bg-muted/50 rounded p-3 text-xs prose prose-invert prose-xs max-w-none">
+                  <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                    {instructionText}
+                  </ReactMarkdown>
                 </div>
               </div>
 
-              {/* Memory/Context */}
+              {/* Recent Activity Summary */}
               <div className="space-y-2">
-                <h4 className="text-sm font-medium">Memory Context</h4>
-                <div className="bg-muted/50 rounded p-3 text-xs">
-                  <div className="space-y-1">
-                    <div>• Identified 3 session-related endpoints</div>
-                    <div>• Found middleware dependency on express-session</div>
-                    <div>• Located user authentication logic in controller</div>
-                  </div>
+                <h4 className="text-sm font-medium">Recent Activity</h4>
+                <div className="bg-muted/50 rounded p-3 text-xs space-y-1">
+                  {events.length === 0 ? (
+                    <div className="text-muted-foreground">No activity recorded yet.</div>
+                  ) : (
+                    [...events]
+                      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                      .slice(0, 5)
+                      .map((e, i) => (
+                        <div key={i}>• {e.event_type.replace(/_/g, ' ')}{(e.payload as Record<string, string>).tool_name ? `: ${(e.payload as Record<string, string>).tool_name}` : ''}</div>
+                      ))
+                  )}
                 </div>
               </div>
             </div>
@@ -303,30 +333,30 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-medium">Agent Timeline</h3>
               <Badge variant="outline" className="text-xs">
-                {mockTimelineEvents.length} events
+                {timelineEvents.length} events
               </Badge>
             </div>
 
             <div className="space-y-3 h-full overflow-y-auto">
-              {mockTimelineEvents.map((item, index) => (
+              {timelineEvents.map((item, index) => (
                 <div key={index} className="flex items-start gap-3 p-3 rounded-lg border">
-                  <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                    item.type === 'success' ? 'bg-green-500' : 
+                  <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${item.type === 'success' ? 'bg-green-500' :
                     item.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
-                  }`} />
+                    }`} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium">{item.event}</span>
                       <span className="text-xs text-muted-foreground">{item.time}</span>
                     </div>
+                    {item.detail && <div className="text-xs text-muted-foreground truncate">{item.detail}</div>}
                   </div>
                 </div>
               ))}
 
-              {mockTimelineEvents.length === 0 && (
+              {timelineEvents.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
                   <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No timeline events recorded</p>
+                  <p className="text-sm">No events yet</p>
                 </div>
               )}
             </div>
@@ -348,13 +378,13 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">Temperature:</span>
                     <div className="flex items-center gap-2">
-                      <input 
+                      <input
                         title="Temperature"
-                        type="range" 
-                        min="0" 
-                        max="1" 
-                        step="0.1" 
-                        defaultValue="0.7" 
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        defaultValue="0.7"
                         className="w-20 h-1"
                       />
                       <span className="text-xs font-mono w-8">0.7</span>
@@ -362,23 +392,23 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">Max Tokens:</span>
-                    <input 
+                    <input
                       title="Max Tokens"
-                      type="number" 
-                      defaultValue="2048" 
+                      type="number"
+                      defaultValue="2048"
                       className="w-20 text-xs p-1 rounded border bg-background"
                     />
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">Top P:</span>
                     <div className="flex items-center gap-2">
-                      <input 
+                      <input
                         title="Top P"
-                        type="range" 
-                        min="0" 
-                        max="1" 
-                        step="0.1" 
-                        defaultValue="0.9" 
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        defaultValue="0.9"
                         className="w-20 h-1"
                       />
                       <span className="text-xs font-mono w-8">0.9</span>
@@ -428,7 +458,7 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
               <h3 className="text-sm font-medium">Terminal Output</h3>
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="text-xs">
-                  {mockTerminalCommands.length} commands
+                  {terminalCommands.length} commands
                 </Badge>
                 <Button size="sm" variant="outline" className="text-xs">
                   Clear
@@ -437,39 +467,31 @@ export function AgentInspector({ agent, events, onClose }: AgentInspectorProps) 
             </div>
 
             <div className="bg-black rounded-lg p-3 h-full overflow-y-auto font-mono text-sm">
-              <div className="space-y-3">
-                {mockTerminalCommands.map((cmd, index) => (
-                  <div key={index} className="space-y-1">
-                    <div className="text-green-400">
-                      <span className="text-blue-400">agent@workspace</span>
-                      <span className="text-white">:</span>
-                      <span className="text-blue-400">~</span>
-                      <span className="text-white">$ </span>
-                      <span className="text-white">{cmd.command}</span>
+              {terminalCommands.length > 0 ? (
+                <div className="space-y-3">
+                  {terminalCommands.map((cmd, index) => (
+                    <div key={index} className="space-y-1">
+                      <div className="text-green-400">
+                        <span className="text-blue-400">agent@workspace</span>
+                        <span className="text-white">:</span>
+                        <span className="text-blue-400">~</span>
+                        <span className="text-white">$ </span>
+                        <span className="text-white">{cmd.command}</span>
+                      </div>
+                      {cmd.output && <div className="text-gray-300 pl-4 whitespace-pre-wrap">{cmd.output}</div>}
+                      <div className="text-gray-500 text-xs pl-4">{formatTimestamp(cmd.timestamp)}</div>
                     </div>
-                    <div className="text-gray-300 pl-4">
-                      {cmd.output}
-                    </div>
-                    <div className="text-gray-500 text-xs pl-4">
-                      {formatTimestamp(cmd.timestamp.toISOString())}
-                    </div>
+                  ))}
+                  <div className="text-green-400">
+                    <span className="text-blue-400">agent@workspace</span>
+                    <span className="text-white">:~$ </span>
+                    <span className="animate-pulse">_</span>
                   </div>
-                ))}
-                
-                {/* Current prompt */}
-                <div className="text-green-400">
-                  <span className="text-blue-400">agent@workspace</span>
-                  <span className="text-white">:</span>
-                  <span className="text-blue-400">~</span>
-                  <span className="text-white">$ </span>
-                  <span className="animate-pulse">_</span>
                 </div>
-              </div>
-
-              {mockTerminalCommands.length === 0 && (
+              ) : (
                 <div className="text-center py-8 text-gray-500">
                   <Terminal className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No terminal commands executed</p>
+                  <p className="text-sm">No terminal commands recorded</p>
                 </div>
               )}
             </div>

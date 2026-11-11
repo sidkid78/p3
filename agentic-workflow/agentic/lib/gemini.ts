@@ -102,7 +102,7 @@ export async function generateText(
  */
 export async function* generateContentStream(
   model: ModelPreference,
-  prompt: string,
+  prompt: InteractionInput,
   systemInstruction?: string,
   opts: Omit<CreateInteractionOptions, 'systemInstruction'> = {}
 ): AsyncGenerator<string> {
