@@ -28,8 +28,11 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Build the application
-RUN npx prisma generate && npm run build
+# Build the application.
+# prisma.config.ts requires DATABASE_URL, but generate/build never connect to the DB,
+# so a placeholder is scoped to this step only (it is not baked into the image).
+RUN DATABASE_URL="postgresql://build:build@localhost:5432/build?schema=public" \
+    sh -c "npx prisma generate && npm run build"
 
 # Stage 3: Runner (Production)
 FROM node:22-alpine
