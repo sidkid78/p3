@@ -7,10 +7,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useMissionControlStore } from '@/lib/store';
-import { 
-  FileText, 
-  Folder, 
-  X, 
+import {
+  FileText,
+  Folder,
+  X,
   Search,
   Plus,
   Database,
@@ -18,14 +18,14 @@ import {
   BookOpen
 } from 'lucide-react';
 
-export function ContextPanel() {
+export function ContextPanel({ repoUrl }: { repoUrl: string }) {
   const { selectedContext, setSelectedContext } = useMissionControlStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [codebaseFiles, setCodebaseFiles] = useState<string[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(false);
   const [filesError, setFilesError] = useState<string | null>(null);
-  // Use public env var if provided; otherwise default to your connected repo
-  const defaultRepoUrl = (process.env.NEXT_PUBLIC_DEFAULT_REPO as string) || 'https://github.com/sidkid78/test1';
+  // Use the passed repoUrl directly
+  const currentRepoUrl = repoUrl;
 
   useEffect(() => {
     let isMounted = true;
@@ -33,7 +33,7 @@ export function ContextPanel() {
       setLoadingFiles(true);
       setFilesError(null);
       try {
-        const res = await fetch(`/api/github/files?url=${encodeURIComponent(defaultRepoUrl)}`, {
+        const res = await fetch(`/api/github/files?url=${encodeURIComponent(currentRepoUrl)}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -58,7 +58,7 @@ export function ContextPanel() {
     return () => {
       isMounted = false;
     };
-  }, [defaultRepoUrl]);
+  }, [currentRepoUrl]);
 
   // Mock data for development
   const mockAIDocs = [
@@ -180,7 +180,7 @@ export function ContextPanel() {
         <TabsContent value="codebase" className="mt-3">
           <div className="space-y-2">
             <div className="text-[10px] text-muted-foreground">
-              Repo: <span className="font-mono">{defaultRepoUrl}</span>
+              Repo: <span className="font-mono">{currentRepoUrl}</span>
             </div>
             <div className="space-y-1 max-h-48 overflow-y-auto">
               {loadingFiles && (
@@ -202,7 +202,7 @@ export function ContextPanel() {
                   <input
                     type="checkbox"
                     checked={selectedContext.includes(filePath)}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="w-3 h-3"
                     aria-label={`Select ${filePath}`}
                   />
@@ -210,7 +210,7 @@ export function ContextPanel() {
                   <span className="flex-1 truncate">{filePath}</span>
                 </div>
               ))}
-              
+
               {!loadingFiles && !filesError && filteredCodebaseFiles.length === 0 && (
                 <div className="text-center py-4 text-muted-foreground text-xs">
                   No files found
@@ -233,7 +233,7 @@ export function ContextPanel() {
                     <input
                       type="checkbox"
                       checked={selectedContext.includes(doc.id)}
-                      onChange={() => {}}
+                      onChange={() => { }}
                       className="w-3 h-3 mt-0.5"
                       aria-label={`Select ${doc.title}`}
                     />

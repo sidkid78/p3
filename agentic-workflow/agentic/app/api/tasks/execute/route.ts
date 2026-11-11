@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { planExecutor, eventLogger, agentOrchestrator } from '@/lib/services';
+import { planExecutor } from '@/lib/services';
 import type { GeneratedPlanStep } from '@/lib/services/PlanExecutor';
 
 export const runtime = 'nodejs';
@@ -46,14 +46,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Connect event logger to both orchestrator and executor
-    agentOrchestrator.onEvent((event) => {
-      eventLogger.logEvent(event);
-    });
-
-    planExecutor.onEvent((event) => {
-      eventLogger.logEvent(event);
-    });
+    // NOTE: Event logging is handled internally by AgentOrchestrator and PlanExecutor
+    // via the shared eventLogger singleton. No external wiring needed.
 
     // Create and start task execution
     const task = await planExecutor.createTask(plan as GeneratedPlanStep[], {
