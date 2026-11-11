@@ -20,7 +20,7 @@ const FILE_WRITE_TOOLS = new Set(['create_file', 'update_file', 'delete_file']);
  * Get task status with agents and events
  */
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
@@ -104,7 +104,8 @@ export async function GET(
     return NextResponse.json({
       task,
       agents: task.agents,
-      events: events.slice(-50),
+      // ?events=all returns the full log (Debriefing Room); default is the 50 most recent.
+      events: request.nextUrl.searchParams.get('events') === 'all' ? events : events.slice(-50),
       event_count: events.length,
       cost: {
         estimated_input_cost_usd: Number(totals.estimated_input_cost_usd.toFixed(6)),

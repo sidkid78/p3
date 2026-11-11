@@ -4,317 +4,133 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SolutionVariant } from '@/components/client/SolutionVariant';
-import { ComparisonMatrix } from '@/components/client/ComparisonMatrix';
-import { useDebriefingStore } from '@/lib/store';
-import { formatCost, formatDuration } from '@/lib/utils';
-import { TaskVariant } from '@/types';
-import { 
-  ArrowLeft, 
-  CheckCircle, 
-  XCircle, 
-  RefreshCw, 
-  GitBranch,
+import { formatDuration } from '@/lib/utils';
+import {
+  ArrowLeft,
+  CheckCircle,
   Trophy,
   BarChart3,
   FileText,
   Clock,
-  DollarSign
+  Bot,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
+import { Agent, EventLog } from '@/types';
 
 interface DebriefingRoomProps {
   taskId: string;
 }
 
-// Mock data for multiple solution variants
-const mockVariants: TaskVariant[] = [
-  {
-    task_id: 'variant-1',
-    summary: 'Modular JWT Implementation',
-    approach_description: 'This solution uses a highly modular approach with separate JWT service classes, middleware abstraction, and comprehensive error handling. Emphasizes code reusability and maintainability.',
-    metrics: {
-      elapsed_time: 2400, // 40 minutes
-      estimated_cost: 1850, // $18.50
-      files_touched: 12,
-      tests_passed: 28,
-      tests_failed: 0
-    },
-    files_changed: [
-      {
-        file_path: 'src/auth/jwt-service.ts',
-        change_type: 'created',
-        additions: 145,
-        deletions: 0,
-        diff: `+export class JWTService {
-+  private readonly secret: string;
-+  private readonly expiresIn: string;
-+
-+  constructor(secret: string, expiresIn = '24h') {
-+    this.secret = secret;
-+    this.expiresIn = expiresIn;
-+  }
-+
-+  async generateToken(payload: TokenPayload): Promise<string> {
-+    return jwt.sign(payload, this.secret, { expiresIn: this.expiresIn });
-+  }
-+}`
-      },
-      {
-        file_path: 'src/auth/controller.ts',
-        change_type: 'modified',
-        additions: 89,
-        deletions: 156,
-        diff: `-// Session-based authentication
--app.use(session({
--  secret: process.env.SESSION_SECRET,
--  resave: false,
--  saveUninitialized: false
--}));
+interface TaskSummary {
+  task_id: string;
+  title?: string;
+  description?: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  agents: Agent[];
+}
 
-+// JWT-based authentication
-+const jwtService = new JWTService(process.env.JWT_SECRET);
-+
-+export const login = async (req: Request, res: Response) => {
-+  const { email, password } = req.body;
-+  const user = await authenticateUser(email, password);
-+  
-+  if (user) {
-+    const token = await jwtService.generateToken({ userId: user.id });
-+    res.json({ token, user });
-+  } else {
-+    res.status(401).json({ error: 'Invalid credentials' });
-+  }
-+};`
-      },
-      {
-        file_path: 'src/middleware/auth.ts',
-        change_type: 'modified',
-        additions: 67,
-        deletions: 45,
-        diff: `-export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
--  if (req.session && req.session.userId) {
--    next();
--  } else {
--    res.status(401).json({ error: 'Unauthorized' });
--  }
--};
+type Payload = Record<string, unknown>;
+const str = (v: unknown) => (typeof v === 'string' ? v : '');
 
-+export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
-+  const token = req.headers.authorization?.replace('Bearer ', '');
-+  
-+  if (!token) {
-+    return res.status(401).json({ error: 'No token provided' });
-+  }
-+  
-+  try {
-+    const payload = jwt.verify(token, process.env.JWT_SECRET);
-+    req.user = payload;
-+    next();
-+  } catch (error) {
-+    res.status(401).json({ error: 'Invalid token' });
-+  }
-+};`
-      }
-    ]
-  },
-  {
-    task_id: 'variant-2',
-    summary: 'Minimal JWT Refactor',
-    approach_description: 'This solution takes a minimal approach, making the smallest possible changes to existing code while implementing JWT. Prioritizes quick deployment and minimal risk.',
-    metrics: {
-      elapsed_time: 1800, // 30 minutes
-      estimated_cost: 1200, // $12.00
-      files_touched: 6,
-      tests_passed: 18,
-      tests_failed: 2
-    },
-    files_changed: [
-      {
-        file_path: 'src/auth/controller.ts',
-        change_type: 'modified',
-        additions: 45,
-        deletions: 89,
-        diff: `-const session = require('express-session');
-+const jwt = require('jsonwebtoken');
+/** Agents finish as SUCCESS (AgentStatus enum); COMPLETED is kept for older data. */
+const isDone = (status?: string) => status === 'SUCCESS' || status === 'COMPLETED';
 
- export const login = async (req: Request, res: Response) => {
-   const { email, password } = req.body;
-   const user = await authenticateUser(email, password);
-   
-   if (user) {
--    req.session.userId = user.id;
--    res.json({ success: true, user });
-+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-+    res.json({ token, user });
-   } else {
-     res.status(401).json({ error: 'Invalid credentials' });
-   }
- };`
-      },
-      {
-        file_path: 'src/middleware/auth.ts',
-        change_type: 'modified',
-        additions: 23,
-        deletions: 18,
-        diff: `+const jwt = require('jsonwebtoken');
+const statusVariant = (status?: string) =>
+  isDone(status) ? 'success' : status === 'FAILED' ? 'destructive' : status === 'RUNNING' ? 'default' : 'secondary';
 
- export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
--  if (req.session && req.session.userId) {
--    next();
--  } else {
--    res.status(401).json({ error: 'Unauthorized' });
--  }
-+  const token = req.headers.authorization?.replace('Bearer ', '');
-+  try {
-+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-+    req.user = decoded;
-+    next();
-+  } catch {
-+    res.status(401).json({ error: 'Unauthorized' });
-+  }
- };`
-      }
-    ]
-  },
-  {
-    task_id: 'variant-3',
-    summary: 'Enterprise JWT with Refresh Tokens',
-    approach_description: 'This solution implements a comprehensive JWT system with refresh tokens, role-based access control, and extensive security features. Built for enterprise-grade applications.',
-    metrics: {
-      elapsed_time: 3600, // 60 minutes
-      estimated_cost: 2800, // $28.00
-      files_touched: 18,
-      tests_passed: 45,
-      tests_failed: 1
-    },
-    files_changed: [
-      {
-        file_path: 'src/auth/jwt-manager.ts',
-        change_type: 'created',
-        additions: 234,
-        deletions: 0,
-        diff: `+export class JWTManager {
-+  private readonly accessTokenSecret: string;
-+  private readonly refreshTokenSecret: string;
-+  
-+  constructor() {
-+    this.accessTokenSecret = process.env.JWT_ACCESS_SECRET!;
-+    this.refreshTokenSecret = process.env.JWT_REFRESH_SECRET!;
-+  }
-+
-+  async generateTokenPair(payload: TokenPayload): Promise<TokenPair> {
-+    const accessToken = jwt.sign(payload, this.accessTokenSecret, { expiresIn: '15m' });
-+    const refreshToken = jwt.sign(payload, this.refreshTokenSecret, { expiresIn: '7d' });
-+    
-+    // Store refresh token in database
-+    await this.storeRefreshToken(payload.userId, refreshToken);
-+    
-+    return { accessToken, refreshToken };
-+  }
-+
-+  async refreshAccessToken(refreshToken: string): Promise<string> {
-+    const payload = jwt.verify(refreshToken, this.refreshTokenSecret);
-+    const isValid = await this.validateRefreshToken(payload.userId, refreshToken);
-+    
-+    if (!isValid) {
-+      throw new Error('Invalid refresh token');
-+    }
-+    
-+    return jwt.sign({ userId: payload.userId }, this.accessTokenSecret, { expiresIn: '15m' });
-+  }
-+}`
-      },
-      {
-        file_path: 'src/auth/rbac.ts',
-        change_type: 'created',
-        additions: 156,
-        deletions: 0,
-        diff: `+export class RoleBasedAccessControl {
-+  private readonly permissions: Map<string, string[]>;
-+  
-+  constructor() {
-+    this.permissions = new Map([
-+      ['admin', ['read', 'write', 'delete', 'manage']],
-+      ['editor', ['read', 'write']],
-+      ['viewer', ['read']]
-+    ]);
-+  }
-+
-+  hasPermission(userRole: string, requiredPermission: string): boolean {
-+    const rolePermissions = this.permissions.get(userRole) || [];
-+    return rolePermissions.includes(requiredPermission);
-+  }
-+
-+  requirePermission(permission: string) {
-+    return (req: Request, res: Response, next: NextFunction) => {
-+      const userRole = req.user?.role;
-+      
-+      if (!userRole || !this.hasPermission(userRole, permission)) {
-+        return res.status(403).json({ error: 'Insufficient permissions' });
-+      }
-+      
-+      next();
-+    };
-+  }
-+}`
-      }
-    ]
+/** Final answer for an agent: full `output` on its completion event, else the 200-char preview older runs saved. */
+function agentOutput(events: EventLog[]): { text: string; truncated: boolean } {
+  for (let i = events.length - 1; i >= 0; i--) {
+    const out = str((events[i].payload as Payload).output);
+    if (events[i].event_type === 'STATUS_CHANGE' && out) return { text: out, truncated: false };
   }
-];
+  for (let i = events.length - 1; i >= 0; i--) {
+    const preview = str((events[i].payload as Payload).result_preview);
+    if (preview) return { text: preview, truncated: true };
+  }
+  return { text: '', truncated: false };
+}
+
+/** One-line summary of an event for the log. */
+function eventSummary(e: EventLog): string {
+  const p = e.payload as Payload;
+  const args = (p.args ?? {}) as Payload;
+  if (e.event_type === 'TOOL_CALL') return [str(p.tool_name), str(args.path) || str(args.pattern)].filter(Boolean).join(' → ');
+  if (e.event_type === 'ERROR') return str(p.error) || str(p.message);
+  if (p.tool_name && p.tool_result !== undefined) {
+    const r = p.tool_result as Payload;
+    return `${str(p.tool_name)} result${r && typeof r === 'object' && 'success' in r ? (r.success ? ' ✓' : ' ✗') : ''}`;
+  }
+  if (typeof p.cost_usd === 'number') return `${p.input_tokens ?? 0} in / ${p.output_tokens ?? 0} out tokens · $${p.cost_usd.toFixed(4)}`;
+  if (p.new_status) return `→ ${str(p.new_status)}`;
+  return str(p.message) || str(p.step_description);
+}
 
 export function DebriefingRoom({ taskId }: DebriefingRoomProps) {
-  const { selectedVariant, setVariants, setSelectedVariant } = useDebriefingStore();
-  const [viewMode, setViewMode] = useState<'variants' | 'comparison'>('variants');
+  const [task, setTask] = useState<TaskSummary | null>(null);
+  const [events, setEvents] = useState<EventLog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Initialize with mock data
-    setVariants(mockVariants);
-  }, [setVariants]);
+    const fetchTask = async () => {
+      try {
+        const res = await fetch(`/api/tasks/${taskId}/status?events=all`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Failed to load task: ${res.statusText}`);
+        const data = await res.json();
+        setTask(data.task);
+        setEvents(data.events ?? []);
+        // Auto-select first agent
+        if (data.task?.agents?.length > 0) {
+          setSelectedAgentId(data.task.agents[0].agent_id);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load task');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTask();
+  }, [taskId]);
 
-  const handleApproveVariant = async (variantId: string) => {
-    const variant = mockVariants.find(v => v.task_id === variantId);
-    if (variant) {
-      // In production, this would merge the changes
-      console.log('Approving variant:', variant.summary);
-      alert(`✅ Approved: ${variant.summary}\n\nChanges would be merged to the main branch.`);
-    }
-  };
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <RefreshCw className="w-6 h-6 animate-spin text-muted-foreground" />
+        <span className="ml-2 text-muted-foreground">Loading task results…</span>
+      </div>
+    );
+  }
 
-  const handleRequestRevisions = (variantId: string) => {
-    const revisionNotes = prompt('Enter revision notes for the agents:');
-    if (revisionNotes) {
-      console.log('Requesting revisions for variant:', variantId, 'Notes:', revisionNotes);
-      alert('📝 Revision request sent to agents');
-    }
-  };
+  if (error || !task) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <AlertCircle className="w-6 h-6 text-destructive" />
+        <span className="ml-2 text-destructive">{error || 'Task not found'}</span>
+      </div>
+    );
+  }
 
-  const handleDiscardAll = () => {
-    if (confirm('Are you sure you want to discard all solutions? This cannot be undone.')) {
-      console.log('Discarding all variants');
-      alert('🗑️ All solutions discarded');
-    }
-  };
+  const completedAgents = task.agents.filter(a => isDone(a.status));
+  const failedAgents = task.agents.filter(a => a.status === 'FAILED');
+  const selectedAgent = task.agents.find(a => a.agent_id === selectedAgentId) ?? task.agents[0];
 
-  const getBestVariant = () => {
-    if (mockVariants.length === 0) return null;
-    
-    // Simple scoring: balance cost, time, and test success
-    return mockVariants.reduce((best, current) => {
-      const currentScore = ((current.metrics.tests_passed ?? 0) / Math.max((current.metrics.tests_passed ?? 0) + (current.metrics.tests_failed ?? 0), 1)) * 100 
-                          - (current.metrics.estimated_cost / 100) 
-                          - (current.metrics.elapsed_time / 60);
-      
-      const bestScore = ((best.metrics.tests_passed ?? 0) / Math.max((best.metrics.tests_passed ?? 0) + (best.metrics.tests_failed ?? 0), 1)) * 100 
-                       - (best.metrics.estimated_cost / 100) 
-                       - (best.metrics.elapsed_time / 60);
-      
-      return currentScore > bestScore ? current : best;
-    });
-  };
+  // Compute elapsed time from created_at to updated_at
+  const elapsedMs = new Date(task.updated_at).getTime() - new Date(task.created_at).getTime();
+  const elapsedSec = Math.round(elapsedMs / 1000);
 
-  const bestVariant = getBestVariant();
+  // Events for selected agent (oldest first)
+  const agentEvents = events
+    .filter(e => e.agent_id === selectedAgent?.agent_id)
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  const output = agentOutput(agentEvents);
 
   return (
     <div className="h-full flex flex-col space-y-6">
@@ -332,136 +148,211 @@ export function DebriefingRoom({ taskId }: DebriefingRoomProps) {
               <Trophy className="w-6 h-6 text-yellow-500" />
               Debriefing Room
             </h1>
-            <p className="text-muted-foreground">Compare solutions and select the best approach</p>
+            <div className="text-muted-foreground prose prose-invert prose-sm max-w-none">
+              <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                {task.description || task.title || `Task ${taskId.slice(0, 8)}`}
+              </ReactMarkdown>
+            </div>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <Badge variant="info" className="flex items-center gap-1">
-            <GitBranch className="w-3 h-3" />
-            {mockVariants.length} Solutions
+          <Badge variant={task.status === 'COMPLETED' ? 'success' : task.status === 'FAILED' ? 'destructive' : 'secondary'}>
+            {task.status}
           </Badge>
-          {bestVariant && (
-            <Badge variant="success" className="flex items-center gap-1">
-              <Trophy className="w-3 h-3" />
-              Best: {bestVariant.summary}
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      {/* View Mode Toggle */}
-      <div className="flex items-center justify-between">
-        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'variants' | 'comparison')}>
-          <TabsList>
-            <TabsTrigger value="variants" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              Solution Variants
-            </TabsTrigger>
-            <TabsTrigger value="comparison" className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Side-by-Side Comparison
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="variants" className="mt-0">
-            {/* Content for variants tab is handled below in the main content area */}
-          </TabsContent>
-          
-          <TabsContent value="comparison" className="mt-0">
-            {/* Content for comparison tab is handled below in the main content area */}
-          </TabsContent>
-        </Tabs>
-
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleDiscardAll}>
-            <XCircle className="w-4 h-4 mr-2" />
-            Discard All
-          </Button>
-          <Button variant="outline">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Generate More
-          </Button>
+          <Badge variant="outline" className="flex items-center gap-1">
+            <Bot className="w-3 h-3" />
+            {task.agents.length} agents
+          </Badge>
         </div>
       </div>
 
       {/* Summary Stats */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Solutions Overview</CardTitle>
-          <CardDescription>
-            Performance metrics and statistics across all generated solution variants
-          </CardDescription>
+          <CardTitle className="text-lg">Mission Summary</CardTitle>
+          <CardDescription>Aggregate results across all agents</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="flex items-center gap-3">
               <Clock className="w-5 h-5 text-blue-500" />
               <div>
-                <div className="font-medium">
-                  {formatDuration(Math.min(...mockVariants.map(v => v.metrics.elapsed_time)))} - {formatDuration(Math.max(...mockVariants.map(v => v.metrics.elapsed_time)))}
-                </div>
-                <div className="text-sm text-muted-foreground">Time Range</div>
+                <div className="font-medium">{formatDuration(elapsedSec)}</div>
+                <div className="text-sm text-muted-foreground">Total Time</div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
-              <DollarSign className="w-5 h-5 text-green-500" />
+              <Bot className="w-5 h-5 text-purple-500" />
               <div>
-                <div className="font-medium">
-                  {formatCost(Math.min(...mockVariants.map(v => v.metrics.estimated_cost)))} - {formatCost(Math.max(...mockVariants.map(v => v.metrics.estimated_cost)))}
-                </div>
-                <div className="text-sm text-muted-foreground">Cost Range</div>
+                <div className="font-medium">{task.agents.length}</div>
+                <div className="text-sm text-muted-foreground">Agents Deployed</div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
-              <FileText className="w-5 h-5 text-purple-500" />
+              <CheckCircle className="w-5 h-5 text-green-500" />
               <div>
-                <div className="font-medium">
-                  {Math.min(...mockVariants.map(v => v.metrics.files_touched))} - {Math.max(...mockVariants.map(v => v.metrics.files_touched))}
-                </div>
-                <div className="text-sm text-muted-foreground">Files Modified</div>
+                <div className="font-medium">{completedAgents.length}</div>
+                <div className="text-sm text-muted-foreground">Completed</div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-emerald-500" />
+              <BarChart3 className="w-5 h-5 text-orange-500" />
               <div>
-                <div className="font-medium">
-                  {mockVariants.reduce((acc, v) => acc + (v.metrics.tests_passed ?? 0), 0)} passed
-                </div>
-                <div className="text-sm text-muted-foreground">Total Tests</div>
+                <div className="font-medium">{events.length}</div>
+                <div className="text-sm text-muted-foreground">Total Events</div>
               </div>
             </div>
           </div>
+
+          {failedAgents.length > 0 && (
+            <div className="mt-4 p-3 bg-destructive/10 rounded-lg text-sm text-destructive flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              {failedAgents.length} agent(s) failed: {failedAgents.map(a => a.name).join(', ')}
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Content Area */}
-      <div className="flex-1 min-h-0">
-        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'variants' | 'comparison')}>
-          <TabsContent value="variants" className="h-full">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-              {mockVariants.map((variant, index) => (
-                <SolutionVariant
-                  key={variant.task_id}
-                  variant={variant}
-                  rank={index + 1}
-                  isBest={variant === bestVariant}
-                  isSelected={selectedVariant === variant.task_id}
-                  onSelect={() => setSelectedVariant(variant.task_id)}
-                  onApprove={() => handleApproveVariant(variant.task_id)}
-                  onRequestRevisions={() => handleRequestRevisions(variant.task_id)}
-                />
-              ))}
+      {/* Agent Results */}
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Agent List */}
+        <div className="space-y-3 overflow-y-auto">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Agents</h2>
+          {task.agents.map((agent, idx) => (
+            <Card
+              key={agent.agent_id}
+              className={`cursor-pointer transition-colors ${selectedAgentId === agent.agent_id ? 'border-primary bg-primary/5' : 'hover:bg-accent/50'
+                }`}
+              onClick={() => setSelectedAgentId(agent.agent_id)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Bot className="w-4 h-4 text-primary" />
+                    <span className="font-medium text-sm">{agent.name || `Agent ${idx + 1}`}</span>
+                  </div>
+                  <Badge variant={statusVariant(agent.status)} className="text-xs">
+                    {agent.status}
+                  </Badge>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {agent.model_preference}
+                </div>
+                {agent.specialization && agent.specialization.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {agent.specialization.slice(0, 3).map(s => (
+                      <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+
+          {task.agents.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              <Bot className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No agents ran for this task</p>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="comparison" className="h-full">
-            <ComparisonMatrix variants={mockVariants} />
-          </TabsContent>
-        </Tabs>
+          )}
+        </div>
+
+        {/* Selected Agent Detail */}
+        <div className="lg:col-span-2 overflow-y-auto">
+          {selectedAgent ? (
+            <Card className="h-full">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Bot className="w-5 h-5 text-primary" />
+                    {selectedAgent.name}
+                  </CardTitle>
+                  <Badge variant={statusVariant(selectedAgent.status)}>
+                    {selectedAgent.status}
+                  </Badge>
+                </div>
+                <CardDescription>
+                  Model: <span className="font-mono">{selectedAgent.model_preference}</span>
+                  {selectedAgent.specialization?.length ? ` • ${selectedAgent.specialization.join(', ')}` : ''}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Timestamps */}
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="text-muted-foreground">Started</div>
+                    <div className="font-mono">{selectedAgent.created_at ? new Date(selectedAgent.created_at).toLocaleTimeString() : '—'}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Completed</div>
+                    <div className="font-mono">{selectedAgent.finished_at ? new Date(selectedAgent.finished_at).toLocaleTimeString() : '—'}</div>
+                  </div>
+                </div>
+
+                {/* Result */}
+                <div>
+                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Trophy className="w-4 h-4" />
+                    Result
+                    {output.truncated && (
+                      <Badge variant="outline" className="text-xs">preview only (run predates full-output logging)</Badge>
+                    )}
+                  </h3>
+                  {output.text ? (
+                    <div className="p-4 rounded-lg bg-muted/30 border border-muted/20 prose prose-invert prose-sm max-w-none">
+                      <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                        {output.truncated ? `${output.text}…` : output.text}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No output recorded for this agent</div>
+                  )}
+                </div>
+
+                {/* Event Log */}
+                <div>
+                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Event Log
+                    <Badge variant="outline" className="text-xs">{agentEvents.length} events</Badge>
+                  </h3>
+                  <div className="space-y-2 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                    {agentEvents.length === 0 ? (
+                      <div className="text-sm text-muted-foreground text-center py-4">
+                        No events recorded for this agent
+                      </div>
+                    ) : (
+                      agentEvents.map((e, i) => (
+                        <div key={i} className="flex items-center gap-2 p-2 rounded bg-muted/30 text-xs border border-muted/20">
+                          <span className="text-muted-foreground font-mono shrink-0">
+                            {new Date(e.timestamp).toLocaleTimeString()}
+                          </span>
+                          <Badge
+                            variant={e.event_type === 'ERROR' ? 'destructive' : 'outline'}
+                            className="text-[10px] uppercase font-bold py-0 h-4 shrink-0"
+                          >
+                            {e.event_type.replace(/_/g, ' ')}
+                          </Badge>
+                          <span className="font-mono text-[11px] truncate" title={eventSummary(e)}>
+                            {eventSummary(e)}
+                          </span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="h-full flex items-center justify-center text-muted-foreground">
+              <p>Select an agent to view details</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

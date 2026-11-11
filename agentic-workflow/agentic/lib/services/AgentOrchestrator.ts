@@ -119,11 +119,12 @@ export class AgentOrchestrator {
       // Multi-turn tool loop: the model calls functions, we run them and send
       // function_result steps back via previous_interaction_id until it answers.
       const tools = agentToolsManager.getToolDeclarations(false);
-      const MAX_TOOL_TURNS = 15;
+      const MAX_TOOL_TURNS = 25;
 
       let input: Parameters<typeof createInteraction>[1] = prompt;
       let previousInteractionId: string | undefined;
       let interaction: Interaction | undefined;
+      let pendingResults = false; // true while tool results have not yet been answered
       let totalInput = 0;
       let totalOutput = 0;
       let totalCostUsd = 0;
@@ -135,6 +136,7 @@ export class AgentOrchestrator {
           tools,
           previousInteractionId,
         });
+        pendingResults = false;
 
         const { inputTokens, outputTokens, costUsd } = usageAndCost(agent.model_preference, interaction);
         totalInput += inputTokens;
@@ -194,6 +196,54 @@ export class AgentOrchestrator {
 
         input = functionResults;
         previousInteractionId = interaction.id;
+        pendingResults = true;
+      }
+
+      // Tool budget exhausted mid-investigation: hand back the last results with no tools
+      // and an explicit instruction, so the model writes its final answer instead of the
+      // run ending silently. (Verified: tool_choice 'none' alone still yields a function
+      // call, and allowed_tools mode 'none' is rejected by the API.)
+      if (pendingResults) {
+        await eventLogger.logEvent({
+          agent_id: agentId,
+          task_id: agent.task_id,
+          event_type: 'STATUS_CHANGE',
+          payload: { message: `Tool budget (${MAX_TOOL_TURNS} turns) reached; requesting final answer` },
+        });
+        interaction = await createInteraction(agent.model_preference, input, {
+          systemInstruction: [
+            systemInstruction,
+            'Tool budget exhausted. Do not call any more tools. Write your final answer now, based on what you have found so far, and note anything you could not verify.',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          previousInteractionId,
+        });
+        let usage = usageAndCost(agent.model_preference, interaction);
+        totalInput += usage.inputTokens;
+        totalOutput += usage.outputTokens;
+        totalCostUsd += usage.costUsd;
+
+        // Some models (verified with flash-lite) still emit a function call because the
+        // conversation history contains one. Fall back to a fresh, tool-free conversation
+        // that carries the task plus the gathered tool results as plain text.
+        const stillCalling = (interaction.steps ?? []).some((step) => step.type === 'function_call');
+        if (stillCalling || !interaction.output_text) {
+          const MAX_CONTEXT_CHARS = 60_000;
+          let findings = toolLog.join('\n\n');
+          if (findings.length > MAX_CONTEXT_CHARS) {
+            findings = `[earlier tool output truncated]\n${findings.slice(-MAX_CONTEXT_CHARS)}`;
+          }
+          interaction = await createInteraction(
+            agent.model_preference,
+            `${prompt}\n\n---\nYou already investigated this using tools. Their results:\n\n${findings}\n\n---\nThe tool budget is exhausted and no tools are available. Write your final answer now, based on these results, and note anything you could not verify.`,
+            { systemInstruction }
+          );
+          usage = usageAndCost(agent.model_preference, interaction);
+          totalInput += usage.inputTokens;
+          totalOutput += usage.outputTokens;
+          totalCostUsd += usage.costUsd;
+        }
       }
 
       if (totalInput > 0 || totalOutput > 0) {
@@ -226,6 +276,9 @@ export class AgentOrchestrator {
         event_type: 'STATUS_CHANGE',
         payload: {
           result_length: result.length,
+          tool_call_count: toolLog.length,
+          // The model's final answer, shown in the Debriefing Room.
+          output: finalText,
         },
       });
 
