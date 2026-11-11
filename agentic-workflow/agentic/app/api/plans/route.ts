@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { normalizeModel } from '@/types';
 import { prisma } from '@/lib/db';
 
 // GET /api/plans - List plans (DB-backed)
@@ -49,7 +50,11 @@ export async function GET(request: NextRequest) {
           title: `Step ${s.order}`,
           description: s.instruction,
           estimated_duration: 0,
-          agent_requirements: s.assignedAgents,
+          agent_requirements: {
+            agent_name: s.agentName,
+            specialization: s.agentSpecialization,
+            model_preference: normalizeModel(s.modelPreference),
+          },
         })),
       context_files: [],
       ai_docs: [],
@@ -94,7 +99,11 @@ export async function POST(request: NextRequest) {
           create: steps.map((s: any, idx: number) => ({
             order: idx + 1,
             instruction: s.description || s.instruction || s.title || `Step ${idx + 1}`,
-            assignedAgents: Array.isArray(s.agent_requirements) ? s.agent_requirements : [],
+            agentName: s.agent_requirements?.agent_name || s.agent_name || `Agent-${idx + 1}`,
+            agentSpecialization: Array.isArray(s.agent_requirements?.specialization)
+              ? s.agent_requirements.specialization
+              : Array.isArray(s.agent_specialization) ? s.agent_specialization : [],
+            modelPreference: normalizeModel(s.agent_requirements?.model_preference || s.model_preference),
             contextFiles: Array.isArray(s.context_files) ? s.context_files : [],
           })),
         },
@@ -115,7 +124,11 @@ export async function POST(request: NextRequest) {
           title: `Step ${s.order}`,
           description: s.instruction,
           estimated_duration: 0,
-          agent_requirements: s.assignedAgents,
+          agent_requirements: {
+            agent_name: s.agentName,
+            specialization: s.agentSpecialization,
+            model_preference: normalizeModel(s.modelPreference),
+          },
         })),
       context_files: [],
       ai_docs: [],

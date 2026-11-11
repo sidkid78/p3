@@ -3,10 +3,13 @@
  * Executes plans by coordinating agents and managing task flow
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaClient } from '@prisma/client';
 import { agentOrchestrator } from './AgentOrchestrator';
+import { eventLogger } from './EventLogger';
 import { getFileContent, parseRepoUrl } from '../github';
-import type { Task, EventLog, ModelPreference } from '@/types';
+import type { Task, ModelPreference } from '@/types';
+
+const prisma = new PrismaClient();
 
 // Type for AI-generated plan steps
 export interface GeneratedPlanStep {
@@ -25,55 +28,44 @@ export interface ExecutionContext {
 }
 
 export class PlanExecutor {
-  private tasks: Map<string, Task>;
-  private plans: Map<string, GeneratedPlanStep[]>; // Store plans by task_id
-  private contexts: Map<string, ExecutionContext>; // Store contexts by task_id
-  private eventCallbacks: ((event: EventLog) => void)[];
-
-  constructor() {
-    this.tasks = new Map();
-    this.plans = new Map();
-    this.contexts = new Map();
-    this.eventCallbacks = [];
-  }
-
-  /**
-   * Register an event callback
-   */
-  onEvent(callback: (event: EventLog) => void) {
-    this.eventCallbacks.push(callback);
-  }
-
-  /**
-   * Emit an event to all registered callbacks
-   */
-  private emitEvent(event: EventLog) {
-    this.eventCallbacks.forEach((callback) => callback(event));
-  }
+  constructor() { }
 
   /**
    * Create a new task from a plan
    */
   async createTask(plan: GeneratedPlanStep[], context: ExecutionContext): Promise<Task> {
-    const taskId = uuidv4();
-    const task: Task = {
-      task_id: taskId,
-      plan_id: `plan-${taskId}`, // Generate a plan ID based on task ID
-      status: 'PENDING',
-      agents: [], // Will be populated during execution
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    const dbPlan = await prisma.plan.create({
+      data: {
+        title: `Plan for ${context.repo_url}`,
+        description: context.additional_instructions || 'Agentic execution plan',
+        steps: {
+          create: plan.map((step, index) => ({
+            order: index,
+            instruction: step.step_description,
+            agentName: step.agent_name,
+            agentSpecialization: step.agent_specialization,
+            modelPreference: step.model_preference || 'gemini-3.8-flash',
+            contextFiles: context.context_files,
+          })),
+        },
+      },
+      include: {
+        steps: true,
+      },
+    });
 
-    this.tasks.set(task.task_id, task);
-    this.plans.set(task.task_id, plan);
-    this.contexts.set(task.task_id, context);
+    const dbTask = await prisma.task.create({
+      data: {
+        planId: dbPlan.id,
+        title: `Task for ${context.repo_url}`,
+        description: context.additional_instructions,
+        status: 'PENDING',
+      },
+    });
 
-    this.emitEvent({
-      event_id: uuidv4(),
-      timestamp: new Date().toISOString(),
-      agent_id: '', // System event, no specific agent
-      task_id: task.task_id,
+    await eventLogger.logEvent({
+      agent_id: '',
+      task_id: dbTask.id,
       event_type: 'STATUS_CHANGE',
       payload: {
         plan_steps: plan.length,
@@ -81,7 +73,7 @@ export class PlanExecutor {
       },
     });
 
-    return task;
+    return this.mapDbTaskToTask(dbTask);
   }
 
   /**
@@ -114,67 +106,94 @@ export class PlanExecutor {
    */
   private async executePlanStep(
     taskId: string,
-    step: GeneratedPlanStep,
+    step: {
+      instruction: string;
+      agentName: string;
+      agentSpecialization: string[];
+      modelPreference: string;
+    }, // dbPlanStep
     contextContent: string
   ): Promise<string> {
-    // Create agent for this step
-    const agent = agentOrchestrator.createAgent({
-      name: step.agent_name,
-      specialization: step.agent_specialization || [],
-      model_preference: step.model_preference,
+    const agent = await agentOrchestrator.createAgent({
+      name: step.agentName,
+      specialization: step.agentSpecialization,
+      model_preference: (step.modelPreference as ModelPreference) || 'gemini-3.8-flash',
       task_id: taskId,
     });
 
-    this.emitEvent({
-      event_id: uuidv4(),
-      timestamp: new Date().toISOString(),
+    console.log(`[PlanExecutor] Created agent ${agent.name} for task ${taskId}`);
+
+    await eventLogger.logEvent({
       agent_id: agent.agent_id,
       task_id: taskId,
       event_type: 'PLAN_UPDATE',
       payload: {
-        step_description: step.step_description,
+        step_description: step.instruction,
       },
     });
 
     // Build prompt with context
-    const systemInstruction = `You are ${step.agent_name}, a specialized AI agent.
-Your role: ${step.step_description}
-${step.agent_specialization ? `Specializations: ${step.agent_specialization.join(', ')}` : ''}
+    const systemInstruction = `You are ${agent.name}, a specialized AI agent with access to powerful tools.
+Your role: ${step.instruction}
+
+Available Tools:
+- read_file: Read files from the repository
+- write_file: Create or modify files
+- list_directory: Browse directory contents
+- search_files: Find files by pattern
+- execute_bash: Run shell commands
 
 Repository Context:
 ${contextContent}
 
-Please complete your assigned task thoughtfully and provide a detailed response.`;
+IMPORTANT: You MUST use the available tools to complete your task. For example:
+- Use read_file to examine existing code
+- Use write_file to make changes
+- Use list_directory to explore the codebase structure
+- Use execute_bash to run tests or other commands
 
-    const prompt = `Task: ${step.step_description}
+Think step-by-step and use tools to accomplish your goal. Do not just describe what should be done - actually do it using the tools!`;
 
-Please analyze the provided context and complete this task. Provide your solution with clear explanations.`;
+    const prompt = `Task: ${step.instruction}
+
+Please use the available tools to complete this task. Start by examining the relevant files, then make necessary changes.
+
+Steps to follow:
+1. Use list_directory or search_files to find relevant files
+2. Use read_file to examine the current code
+3. Use write_file to make necessary modifications
+4. Use execute_bash to test your changes if appropriate
+
+Begin now and use tools to complete the task.`;
 
     try {
-      const result = await agentOrchestrator.executeAgent(agent.agent_id, prompt, systemInstruction);
+      // Execute agent
+      const result = await agentOrchestrator.executeAgent(
+        agent.agent_id,
+        prompt,
+        systemInstruction
+      );
 
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
+      console.log(`[PlanExecutor] Agent ${agent.agent_id} completed task ${taskId}`);
+
+      await eventLogger.logEvent({
         agent_id: agent.agent_id,
         task_id: taskId,
         event_type: 'PLAN_UPDATE',
         payload: {
-          step_description: step.step_description,
+          step_description: step.instruction,
           result_preview: result.substring(0, 200),
         },
       });
 
       return result;
     } catch (error) {
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
+      await eventLogger.logEvent({
         agent_id: agent.agent_id,
         task_id: taskId,
         event_type: 'ERROR',
         payload: {
-          step_description: step.step_description,
+          step_description: step.instruction,
           error: error instanceof Error ? error.message : 'Unknown error',
         },
       });
@@ -187,36 +206,56 @@ Please analyze the provided context and complete this task. Provide your solutio
    * Execute a complete plan
    */
   async executePlan(taskId: string): Promise<void> {
-    const task = this.tasks.get(taskId);
-    const plan = this.plans.get(taskId);
-    const context = this.contexts.get(taskId);
+    const dbTask = await prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        plan: {
+          include: {
+            steps: {
+              orderBy: { order: 'asc' },
+            },
+          },
+        },
+      },
+    });
 
-    if (!task || !plan || !context) {
-      throw new Error(`Task ${taskId} not found or incomplete`);
+    if (!dbTask || !dbTask.plan) {
+      throw new Error(`Task ${taskId} not found or has no plan`);
     }
 
-    task.status = 'IN_PROGRESS';
-    task.updated_at = new Date().toISOString();
+    await prisma.task.update({
+      where: { id: taskId },
+      data: { status: 'IN_PROGRESS' },
+    });
 
     try {
-      // Load context files
-      const contextContent = await this.loadContextFiles(context.repo_url, context.context_files);
+      // For now, load default context files if available, otherwise just repo
+      const contextContent = await this.loadContextFiles(dbTask.title.replace('Task for ', ''), []);
 
-      // Execute each plan step
-      const results: { step: GeneratedPlanStep; result: string }[] = [];
-
-      for (const step of plan) {
-        const result = await this.executePlanStep(task.task_id, step, contextContent);
-        results.push({ step, result });
+      const results: string[] = [];
+      for (const step of dbTask.plan.steps) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const s = step as any;
+        const result = await this.executePlanStep(
+          taskId,
+          {
+            instruction: s.instruction,
+            agentName: s.agentName,
+            agentSpecialization: s.agentSpecialization,
+            modelPreference: s.modelPreference,
+          },
+          contextContent
+        );
+        results.push(result);
       }
 
-      task.status = 'COMPLETED';
-      task.updated_at = new Date().toISOString();
+      await prisma.task.update({
+        where: { id: taskId },
+        data: { status: 'COMPLETED' },
+      });
 
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
-        agent_id: '', // System event, no specific agent
+      await eventLogger.logEvent({
+        agent_id: '',
         task_id: taskId,
         event_type: 'STATUS_CHANGE',
         payload: {
@@ -224,13 +263,13 @@ Please analyze the provided context and complete this task. Provide your solutio
         },
       });
     } catch (error) {
-      task.status = 'FAILED';
-      task.updated_at = new Date().toISOString();
+      await prisma.task.update({
+        where: { id: taskId },
+        data: { status: 'FAILED' },
+      });
 
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
-        agent_id: '', // System event, no specific agent
+      await eventLogger.logEvent({
+        agent_id: '',
         task_id: taskId,
         event_type: 'ERROR',
         payload: {
@@ -245,36 +284,77 @@ Please analyze the provided context and complete this task. Provide your solutio
   /**
    * Get task by ID
    */
-  getTask(taskId: string): Task | undefined {
-    return this.tasks.get(taskId);
+  async getTask(taskId: string): Promise<Task | null> {
+    const dbTask = await prisma.task.findUnique({
+      where: { id: taskId },
+      include: { agents: true },
+    });
+    return dbTask ? this.mapDbTaskToTask(dbTask) : null;
   }
 
   /**
    * Get all tasks
    */
-  getAllTasks(): Task[] {
-    return Array.from(this.tasks.values());
+  async getAllTasks(): Promise<Task[]> {
+    const dbTasks = await prisma.task.findMany({
+      include: { agents: true },
+      orderBy: { createdAt: 'desc' },
+    });
+    return dbTasks.map((t) => this.mapDbTaskToTask(t));
   }
 
   /**
    * Update task status
    */
-  updateTaskStatus(taskId: string, status: Task['status']) {
-    const task = this.tasks.get(taskId);
-    if (task) {
-      task.status = status;
-      task.updated_at = new Date().toISOString();
-    }
+  async updateTaskStatus(taskId: string, status: any) {
+    await prisma.task.update({
+      where: { id: taskId },
+      data: { status },
+    });
   }
 
   /**
-   * Clear all tasks
+   * Map DB Task to API Task type
    */
-  clear() {
-    this.tasks.clear();
+  private mapDbTaskToTask(dbTask: any): Task {
+    return {
+      task_id: dbTask.id,
+      plan_id: dbTask.planId || '',
+      status: dbTask.status as any,
+      agents: (dbTask.agents || []).map((a: any) => ({
+        agent_id: a.id,
+        task_id: a.taskId,
+        status: a.status,
+        name: a.name,
+        model_preference: a.modelPreference as any,
+        specialization: a.specialization,
+        created_at: a.createdAt.toISOString(),
+      })),
+      created_at: dbTask.createdAt.toISOString(),
+      updated_at: dbTask.updatedAt.toISOString(),
+      metrics: {
+        elapsed_time: dbTask.elapsedTime,
+        estimated_cost: dbTask.estimatedCost,
+        files_touched: dbTask.filesTouched,
+        tests_passed: dbTask.testsPassed,
+        tests_failed: dbTask.testsFailed,
+      },
+    };
+  }
+
+  /**
+   * Clear all tasks (for testing)
+   */
+  async clear() {
+    await prisma.eventLog.deleteMany();
+    await prisma.agent.deleteMany();
+    await prisma.task.deleteMany();
+    await prisma.planStep.deleteMany();
+    await prisma.plan.deleteMany();
   }
 }
 
 // Singleton instance
 export const planExecutor = new PlanExecutor();
+
 

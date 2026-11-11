@@ -228,7 +228,7 @@ import {
             task_id: 'task-1',
             name: 'Code-Analyzer',
             status: 'RUNNING' as const,
-            model_preference: 'gemini-2.5-flash' as const,
+            model_preference: 'gemini-3.8-flash' as const,
             specialization: ['analysis', 'refactoring'],
             created_at: new Date().toISOString(),
           }

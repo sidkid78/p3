@@ -1,73 +1,101 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { MODEL_OPTIONS } from '@/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  BarChart3, 
-  DollarSign, 
-  Clock, 
+import {
+  BarChart3,
+  DollarSign,
+  Clock,
   Activity,
   TrendingUp,
-  TrendingDown,
   Calendar,
-  Zap
+  Zap,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
-const getBarHeightClass = (cost: number) => {
-  const h = Math.max(20, (cost /35) * 40);
-  if (h < 24) return 'h-5';
-  if (h < 28) return 'h-6';
-  if (h < 32) return 'h-7';
-  if (h < 36) return 'h-8';
-  if (h < 40) return 'h-9';
-  return 'h-10';
-};
+interface ModelBreakdown {
+  model: string;
+  label: string;
+  icon: string;
+  costDollars: number;
+  estimatedTokens: number;
+  agentCount: number;
+  taskCount: number;
+  pricing: { input: number; output: number };
+}
 
-// Mock usage data
-const mockUsageData = {
-  current_month: {
-    total_cost: 234.67,
-    total_tokens: 1250000,
-    total_tasks: 45,
-    total_time: 18000, // in seconds
-    model_breakdown: {
-      'gemini-2.5-pro': { cost: 145.20, tokens: 450000, tasks: 12 },
-      'gemini-2.5-flash': { cost: 67.30, tokens: 580000, tasks: 25 },
-      'gemini-2.0-pro': { cost: 22.17, tokens: 220000, tasks: 8 }
-    }
-  },
-  daily_usage: [
-    { date: '2024-01-01', cost: 12.45, tasks: 3, tokens: 45000 },
-    { date: '2024-01-02', cost: 18.90, tasks: 4, tokens: 67000 },
-    { date: '2024-01-03', cost: 25.60, tasks: 6, tokens: 89000 },
-    { date: '2024-01-04', cost: 31.20, tasks: 5, tokens: 76000 },
-    { date: '2024-01-05', cost: 28.75, tasks: 7, tokens: 95000 },
-    { date: '2024-01-06', cost: 22.30, tasks: 4, tokens: 58000 },
-    { date: '2024-01-07', cost: 19.85, tasks: 3, tokens: 52000 }
-  ]
+interface DailyUsage {
+  date: string;
+  costDollars: number;
+  taskCount: number;
+}
+
+interface UsageData {
+  summary: {
+    totalCostDollars: number;
+    totalElapsedMs: number;
+    totalTasks: number;
+    completedTasks: number;
+    failedTasks: number;
+    avgCostPerTask: number;
+  };
+  modelBreakdown: ModelBreakdown[];
+  dailyUsage: DailyUsage[];
+  currentMonth: string;
+}
+
+const fmt$ = (n: number) => `$${n.toFixed(4)}`;
+const fmtBig$ = (n: number) => n < 0.01 ? `$${n.toFixed(4)}` : `$${n.toFixed(2)}`;
+const fmtTokens = (n: number) => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(2)}M` : n >= 1000 ? `${(n / 1000).toFixed(0)}K` : `${n}`;
+const fmtDuration = (ms: number) => {
+  const s = Math.round(ms / 1000);
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  if (h > 0) return `${h}h ${m % 60}m`;
+  return `${m}m ${s % 60}s`;
 };
 
 export default function UsagePage() {
-  const formatCost = (cost: number) => `$${cost.toFixed(2)}`;
-  const formatTokens = (tokens: number) => `${(tokens / 1000).toFixed(0)}K`;
-  const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
-  };
+  const [data, setData] = useState<UsageData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const getModelIcon = (model: string) => {
-    if (model.includes('2.5-pro')) return '🧠';
-    if (model.includes('2.5-flash')) return '🚀';
-    return '⚡';
-  };
+  useEffect(() => {
+    fetch('/api/usage')
+      .then(r => r.json())
+      .then(d => { setData(d); setLoading(false); })
+      .catch(e => { setError(e.message); setLoading(false); });
+  }, []);
 
-  const getModelColor = (model: string) => {
-    if (model.includes('2.5-pro')) return 'bg-purple-100 text-purple-800';
-    if (model.includes('2.5-flash')) return 'bg-blue-100 text-blue-800';
-    return 'bg-green-100 text-green-800';
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <RefreshCw className="w-6 h-6 animate-spin text-muted-foreground mr-2" />
+        <span className="text-muted-foreground">Loading usage data…</span>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <AlertCircle className="w-6 h-6 text-destructive mr-2" />
+        <span className="text-destructive">{error || 'Failed to load usage data'}</span>
+      </div>
+    );
+  }
+
+  const { summary, modelBreakdown, dailyUsage, currentMonth } = data;
+
+  // Max cost for bar chart scaling
+  const maxDailyCost = Math.max(...dailyUsage.map(d => d.costDollars), 0.01);
 
   return (
     <div className="space-y-6">
@@ -76,17 +104,14 @@ export default function UsagePage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-green-500" />
-            Usage & Analytics
+            Usage &amp; Analytics
           </h1>
-          <p className="text-muted-foreground">Monitor costs, performance, and resource utilization</p>
+          <p className="text-muted-foreground">Real costs and performance from your DB</p>
         </div>
-        
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            January 2024
-          </Badge>
-        </div>
+        <Badge variant="outline" className="flex items-center gap-1">
+          <Calendar className="w-3 h-3" />
+          {currentMonth}
+        </Badge>
       </div>
 
       {/* Summary Cards */}
@@ -97,44 +122,36 @@ export default function UsagePage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {formatCost(mockUsageData.current_month.total_cost)}
-            </div>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
-              +12% from last month
-            </div>
+            <div className="text-2xl font-bold text-green-600">{fmtBig$(summary.totalCostDollars)}</div>
+            <div className="text-xs text-muted-foreground mt-1">{summary.totalTasks} tasks total</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tokens Used</CardTitle>
+            <CardTitle className="text-sm font-medium">Avg Cost / Task</CardTitle>
             <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
-              {formatTokens(mockUsageData.current_month.total_tokens)}
-            </div>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
-              +8% from last month
-            </div>
+            <div className="text-2xl font-bold text-blue-600">{fmtBig$(summary.avgCostPerTask)}</div>
+            <div className="text-xs text-muted-foreground mt-1">across all runs</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tasks Completed</CardTitle>
+            <CardTitle className="text-sm font-medium">Tasks</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">
-              {mockUsageData.current_month.total_tasks}
-            </div>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <TrendingDown className="w-3 h-3 mr-1 text-red-500" />
-              -3% from last month
+            <div className="text-2xl font-bold text-purple-600">{summary.totalTasks}</div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+              <span className="flex items-center gap-1 text-green-600">
+                <CheckCircle className="w-3 h-3" />{summary.completedTasks}
+              </span>
+              <span className="flex items-center gap-1 text-red-500">
+                <XCircle className="w-3 h-3" />{summary.failedTasks}
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -145,13 +162,8 @@ export default function UsagePage() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
-              {formatDuration(mockUsageData.current_month.total_time)}
-            </div>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <TrendingUp className="w-3 h-3 mr-1 text-green-500" />
-              +15% from last month
-            </div>
+            <div className="text-2xl font-bold text-orange-600">{fmtDuration(summary.totalElapsedMs)}</div>
+            <div className="text-xs text-muted-foreground mt-1">total wall time</div>
           </CardContent>
         </Card>
       </div>
@@ -160,114 +172,117 @@ export default function UsagePage() {
         <TabsList>
           <TabsTrigger value="models">Model Breakdown</TabsTrigger>
           <TabsTrigger value="daily">Daily Usage</TabsTrigger>
-          <TabsTrigger value="trends">Trends</TabsTrigger>
+          <TabsTrigger value="pricing">Pricing Reference</TabsTrigger>
         </TabsList>
 
+        {/* Model Breakdown */}
         <TabsContent value="models" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Usage by Model</CardTitle>
-              <CardDescription>Cost and performance breakdown by AI model</CardDescription>
+              <CardDescription>Cost breakdown by AI model (estimated from task cost allocation)</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {Object.entries(mockUsageData.current_month.model_breakdown).map(([model, data]) => (
-                  <div key={model} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{getModelIcon(model)}</div>
-                      <div>
-                        <div className="font-medium">{model}</div>
-                        <Badge className={getModelColor(model)}>
-                          {data.tasks} tasks
-                        </Badge>
+              {modelBreakdown.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No model usage recorded yet</p>
+                  <p className="text-xs">Run some tasks to see cost breakdown here</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {modelBreakdown.map(({ model, label, icon, costDollars, estimatedTokens, agentCount, taskCount }) => (
+                    <div key={model} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="text-2xl">{icon}</div>
+                        <div>
+                          <div className="font-medium">{label}</div>
+                          <div className="text-xs text-muted-foreground font-mono">{model}</div>
+                          <div className="flex gap-2 mt-1">
+                            <Badge variant="secondary" className="text-xs">{agentCount} agents</Badge>
+                            <Badge variant="outline" className="text-xs">{taskCount} tasks</Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <div className="text-lg font-bold">{fmtBig$(costDollars)}</div>
+                        <div className="text-sm text-muted-foreground">~{fmtTokens(estimatedTokens)} tokens est.</div>
                       </div>
                     </div>
-                    <div className="text-right space-y-1">
-                      <div className="text-lg font-bold">{formatCost(data.cost)}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {formatTokens(data.tokens)} tokens
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
 
+        {/* Daily Usage */}
         <TabsContent value="daily" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Daily Usage Trend</CardTitle>
-              <CardDescription>Cost and task volume over the last 7 days</CardDescription>
+              <CardTitle>Daily Usage</CardTitle>
+              <CardDescription>Cost and task volume (last 30 days with activity)</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {mockUsageData.daily_usage.map((day: { date: string; cost: number; tasks: number; tokens: number }) => (
-                  <div key={day.date} className="flex items-center justify-between p-3 border rounded">
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className={cn("w-2 bg-blue-500 rounded", getBarHeightClass(day.cost))}
-                      ></div>
-                      <div>
-                        <div className="font-medium">
-                          {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+              {dailyUsage.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No daily data yet</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {dailyUsage.map(day => {
+                    const pct = Math.max(4, Math.round((day.costDollars / maxDailyCost) * 100));
+                    return (
+                      <div key={day.date} className="flex items-center gap-3 p-3 border rounded">
+                        <div className={`w-2 bg-blue-500 rounded ${pct > 75 ? 'h-10' : pct > 50 ? 'h-7' : pct > 25 ? 'h-5' : 'h-3'}`} />
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">
+                            {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                          </div>
+                          <div className="text-xs text-muted-foreground">{day.taskCount} task{day.taskCount !== 1 ? 's' : ''}</div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {day.tasks} tasks • {formatTokens(day.tokens)} tokens
-                        </div>
+                        <div className="text-base font-bold">{fmtBig$(day.costDollars)}</div>
                       </div>
-                    </div>
-                    <div className="text-lg font-bold">
-                      {formatCost(day.cost)}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="trends" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cost Efficiency</CardTitle>
-                <CardDescription>Average cost per task over time</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600 mb-2">
-                  {formatCost(mockUsageData.current_month.total_cost / mockUsageData.current_month.total_tasks)}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Average cost per task
-                </div>
-                <div className="flex items-center mt-2 text-xs text-green-600">
-                  <TrendingDown className="w-3 h-3 mr-1" />
-                  Improved by 8% this month
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Token Efficiency</CardTitle>
-                <CardDescription>Tokens used per successful task</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-blue-600 mb-2">
-                  {formatTokens(mockUsageData.current_month.total_tokens / mockUsageData.current_month.total_tasks)}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Average tokens per task
-                </div>
-                <div className="flex items-center mt-2 text-xs text-blue-600">
-                  <TrendingUp className="w-3 h-3 mr-1" />
-                  Increased by 5% this month
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        {/* Pricing Reference */}
+        <TabsContent value="pricing" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Gemini API Pricing Reference</CardTitle>
+              <CardDescription>Current pricing used for cost estimation (USD per 1M tokens)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {Object.entries(MODEL_OPTIONS).map(([model, { label, icon, pricing: { input, output } }]) => (
+                  <div key={model} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{icon}</span>
+                      <div>
+                        <div className="font-medium text-sm">{label}</div>
+                        <div className="text-xs text-muted-foreground font-mono">{model}</div>
+                      </div>
+                    </div>
+                    <div className="text-right text-sm">
+                      <div><span className="text-muted-foreground">In: </span>{fmt$(input)}/MTok</div>
+                      <div><span className="text-muted-foreground">Out: </span>{fmt$(output)}/MTok</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">
+                * Token estimates are approximated from task cost using a blended input/output ratio.
+                Actual token counts are not stored in the DB.
+              </p>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

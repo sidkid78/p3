@@ -26,7 +26,9 @@
  * ```
  */
 
-import { Tool, Type } from '@google/genai';
+import type { Interactions } from '@google/genai';
+
+type FunctionDeclaration = Omit<Interactions.Function, 'type'>;
 import { FileSystemTools, type ProjectStructure } from './file-system-tools';
 
 // =========================================================================
@@ -91,9 +93,9 @@ export class AgentToolsManager {
    *       - Required vs optional parameters
    *       - Enum constraints where applicable
    */
-  getToolDeclarations(includeSearch: boolean = false): Tool[] {
+  getToolDeclarations(includeSearch: boolean = false): Interactions.Tool[] {
     // Create all function declarations
-    const functionDeclarations: types.FunctionDeclaration[] = [
+    const functionDeclarations: FunctionDeclaration[] = [
       // =========================================================
       // File Operations
       // =========================================================
@@ -102,19 +104,19 @@ export class AgentToolsManager {
         description:
           'Create a new file with content. Use this to write code files, configuration files, documentation, etc.',
         parameters: {
-          type: Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description:
                 "File path relative to workspace (e.g., 'src/main.ts')",
             },
             content: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Complete file content to write',
             },
             overwrite: {
-              type: types.Type.BOOLEAN,
+              type: "boolean",
               description: 'Whether to overwrite if file exists',
             },
           },
@@ -126,10 +128,10 @@ export class AgentToolsManager {
         name: 'read_file',
         description: 'Read the contents of an existing file',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'File path relative to workspace',
             },
           },
@@ -142,18 +144,18 @@ export class AgentToolsManager {
         description:
           'Update an existing file (replace, append, or prepend content)',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'File path relative to workspace',
             },
             content: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Content to add/replace',
             },
             mode: {
-              type: types.Type.STRING,
+              type: "string",
               enum: ['replace', 'append', 'prepend'],
               description: 'How to update the file',
             },
@@ -166,10 +168,10 @@ export class AgentToolsManager {
         name: 'delete_file',
         description: 'Delete a file',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'File path relative to workspace',
             },
           },
@@ -184,14 +186,14 @@ export class AgentToolsManager {
         name: 'create_directory',
         description: 'Create a new directory',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Directory path relative to workspace',
             },
             parents: {
-              type: types.Type.BOOLEAN,
+              type: "boolean",
               description: 'Create parent directories if needed',
             },
           },
@@ -203,18 +205,18 @@ export class AgentToolsManager {
         name: 'list_directory',
         description: 'List contents of a directory',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Directory path relative to workspace',
             },
             recursive: {
-              type: types.Type.BOOLEAN,
+              type: "boolean",
               description: 'List recursively',
             },
             include_hidden: {
-              type: types.Type.BOOLEAN,
+              type: "boolean",
               description: 'Include hidden files',
             },
           },
@@ -229,14 +231,14 @@ export class AgentToolsManager {
         description:
           'Create a complete project structure with multiple directories and files at once',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             project_name: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Name of the project',
             },
             structure: {
-              type: types.Type.OBJECT,
+              type: "object",
               description:
                 "Project structure with 'directories' and 'files'",
             },
@@ -249,14 +251,14 @@ export class AgentToolsManager {
         name: 'get_project_tree',
         description: 'Get a tree view of the project structure',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Root path for tree view',
             },
             max_depth: {
-              type: types.Type.INTEGER,
+              type: "integer",
               description: 'Maximum depth to traverse',
             },
           },
@@ -267,10 +269,10 @@ export class AgentToolsManager {
         name: 'get_file_info',
         description: 'Get detailed information about a file',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'File path relative to workspace',
             },
           },
@@ -285,18 +287,18 @@ export class AgentToolsManager {
         name: 'bash',
         description: 'Execute a bash command',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             command: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Shell command to execute',
             },
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Working directory for the command',
             },
             timeout: {
-              type: types.Type.INTEGER,
+              type: "integer",
               description: 'Command timeout in seconds',
             },
           },
@@ -311,19 +313,19 @@ export class AgentToolsManager {
         name: 'git_operations',
         description: 'Perform git operations',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             operation: {
-              type: types.Type.STRING,
+              type: "string",
               description:
                 'Git operation (init, status, add, commit, push, pull, etc.)',
             },
             args: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Space-separated arguments for the git command',
             },
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Repository path',
             },
           },
@@ -338,26 +340,26 @@ export class AgentToolsManager {
         name: 'grep_files',
         description: 'Search for a pattern in files',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             pattern: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Search pattern (regex)',
             },
             full_search_path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Path to search in',
             },
             recursive: {
-              type: types.Type.BOOLEAN,
+              type: "boolean",
               description: 'Whether to search recursively',
             },
             ignore_case: {
-              type: types.Type.BOOLEAN,
+              type: "boolean",
               description: 'Case-insensitive search',
             },
             max_results: {
-              type: types.Type.INTEGER,
+              type: "integer",
               description: 'Maximum number of results',
             },
           },
@@ -372,18 +374,18 @@ export class AgentToolsManager {
         name: 'glob_search',
         description: 'Find files matching a glob pattern',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             pattern: {
-              type: types.Type.STRING,
+              type: "string",
               description: "Glob pattern (e.g., '*.ts', '**/*.json')",
             },
             path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Path to search in',
             },
             recursive: {
-              type: types.Type.BOOLEAN,
+              type: "boolean",
               description: 'Search recursively',
             },
           },
@@ -398,23 +400,23 @@ export class AgentToolsManager {
         name: 'execute_batch',
         description: 'Execute multiple tasks in parallel',
         parameters: {
-          type: types.Type.OBJECT,
+          type: "object",
           properties: {
             tasks: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'JSON string with list of task objects',
             },
             allowed_tools: {
-              type: types.Type.ARRAY,
-              items: { type: types.Type.STRING },
+              type: "array",
+              items: { type: "string" },
               description: 'List of allowed tools',
             },
             full_search_path: {
-              type: types.Type.STRING,
+              type: "string",
               description: 'Default path for operations',
             },
             max_workers: {
-              type: types.Type.INTEGER,
+              type: "integer",
               description: 'Maximum parallel workers',
             },
           },
@@ -423,11 +425,14 @@ export class AgentToolsManager {
       },
     ];
 
-    // Wrap all function declarations in a Tool object
-    const tools: types.Tool[] = [{ functionDeclarations }];
+    // Interactions API: each function is its own tool entry ({ type: 'function', ... })
+    const tools: Interactions.Tool[] = functionDeclarations.map((fn) => ({
+      type: 'function' as const,
+      ...fn,
+    }));
 
     if (includeSearch) {
-      tools.push({ googleSearch: {} });
+      tools.push({ type: 'google_search' });
     }
 
     return tools;

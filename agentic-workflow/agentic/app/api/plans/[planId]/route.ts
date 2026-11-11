@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { normalizeModel } from '@/types';
 import { prisma } from '@/lib/db';
 
 // GET /api/plans/[planId] - Get a specific plan
@@ -34,7 +35,11 @@ export async function GET(
           title: `Step ${s.order}`,
           description: s.instruction,
           estimated_duration: 0,
-          agent_requirements: s.assignedAgents,
+          agent_requirements: {
+            agent_name: s.agentName,
+            specialization: s.agentSpecialization,
+            model_preference: normalizeModel(s.modelPreference),
+          },
         })),
       context_files: [],
       ai_docs: [],
@@ -93,7 +98,11 @@ export async function PUT(
             title: `Step ${s.order}`,
             description: s.instruction,
             estimated_duration: 0,
-            agent_requirements: s.assignedAgents,
+            agent_requirements: {
+            agent_name: s.agentName,
+            specialization: s.agentSpecialization,
+            model_preference: normalizeModel(s.modelPreference),
+          },
           })),
         context_files: [],
         ai_docs: [],
@@ -178,7 +187,7 @@ export async function POST(
           create: body.agents.map((a: any) => ({
             name: a.name || 'Agent',
             status: 'PENDING',
-            modelPreference: a.model_preference || 'gemini-2.5-flash',
+            modelPreference: a.model_preference || 'gemini-3.8-flash',
             specialization: Array.isArray(a.specialization) ? a.specialization : [],
           })),
         } : undefined,

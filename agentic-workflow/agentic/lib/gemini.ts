@@ -1,10 +1,10 @@
 /**
  * Google Gemini API Integration
- * Provides type-safe access to Gemini models using the modern @google/genai SDK
+ * Uses the Interactions API (`client.interactions.create`) from @google/genai >= 2.x.
  */
 
-import { GoogleGenAI, types } from '@google/genai';
-import type { ModelPreference } from '@/types';
+import { GoogleGenAI, type Interactions } from '@google/genai';
+import { DEFAULT_MODEL, MODEL_OPTIONS, normalizeModel, type ModelPreference } from '@/types';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 if (!GEMINI_API_KEY) {
@@ -13,46 +13,29 @@ if (!GEMINI_API_KEY) {
 
 const ai = GEMINI_API_KEY ? new GoogleGenAI({ apiKey: GEMINI_API_KEY }) : null;
 
-/**
- * Model configurations with generation parameters
- */
-export const MODEL_CONFIGS = {
-  'gemini-2.5-pro': {
-    temperature: 0.7,
-    maxOutputTokens: 8192,
-    topP: 0.95,
-    topK: 40,
-  },
-  'gemini-2.5-flash': {
-    temperature: 0.9,
-    maxOutputTokens: 8192,
-    topP: 0.95,
-    topK: 40,
-  },
-  'gemini-2.5-flash-lite': {
-    temperature: 0.9,
-    maxOutputTokens: 4096,
-    topP: 0.95,
-    topK: 40,
-  },
-  'gemini-2.0-pro': {
-    temperature: 0.4,
-    maxOutputTokens: 4096,
-    topP: 0.95,
-    topK: 40,
-  },
-} as const;
+export type Interaction = Interactions.Interaction;
+export type InteractionTool = Interactions.Tool;
+export type GenerationConfig = Interactions.GenerationConfig;
+export type InteractionInput = Interactions.InteractionCreateParamsNonStreaming['input'];
 
 /**
- * Simple pricing per 1M tokens (USD) for estimation (input only)
- * Source: representative values; adjust as needed.
+ * Per-model generation config. Gemini 3.x models ignore temperature/top_p/top_k;
+ * reasoning effort is controlled with thinking_level instead.
  */
-const MODEL_PRICING_PER_1M: Record<string, { input: number; output: number }> = {
-  'gemini-2.5-flash-lite': { input: 0.10, output: 0.40 },
-  'gemini-2.5-flash': { input: 0.30, output: 2.50 },
-  'gemini-2.5-pro': { input: 1.25, output: 10.0 },
-  'gemini-2.0-pro': { input: 0.10, output: 0.40 },
+export const MODEL_CONFIGS: Record<ModelPreference, GenerationConfig> = {
+  'gemini-3.1-pro-preview': { max_output_tokens: 16384, thinking_level: 'high' },
+  'gemini-3.8-flash': { max_output_tokens: 16384, thinking_level: 'medium' },
+  'gemini-3.5-flash-lite': { max_output_tokens: 8192, thinking_level: 'minimal' },
 };
+
+/** Pricing per 1M tokens (USD), sourced from MODEL_OPTIONS. */
+export const MODEL_PRICING_PER_1M: Record<string, { input: number; output: number }> = Object.fromEntries(
+  Object.entries(MODEL_OPTIONS).map(([id, opt]) => [id, opt.pricing])
+);
+
+export function getPricing(model: string) {
+  return MODEL_PRICING_PER_1M[normalizeModel(model)];
+}
 
 /**
  * Get the Gemini AI client
@@ -64,7 +47,94 @@ export function getClient() {
   return ai;
 }
 
+export interface CreateInteractionOptions {
+  systemInstruction?: string;
+  tools?: InteractionTool[];
+  previousInteractionId?: string;
+  generationConfig?: GenerationConfig;
+  responseFormat?: Interactions.InteractionCreateParamsNonStreaming['response_format'];
+}
 
+function buildParams(model: string, input: InteractionInput, opts: CreateInteractionOptions) {
+  const resolved = normalizeModel(model);
+  return {
+    model: resolved,
+    input,
+    // system_instruction, tools and generation_config are interaction-scoped: send them every turn.
+    ...(opts.systemInstruction ? { system_instruction: opts.systemInstruction } : {}),
+    ...(opts.tools?.length ? { tools: opts.tools } : {}),
+    ...(opts.previousInteractionId ? { previous_interaction_id: opts.previousInteractionId } : {}),
+    ...(opts.responseFormat ? { response_format: opts.responseFormat } : {}),
+    generation_config: { ...MODEL_CONFIGS[resolved], ...(opts.generationConfig || {}) },
+  };
+}
+
+/**
+ * Create a single (non-streaming) interaction.
+ */
+export async function createInteraction(
+  model: string,
+  input: InteractionInput,
+  opts: CreateInteractionOptions = {}
+): Promise<Interaction> {
+  try {
+    return await getClient().interactions.create(buildParams(model, input, opts));
+  } catch (error) {
+    console.error('Gemini interaction error:', error);
+    throw new Error(`Failed to generate content: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Generate plain text (convenience wrapper).
+ */
+export async function generateText(
+  model: ModelPreference,
+  prompt: string,
+  systemInstruction?: string
+): Promise<string> {
+  const interaction = await createInteraction(model, prompt, { systemInstruction });
+  return interaction.output_text ?? '';
+}
+
+/**
+ * Stream text deltas from an interaction.
+ */
+export async function* generateContentStream(
+  model: ModelPreference,
+  prompt: string,
+  systemInstruction?: string,
+  opts: Omit<CreateInteractionOptions, 'systemInstruction'> = {}
+): AsyncGenerator<string> {
+  try {
+    const stream = await getClient().interactions.create({
+      ...buildParams(model, prompt, { ...opts, systemInstruction }),
+      stream: true,
+    });
+    for await (const event of stream) {
+      if (event.event_type === 'step.delta' && event.delta.type === 'text') {
+        yield event.delta.text;
+      } else if (event.event_type === 'error') {
+        throw new Error(event.error?.message || 'Stream error');
+      }
+    }
+  } catch (error) {
+    console.error('Gemini streaming error:', error);
+    throw new Error(`Failed to generate content: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Token usage + USD cost of an interaction.
+ */
+export function usageAndCost(model: string, interaction: Pick<Interaction, 'usage'>) {
+  const inputTokens = interaction.usage?.total_input_tokens ?? 0;
+  const outputTokens =
+    (interaction.usage?.total_output_tokens ?? 0) + (interaction.usage?.total_thought_tokens ?? 0);
+  const pricing = getPricing(model);
+  const costUsd = (inputTokens / 1_000_000) * pricing.input + (outputTokens / 1_000_000) * pricing.output;
+  return { inputTokens, outputTokens, costUsd };
+}
 
 /**
  * Estimate token usage and cost for a prompt (input-side only).
@@ -74,105 +144,30 @@ export async function estimateInputTokensAndCost(
   prompt: string,
   systemInstruction?: string
 ): Promise<{ inputTokens: number; estimatedInputCostUsd: number }> {
-  const client = getClient();
   const mergedText = systemInstruction ? `${systemInstruction}\n\n${prompt}` : prompt;
-
   try {
-    const resp = await client.models.countTokens({
-      model,
-      contents: mergedText,
-    });
+    const resp = await getClient().models.countTokens({ model: normalizeModel(model), contents: mergedText });
     const inputTokens = resp.totalTokens ?? 0;
-    const pricing = MODEL_PRICING_PER_1M[model] ?? { input: 0.3, output: 2.5 };
-    const estimatedInputCostUsd = (inputTokens / 1_000_000) * pricing.input;
-    return { inputTokens, estimatedInputCostUsd };
+    return { inputTokens, estimatedInputCostUsd: (inputTokens / 1_000_000) * getPricing(model).input };
   } catch {
-    // Fallback if token counting fails
     return { inputTokens: 0, estimatedInputCostUsd: 0 };
   }
 }
 
-
 /**
- * Generate content with streaming support
- */
-export async function* generateContentStream(
-  model: ModelPreference,
-  prompt: string,
-  systemInstruction?: string,
-  additionalConfig?: Record<string, unknown>
-): AsyncGenerator<string> {
-  const client = getClient();
-
-  try {
-    const baseConfig = MODEL_CONFIGS[model];
-    const config = {
-      ...baseConfig,
-      ...(systemInstruction ? { systemInstruction } : {}),
-      ...(additionalConfig || {}),
-    };
-
-    const response = await client.models.generateContent({
-      model,
-      contents: prompt,
-      config,
-    });
-
-    // For streaming, we'll yield the full response for now
-    // Note: The Google GenAI SDK's streaming API may differ slightly
-    if (response.text) {
-      yield response.text;
-    }
-  } catch (error) {
-    console.error('Gemini streaming error:', error);
-    throw new Error(`Failed to generate content: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
-/**
- * Generate content without streaming
- */
-export async function generateContent(
-  model: ModelPreference,
-  prompt: string,
-  systemInstruction?: string,
-  additionalConfig?: Record<string, unknown>
-): Promise<types.GenerateContentResponse> {
-  const client = getClient();
-
-  try {
-    const baseConfig = MODEL_CONFIGS[model];
-    const config = {
-      ...baseConfig,
-      ...(systemInstruction ? { systemInstruction } : {}),
-      ...(additionalConfig || {}),
-    };
-
-    const response = await client.models.generateContent({
-      model,
-      contents: prompt,
-      config,
-    });
-
-    return response;
-  } catch (error) {
-    console.error('Gemini generation error:', error);
-    throw new Error(`Failed to generate content: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
-/**
- * Validate API key by making a simple test request
+ * Validate API key by making a minimal request.
  */
 export async function validateApiKey(): Promise<boolean> {
   if (!ai) return false;
-
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: 'Hello',
+    // Any successful response (even one truncated by max_output_tokens) proves the key works.
+    await ai.interactions.create({
+      model: 'gemini-3.5-flash-lite',
+      input: 'Hello',
+      store: false,
+      generation_config: { max_output_tokens: 16 },
     });
-    return !!response.text;
+    return true;
   } catch {
     return false;
   }
@@ -184,3 +179,5 @@ export async function validateApiKey(): Promise<boolean> {
 export function isGeminiConfigured(): boolean {
   return !!GEMINI_API_KEY;
 }
+
+export { DEFAULT_MODEL };

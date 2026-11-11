@@ -105,7 +105,7 @@ export async function GET(
       task_id: taskId,
       name: `Agent-${agentId}`,
       status: 'RUNNING',
-      model_preference: 'gemini-2.5-flash',
+      model_preference: 'gemini-3.8-flash',
       specialization: ['analysis', 'implementation'],
       created_at: new Date(Date.now() - 3600000).toISOString(),
       updated_at: new Date().toISOString(),

@@ -10,10 +10,10 @@ import { AgentWorkforcePanel } from '@/components/client/AgentWorkforcePanel';
 import { ContextPanel } from '@/components/client/ContextPanel';
 import { useMissionControlStore } from '@/lib/store';
 import { apiClient } from '@/lib/apiClient';
-import { 
-  Play,  
-  Settings, 
-  FileText, 
+import {
+  Play,
+  Settings,
+  FileText,
   Users,
   Target,
   Sparkles
@@ -36,6 +36,7 @@ export function MissionControlInterface() {
   } = useMissionControlStore();
 
   const [isExecuting, setIsExecuting] = useState(false);
+  const [repoUrl, setRepoUrl] = useState('https://github.com/sidkid78/p3');
 
   const handleExecutePlan = async () => {
     if (!goal.trim() || plan.length === 0) {
@@ -45,18 +46,36 @@ export function MissionControlInterface() {
 
     setIsExecuting(true);
     try {
-      // Create the task with required fields for /api/tasks POST
-      const response = await apiClient.createTask({
-        title: goal,
-        description: plan.map((s) => s.instruction).join(', '),
-        agents,
-        run_mode: 'single',
-        parallel_runs: 1,
-        estimated_cost: 0,
+      // Convert plan steps to the format expected by the backend
+      const planSteps = plan.map((step, index) => ({
+        step_description: step.instruction,
+        agent_name: step.assigned_agents[0] || `Agent-${index + 1}`,
+        agent_specialization: ['general'],
+        model_preference: 'gemini-3.8-flash',
+        estimated_duration: 5,
+        dependencies: [],
+      }));
+
+      // Use the /api/tasks/execute endpoint for proper plan execution
+      const response = await fetch('/api/tasks/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plan: planSteps,
+          repo_url: repoUrl,
+          context_files: selectedContext,
+          additional_instructions: goal,
+        }),
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to execute plan');
+      }
+
+      const data = await response.json();
+
       // Redirect to Live Ops view
-      window.location.href = `/tasks/${response.task.task_id}`;
+      window.location.href = `/tasks/${data.task_id}`;
     } catch (error) {
       console.error('Failed to execute plan:', error);
       alert('Failed to execute plan. Please try again.');
@@ -72,15 +91,15 @@ export function MissionControlInterface() {
     }
 
     setIsExecuting(true);
-    
+
     try {
       // Generate AI-powered plan using real Gemini API
       const response = await apiClient.generatePlan({
         mission_statement: goal,
-        repo_url: 'https://github.com/sidkid78/test1', // Use the connected GitHub repo
-        model_preference: 'gemini-2.5-flash',
+        repo_url: repoUrl, // Use the user-provided GitHub repo
+        model_preference: 'gemini-3.8-flash',
       });
-      
+
       // Clear existing steps and add the generated ones
       clearPlan();
       response.plan.forEach((step, index) => {
@@ -92,7 +111,7 @@ export function MissionControlInterface() {
           });
         }, index * 200); // Stagger the additions for a nice effect
       });
-      
+
     } catch (error) {
       console.error('Failed to generate plan:', error);
       alert(`Failed to generate plan: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -120,8 +139,17 @@ export function MissionControlInterface() {
               placeholder="e.g., Refactor the user authentication flow to use JWT instead of session cookies"
               value={goal}
               onChange={(e) => updateGoal(e.target.value)}
-              className="min-h-[100px] resize-none"
+              className="min-h-[100px] resize-none mb-4"
             />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">GitHub Repository URL</label>
+              <Input
+                placeholder="https://github.com/owner/repo"
+                value={repoUrl}
+                onChange={(e) => setRepoUrl(e.target.value)}
+                className="glass-input"
+              />
+            </div>
           </CardContent>
         </Card>
 
@@ -183,7 +211,7 @@ export function MissionControlInterface() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ContextPanel />
+            <ContextPanel repoUrl={repoUrl} />
           </CardContent>
         </Card>
       </div>

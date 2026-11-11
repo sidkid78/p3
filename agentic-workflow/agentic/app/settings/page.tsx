@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { DEFAULT_MODEL, MODEL_OPTIONS } from '@/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUIStore, useAuthStore } from '@/lib/store';
 import { 
@@ -40,7 +41,7 @@ export default function SettingsPage() {
     githubToken: '••••••••••••••••••••••••',
     
     // Preferences
-    defaultModel: 'gemini-2.5-flash',
+    defaultModel: DEFAULT_MODEL as string,
     autoSave: true,
     notifications: true,
     soundEffects: false,
@@ -340,9 +341,9 @@ export default function SettingsPage() {
                   onChange={(e) => handleChange('defaultModel', e.target.value)}
                   className="w-full p-2 border rounded-md bg-background"
                 >
-                  <option value="gemini-2.5-pro">Gemini 2.5 Pro (High-Intellect)</option>
-                  <option value="gemini-2.5-flash">Gemini 2.5 Flash (Latest)</option>
-                  <option value="gemini-2.0-pro">Gemini 2.0 Pro (Speed)</option>
+                  {Object.entries(MODEL_OPTIONS).map(([id, opt]) => (
+                    <option key={id} value={id}>{opt.label}</option>
+                  ))}
                 </select>
               </div>
 

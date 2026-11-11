@@ -4,11 +4,37 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { generateContent } from '@/lib/gemini';
+import { createInteraction } from '@/lib/gemini';
 import { parseRepoUrl, listRepositoryFiles } from '@/lib/github';
-import type { ModelPreference } from '@/types';
+import { DEFAULT_MODEL, MODEL_OPTIONS, normalizeModel, type ModelPreference } from '@/types';
 
 export const runtime = 'nodejs';
+
+const MODEL_IDS = Object.keys(MODEL_OPTIONS) as ModelPreference[];
+
+// JSON schema enforced via the Interactions API response_format
+const PLAN_SCHEMA = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      step_description: { type: 'string' },
+      agent_name: { type: 'string' },
+      agent_specialization: { type: 'array', items: { type: 'string' } },
+      model_preference: { type: 'string', enum: MODEL_IDS },
+      estimated_duration: { type: 'integer', description: 'Minutes' },
+      dependencies: { type: 'array', items: { type: 'integer' } },
+    },
+    required: [
+      'step_description',
+      'agent_name',
+      'agent_specialization',
+      'model_preference',
+      'estimated_duration',
+      'dependencies',
+    ],
+  },
+};
 
 // Type for AI-generated plan steps
 interface GeneratedPlanStep {
@@ -91,7 +117,7 @@ You must respond with a JSON array of plan steps. Each step must have:
 - step_description: Clear description of what needs to be done
 - agent_name: Descriptive name for the agent (e.g., "Code-Analyzer", "Test-Writer")
 - agent_specialization: Array of specializations (e.g., ["testing", "refactoring"])
-- model_preference: One of "gemini-2.5-pro", "gemini-2.5-flash", or "gemini-2.0-pro"
+- model_preference: One of "gemini-3.1-pro-preview", "gemini-3.8-flash", or "gemini-3.5-flash-lite"
 - estimated_duration: Estimated time in minutes
 - dependencies: Array of step indices this step depends on
 
@@ -107,24 +133,30 @@ Please create a comprehensive execution plan with 3-8 steps.
 Each step should be specific, actionable, and assigned to an appropriate specialized agent.
 
 Choose model preferences wisely:
-- gemini-2.5-pro: Complex reasoning, architecture decisions, critical refactoring
-- gemini-2.5-flash: General implementation, documentation, standard tasks
-- gemini-2.0-pro: Simple tasks, code formatting, basic operations
+- gemini-3.1-pro-preview: Complex reasoning, architecture decisions, critical refactoring
+- gemini-3.8-flash: General implementation, documentation, standard tasks
+- gemini-3.5-flash-lite: Simple tasks, code formatting, basic operations
 
 Return the plan as a JSON array.`;
 
     // Generate plan using AI
-    const modelToUse = (model_preference || 'gemini-2.5-flash') as ModelPreference;
-    const aiResponse = await generateContent(modelToUse, prompt, systemInstruction);
+    const modelToUse = normalizeModel(model_preference);
+
+    const interaction = await createInteraction(modelToUse, prompt, {
+      systemInstruction,
+      responseFormat: { type: 'text', mime_type: 'application/json', schema: PLAN_SCHEMA },
+    });
+
+    const aiResponse = interaction.output_text ?? '';
 
     // Parse AI response
     let plan: GeneratedPlanStep[];
     try {
       // Try to extract JSON from response (handle markdown code blocks)
-      const jsonMatch = aiResponse.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || 
-                       aiResponse.match(/\[[\s\S]*\]/);
+      const jsonMatch = aiResponse?.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || 
+                       aiResponse?.match(/\[[\s\S]*\]/);
       const jsonText = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : aiResponse;
-      plan = JSON.parse(jsonText);
+      plan = JSON.parse(jsonText || '[]');
 
       if (!Array.isArray(plan)) {
         throw new Error('Response is not an array');
@@ -135,7 +167,7 @@ Return the plan as a JSON array.`;
         step_description: step.step_description || 'Unnamed step',
         agent_name: step.agent_name || `Agent-${index + 1}`,
         agent_specialization: step.agent_specialization || [],
-        model_preference: (step.model_preference || 'gemini-2.5-flash') as ModelPreference,
+        model_preference: normalizeModel(step.model_preference),
         estimated_duration: step.estimated_duration || 10,
         dependencies: step.dependencies || [],
       }));
@@ -150,7 +182,7 @@ Return the plan as a JSON array.`;
           step_description: mission_statement,
           agent_name: 'Primary-Agent',
           agent_specialization: ['general'],
-          model_preference: 'gemini-2.5-flash' as ModelPreference,
+          model_preference: DEFAULT_MODEL,
           estimated_duration: 30,
           dependencies: [],
         },

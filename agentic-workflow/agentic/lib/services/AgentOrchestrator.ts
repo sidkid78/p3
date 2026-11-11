@@ -3,11 +3,13 @@
  * Manages agent lifecycle, spawning, and coordination
  */
 
-import { v4 as uuidv4 } from 'uuid';
-import { generateContent, generateContentStream, estimateInputTokensAndCost } from '../gemini';
+import { PrismaClient, AgentStatus } from '@prisma/client';
+import { createInteraction, generateContentStream, usageAndCost, type Interaction } from '../gemini';
 import agentToolsManager from '@/lib/tools';
-import { FunctionCallingConfigMode } from '@google/genai';
-import type { Agent, EventLog, ModelPreference } from '@/types';
+import { eventLogger } from './EventLogger';
+import { normalizeModel, type Agent, type ModelPreference } from '@/types';
+
+const prisma = new PrismaClient();
 
 export interface AgentConfig {
   name: string;
@@ -18,75 +20,46 @@ export interface AgentConfig {
 }
 
 export class AgentOrchestrator {
-  private agents: Map<string, Agent>;
-  private eventCallbacks: ((event: EventLog) => void)[];
-
-  constructor() {
-    this.agents = new Map();
-    this.eventCallbacks = [];
-  }
-
-  /**
-   * Register an event callback
-   */
-  onEvent(callback: (event: EventLog) => void) {
-    this.eventCallbacks.push(callback);
-  }
-
-  /**
-   * Emit an event to all registered callbacks
-   */
-  private emitEvent(event: EventLog) {
-    this.eventCallbacks.forEach((callback) => callback(event));
-  }
+  constructor() { }
 
   /**
    * Create a new agent
    */
-  createAgent(config: AgentConfig): Agent {
-    const agent: Agent = {
-      agent_id: uuidv4(),
-      parent_agent_id: config.parent_agent_id,
-      task_id: config.task_id,
-      status: 'PENDING',
-      model_preference: config.model_preference,
-      name: config.name,
-      specialization: config.specialization,
-      created_at: new Date().toISOString(),
-    };
+  async createAgent(config: AgentConfig): Promise<Agent> {
+    const dbAgent = await prisma.agent.create({
+      data: {
+        taskId: config.task_id,
+        parentAgentId: config.parent_agent_id ?? null,
+        name: config.name,
+        status: AgentStatus.PENDING,
+        modelPreference: config.model_preference,
+        specialization: config.specialization,
+      } as any,
+    });
 
-    this.agents.set(agent.agent_id, agent);
-
-    this.emitEvent({
-      event_id: uuidv4(),
-      timestamp: new Date().toISOString(),
-      agent_id: agent.agent_id,
-      task_id: agent.task_id,
+    await eventLogger.logEvent({
+      agent_id: dbAgent.id,
+      task_id: dbAgent.taskId,
       event_type: 'AGENT_SPAWN',
       payload: {
-        agent_name: agent.name,
-        specialization: agent.specialization,
+        agent_name: dbAgent.name,
+        specialization: dbAgent.specialization,
       },
     });
 
-    return agent;
+    return this.mapDbAgentToAgent(dbAgent);
   }
 
   /**
    * Spawn a child agent
    */
-  spawnChildAgent(
+  async spawnChildAgent(
     parentAgentId: string,
     taskId: string,
     name: string,
     specialization: string[],
     modelPreference: ModelPreference
-  ): Agent {
-    const parentAgent = this.agents.get(parentAgentId);
-    if (!parentAgent) {
-      throw new Error(`Parent agent ${parentAgentId} not found`);
-    }
-
+  ): Promise<Agent> {
     return this.createAgent({
       name,
       specialization,
@@ -99,25 +72,20 @@ export class AgentOrchestrator {
   /**
    * Update agent status
    */
-  updateAgentStatus(agentId: string, status: Agent['status'], finishedAt?: string) {
-    const agent = this.agents.get(agentId);
-    if (!agent) {
-      throw new Error(`Agent ${agentId} not found`);
-    }
+  async updateAgentStatus(agentId: string, status: AgentStatus, finishedAt?: string) {
+    const dbAgent = await prisma.agent.update({
+      where: { id: agentId },
+      data: {
+        status,
+        finishedAt: finishedAt ? new Date(finishedAt) : undefined,
+      },
+    });
 
-    agent.status = status;
-    if (finishedAt) {
-      agent.finished_at = finishedAt;
-    }
-
-    this.emitEvent({
-      event_id: uuidv4(),
-      timestamp: new Date().toISOString(),
+    await eventLogger.logEvent({
       agent_id: agentId,
-      task_id: agent.task_id,
+      task_id: dbAgent.taskId,
       event_type: 'STATUS_CHANGE',
       payload: {
-        old_status: agent.status,
         new_status: status,
       },
     });
@@ -131,16 +99,14 @@ export class AgentOrchestrator {
     prompt: string,
     systemInstruction?: string
   ): Promise<string> {
-    const agent = this.agents.get(agentId);
+    const agent = await this.getAgent(agentId);
     if (!agent) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
-    this.updateAgentStatus(agentId, 'RUNNING');
+    await this.updateAgentStatus(agentId, 'RUNNING');
 
-    this.emitEvent({
-      event_id: uuidv4(),
-      timestamp: new Date().toISOString(),
+    await eventLogger.logEvent({
       agent_id: agentId,
       task_id: agent.task_id,
       event_type: 'MODEL_CALL',
@@ -150,125 +116,111 @@ export class AgentOrchestrator {
     });
 
     try {
-      // Estimate tokens and cost (input-only) before generation
-      const estimation = await estimateInputTokensAndCost(agent.model_preference, prompt, systemInstruction);
-      if (estimation.inputTokens > 0) {
-        this.emitEvent({
-          event_id: uuidv4(),
-          timestamp: new Date().toISOString(),
-          agent_id: agentId,
-          task_id: agent.task_id,
-          event_type: 'PLAN_UPDATE',
-          payload: {
-            input_tokens: estimation.inputTokens,
-            estimated_input_cost_usd: Number(estimation.estimatedInputCostUsd.toFixed(6)),
-          },
+      // Multi-turn tool loop: the model calls functions, we run them and send
+      // function_result steps back via previous_interaction_id until it answers.
+      const tools = agentToolsManager.getToolDeclarations(false);
+      const MAX_TOOL_TURNS = 15;
+
+      let input: Parameters<typeof createInteraction>[1] = prompt;
+      let previousInteractionId: string | undefined;
+      let interaction: Interaction | undefined;
+      let totalInput = 0;
+      let totalOutput = 0;
+      let totalCostUsd = 0;
+      const toolLog: string[] = [];
+
+      for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
+        interaction = await createInteraction(agent.model_preference, input, {
+          systemInstruction,
+          tools,
+          previousInteractionId,
         });
-      }
 
-      // Provide tool declarations to the model (prep for function calling)
-      const tools = agentToolsManager.getToolDeclarations?.(false) || [];
-      const allowedFunctionNames = tools
-        .flatMap((tool) => tool.functionDeclarations || [])
-        .map((fn) => fn.name);
+        const { inputTokens, outputTokens, costUsd } = usageAndCost(agent.model_preference, interaction);
+        totalInput += inputTokens;
+        totalOutput += outputTokens;
+        totalCostUsd += costUsd;
 
-      const response = await generateContent(
-        agent.model_preference,
-        prompt,
-        systemInstruction,
-        tools.length
-          ? {
-              tools,
-              toolConfig: {
-                functionCallingConfig: {
-                  mode: FunctionCallingConfigMode.ANY,
-                  allowedFunctionNames,
-                },
-              },
-            }
-          : undefined
-      );
+        const calls = (interaction.steps ?? []).filter(
+          (step): step is Extract<typeof step, { type: 'function_call' }> => step.type === 'function_call'
+        );
+        if (calls.length === 0) break;
 
-      let result = response.text || '';
+        const functionResults = [];
+        for (const call of calls) {
+          const args = (call.arguments ?? {}) as Record<string, unknown>;
 
-      if (response.functionCalls && response.functionCalls.length > 0) {
-        for (const call of response.functionCalls) {
-          const argsEntries =
-            typeof call.args?.entries === 'function'
-              ? Array.from(call.args.entries())
-              : Object.entries(call.args || {});
-          const argsObj = Object.fromEntries(argsEntries);
-
-          this.emitEvent({
-            event_id: uuidv4(),
-            timestamp: new Date().toISOString(),
+          await eventLogger.logEvent({
             agent_id: agentId,
             task_id: agent.task_id,
             event_type: 'TOOL_CALL',
-            payload: {
-              tool_name: call.name,
-              args: argsObj,
-            },
+            payload: { tool_name: call.name, args },
           });
 
+          let resultText: string;
+          let isError = false;
           try {
-            const toolResult = await agentToolsManager.executeTool(call.name, argsObj);
+            const toolResult = await agentToolsManager.executeTool(call.name, args);
+            resultText = JSON.stringify(toolResult);
 
-            this.emitEvent({
-              event_id: uuidv4(),
-              timestamp: new Date().toISOString(),
+            await eventLogger.logEvent({
               agent_id: agentId,
               task_id: agent.task_id,
               event_type: 'PLAN_UPDATE',
-              payload: {
-                tool_name: call.name,
-                tool_result: toolResult,
-              },
+              payload: { tool_name: call.name, tool_result: toolResult },
             });
-
-            result += `\n\n[Tool ${call.name} Result]\n${JSON.stringify(toolResult, null, 2)}`;
+            toolLog.push(`[Tool ${call.name} Result]\n${JSON.stringify(toolResult, null, 2)}`);
           } catch (toolError) {
-            const message =
-              toolError instanceof Error ? toolError.message : String(toolError);
+            isError = true;
+            resultText = toolError instanceof Error ? toolError.message : String(toolError);
 
-            this.emitEvent({
-              event_id: uuidv4(),
-              timestamp: new Date().toISOString(),
+            await eventLogger.logEvent({
               agent_id: agentId,
               task_id: agent.task_id,
               event_type: 'ERROR',
-              payload: {
-                tool_name: call.name,
-                error: message,
-              },
+              payload: { tool_name: call.name, error: resultText },
             });
-
-            result += `\n\n[Tool ${call.name} Error] ${message}`;
+            toolLog.push(`[Tool ${call.name} Error] ${resultText}`);
           }
+
+          functionResults.push({
+            type: 'function_result' as const,
+            name: call.name,
+            call_id: call.id,
+            is_error: isError,
+            result: [{ type: 'text' as const, text: resultText }],
+          });
         }
+
+        input = functionResults;
+        previousInteractionId = interaction.id;
       }
 
-      // Estimate output tokens/cost
-      const outEst = await estimateInputTokensAndCost(agent.model_preference, result);
-      if (outEst.inputTokens > 0) {
-        this.emitEvent({
-          event_id: uuidv4(),
-          timestamp: new Date().toISOString(),
+      if (totalInput > 0 || totalOutput > 0) {
+        await eventLogger.logEvent({
           agent_id: agentId,
           task_id: agent.task_id,
           event_type: 'PLAN_UPDATE',
           payload: {
-            output_tokens: outEst.inputTokens,
-            estimated_output_cost_usd: Number(outEst.estimatedInputCostUsd.toFixed(6)),
+            input_tokens: totalInput,
+            output_tokens: totalOutput,
+            cost_usd: Number(totalCostUsd.toFixed(6)),
           },
+        });
+
+        // Accumulate cost on the Task record
+        await prisma.task.update({
+          where: { id: agent.task_id },
+          data: { estimatedCost: { increment: Math.round(totalCostUsd * 100) } },
         });
       }
 
-      this.updateAgentStatus(agentId, 'SUCCESS', new Date().toISOString());
+      const finalText = interaction?.output_text ?? '';
+      const result = [finalText, ...toolLog].filter(Boolean).join('\n\n');
 
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
+      await this.updateAgentStatus(agentId, 'SUCCESS', new Date().toISOString());
+
+      await eventLogger.logEvent({
         agent_id: agentId,
         task_id: agent.task_id,
         event_type: 'STATUS_CHANGE',
@@ -279,11 +231,9 @@ export class AgentOrchestrator {
 
       return result;
     } catch (error) {
-      this.updateAgentStatus(agentId, 'FAILED', new Date().toISOString());
+      await this.updateAgentStatus(agentId, 'FAILED', new Date().toISOString());
 
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
+      await eventLogger.logEvent({
         agent_id: agentId,
         task_id: agent.task_id,
         event_type: 'ERROR',
@@ -304,16 +254,14 @@ export class AgentOrchestrator {
     prompt: string,
     systemInstruction?: string
   ): AsyncGenerator<string> {
-    const agent = this.agents.get(agentId);
+    const agent = await this.getAgent(agentId);
     if (!agent) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
-    this.updateAgentStatus(agentId, 'RUNNING');
+    await this.updateAgentStatus(agentId, 'RUNNING');
 
-    this.emitEvent({
-      event_id: uuidv4(),
-      timestamp: new Date().toISOString(),
+    await eventLogger.logEvent({
       agent_id: agentId,
       task_id: agent.task_id,
       event_type: 'MODEL_CALL',
@@ -331,22 +279,18 @@ export class AgentOrchestrator {
         yield chunk;
       }
 
-      this.updateAgentStatus(agentId, 'SUCCESS', new Date().toISOString());
+      await this.updateAgentStatus(agentId, 'SUCCESS', new Date().toISOString());
 
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
+      await eventLogger.logEvent({
         agent_id: agentId,
         task_id: agent.task_id,
         event_type: 'STATUS_CHANGE',
         payload: {},
       });
     } catch (error) {
-      this.updateAgentStatus(agentId, 'FAILED', new Date().toISOString());
+      await this.updateAgentStatus(agentId, 'FAILED', new Date().toISOString());
 
-      this.emitEvent({
-        event_id: uuidv4(),
-        timestamp: new Date().toISOString(),
+      await eventLogger.logEvent({
         agent_id: agentId,
         task_id: agent.task_id,
         event_type: 'ERROR',
@@ -362,34 +306,49 @@ export class AgentOrchestrator {
   /**
    * Get agent by ID
    */
-  getAgent(agentId: string): Agent | undefined {
-    return this.agents.get(agentId);
+  async getAgent(agentId: string): Promise<Agent | null> {
+    const dbAgent = await prisma.agent.findUnique({
+      where: { id: agentId },
+    });
+    return dbAgent ? this.mapDbAgentToAgent(dbAgent) : null;
   }
 
   /**
    * Get all agents for a task
    */
-  getAgentsByTask(taskId: string): Agent[] {
-    return Array.from(this.agents.values()).filter((agent) => agent.task_id === taskId);
+  async getAgentsByTask(taskId: string): Promise<Agent[]> {
+    const dbAgents = await prisma.agent.findMany({
+      where: { taskId },
+    });
+    return dbAgents.map(this.mapDbAgentToAgent);
   }
 
   /**
-   * Get child agents
+   * Map DB Agent to API Agent type
    */
-  getChildAgents(parentAgentId: string): Agent[] {
-    return Array.from(this.agents.values()).filter(
-      (agent) => agent.parent_agent_id === parentAgentId
-    );
+  private mapDbAgentToAgent(dbAgent: any): Agent {
+    return {
+      agent_id: dbAgent.id,
+      parent_agent_id: dbAgent.parentAgentId || undefined,
+      task_id: dbAgent.taskId,
+      status: dbAgent.status as any,
+      model_preference: normalizeModel(dbAgent.modelPreference),
+      name: dbAgent.name,
+      specialization: dbAgent.specialization,
+      created_at: dbAgent.createdAt.toISOString(),
+      finished_at: dbAgent.finishedAt?.toISOString(),
+    };
   }
 
   /**
-   * Clear all agents
+   * Clear all agents (for testing)
    */
-  clear() {
-    this.agents.clear();
+  async clear() {
+    await prisma.agent.deleteMany();
   }
 }
 
 // Singleton instance
 export const agentOrchestrator = new AgentOrchestrator();
+
 

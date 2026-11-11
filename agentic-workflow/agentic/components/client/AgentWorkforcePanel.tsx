@@ -11,7 +11,7 @@
  * The component uses a global mission control store for agent state management.
  * UI elements are composed using custom Button, Input, Card, Badge, and ModelSelector components.
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,20 +19,31 @@ import { Badge } from '@/components/ui/badge';
 import { ModelSelector } from '@/components/client/ModelSelector';
 import { useMissionControlStore } from '@/lib/store';
 import { ModelPreference, MODEL_OPTIONS } from '@/types';
-import { 
-  Plus, 
-  X, 
-  Bot, 
+import {
+  Plus,
+  X,
+  Bot,
   Users
 } from 'lucide-react';
 
-export function AgentWorkforcePanel() {
-  const { agents, addAgent, updateAgent, removeAgent } = useMissionControlStore();
-  
+export function AgentWorkforcePanel({ taskId }: { taskId?: string } = {}) {
+  const { agents: storeAgents, addAgent, updateAgent, removeAgent } = useMissionControlStore();
+  const [liveAgents, setLiveAgents] = useState<typeof storeAgents | null>(null);
+
+  useEffect(() => {
+    if (!taskId) return;
+    fetch(`/api/tasks/${taskId}/status`, { cache: 'no-store' })
+      .then(r => r.json())
+      .then(data => { if (data?.task?.agents) setLiveAgents(data.task.agents); })
+      .catch(() => { });
+  }, [taskId]);
+
+  const agents = liveAgents ?? storeAgents;
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [newAgentData, setNewAgentData] = useState({
     name: '',
-    model_preference: 'gemini-2.5-flash' as ModelPreference,
+    model_preference: 'gemini-3.8-flash' as ModelPreference,
     specialization: [] as string[],
     status: 'PENDING' as const
   });
@@ -50,7 +61,7 @@ export function AgentWorkforcePanel() {
 
     setNewAgentData({
       name: '',
-      model_preference: 'gemini-2.5-flash',
+      model_preference: 'gemini-3.8-flash',
       specialization: [],
       status: 'PENDING'
     });
@@ -75,30 +86,10 @@ export function AgentWorkforcePanel() {
   };
 
   const presetAgents = [
-    {
-      name: 'Code-Analyzer',
-      model_preference: 'gemini-2.5-flash' as ModelPreference,
-      specialization: ['analysis', 'refactoring', 'code-review'],
-      description: 'Analyzes codebases and identifies patterns'
-    },
-    {
-      name: 'Test-Writer',
-      model_preference: 'gemini-2.5-flash-lite' as ModelPreference,
-      specialization: ['testing', 'unit-tests', 'integration-tests'],
-      description: 'Creates comprehensive test suites'
-    },
-    {
-      name: 'Doc-Generator',
-      model_preference: 'gemini-2.5-pro' as ModelPreference,
-      specialization: ['documentation', 'api-docs', 'readme'],
-      description: 'Generates and maintains documentation'
-    },
-    {
-      name: 'Architect',
-      model_preference: 'gemini-2.5-pro' as ModelPreference,
-      specialization: ['architecture', 'system-design', 'patterns'],
-      description: 'Designs system architecture and patterns'
-    }
+    { name: 'Code-Analyzer', model_preference: 'gemini-3.8-flash' as ModelPreference, specialization: ['analysis', 'refactoring', 'code-review'], description: 'Analyzes codebases and identifies patterns' },
+    { name: 'Test-Writer', model_preference: 'gemini-3.5-flash-lite' as ModelPreference, specialization: ['testing', 'unit-tests', 'integration-tests'], description: 'Creates comprehensive test suites' },
+    { name: 'Doc-Generator', model_preference: 'gemini-3.8-flash' as ModelPreference, specialization: ['documentation', 'api-docs', 'readme'], description: 'Generates and maintains documentation' },
+    { name: 'Architect', model_preference: 'gemini-3.1-pro-preview' as ModelPreference, specialization: ['architecture', 'system-design', 'patterns'], description: 'Designs system architecture and patterns' },
   ];
 
   return (
@@ -127,7 +118,8 @@ export function AgentWorkforcePanel() {
                 <div className="flex items-center gap-2 text-xs">
                   <span className="text-muted-foreground">Model:</span>
                   <Badge variant="outline" className="text-xs">
-                    {MODEL_OPTIONS[agent.model_preference!].icon} {MODEL_OPTIONS[agent.model_preference!].label}
+                    {(MODEL_OPTIONS[agent.model_preference!] ?? { icon: '🤖', label: agent.model_preference }).icon}{' '}
+                    {(MODEL_OPTIONS[agent.model_preference!] ?? { icon: '🤖', label: agent.model_preference }).label}
                   </Badge>
                 </div>
 
